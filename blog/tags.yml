@@ -1,0 +1,29 @@
+welcome:
+  label: Welcome
+  permalink: /welcome
+  description: Welcome and introduction posts
+
+docusaurus:
+  label: Docusaurus
+  permalink: /docusaurus
+  description: Posts about Docusaurus features and usage
+
+template:
+  label: Template
+  permalink: /template
+  description: Posts about this project template
+
+tips:
+  label: Tips & Tricks
+  permalink: /tips
+  description: Helpful tips and tricks
+
+documentation:
+  label: Documentation
+  permalink: /documentation
+  description: Posts about documentation best practices
+
+mdx:
+  label: MDX
+  permalink: /mdx
+  description: Posts about MDX features and usage

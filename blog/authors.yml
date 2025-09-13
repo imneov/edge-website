@@ -1,0 +1,25 @@
+template-author:
+  name: Template Author
+  title: Documentation Engineer
+  url: https://github.com/template-author
+  image_url: https://github.com/template-author.png
+  page: true
+  socials:
+    github: template-author
+
+doc-expert:
+  name: Doc Expert
+  title: Technical Writer
+  url: https://github.com/doc-expert
+  image_url: https://github.com/doc-expert.png
+  socials:
+    github: doc-expert
+
+developer:
+  name: John Developer
+  title: Full Stack Developer
+  url: https://github.com/johndeveloper
+  image_url: https://github.com/johndeveloper.png
+  socials:
+    github: johndeveloper
+    x: johndeveloper
