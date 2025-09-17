@@ -83,7 +83,7 @@ RoleTemplate → IAMRole → K8s RBAC
 ### IAMRole 示例
 
 ```yaml
-apiVersion: iam.theriseunion.io/v1beta1
+apiVersion: iam.theriseunion.io/v1alpha1
 kind: IAMRole
 metadata:
   name: workspace-developer
@@ -100,7 +100,7 @@ spec:
 ### IAMRoleBinding 示例
 
 ```yaml
-apiVersion: iam.theriseunion.io/v1beta1
+apiVersion: iam.theriseunion.io/v1alpha1
 kind: IAMRoleBinding
 metadata:
   name: alice-workspace-developer
@@ -151,7 +151,7 @@ func (a *Authorizer) cascadeCheck(ctx context.Context, attrs *Attributes) (*Deci
 /apis/apps/v1/*
 
 # EDGE 自定义 API - 本地处理
-/oapis/iam/v1beta1/*        # 权限管理
+/oapis/iam/v1alpha1/*        # 权限管理
 /oapis/tenant/v1/*          # 租户管理  
 /oapis/oauth/v1/*           # 认证服务
 ```
@@ -176,7 +176,7 @@ type APIInstaller interface {
 前端通过 UIPermissions API 获取权限：
 
 ```bash
-GET /oapis/iam/v1beta1/uipermissions?scope=workspace&scopeValue=team-workspace
+GET /oapis/iam/v1alpha1/uipermissions?scope=workspace&scopeValue=team-workspace
 ```
 
 响应示例：
@@ -222,7 +222,7 @@ func (h *MyAPIHandler) Install(container *restful.Container) error {
 
 ```yaml
 # 自定义 IAMRole
-apiVersion: iam.theriseunion.io/v1beta1
+apiVersion: iam.theriseunion.io/v1alpha1
 kind: IAMRole
 metadata:
   name: my-custom-role

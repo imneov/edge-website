@@ -79,7 +79,7 @@ make apiserver controller
 curl http://localhost:8080/healthz
 
 # 检查 API 是否可用
-curl http://localhost:8080/oapis/iam/v1beta1/iamroles
+curl http://localhost:8080/oapis/iam/v1alpha1/iamroles
 ```
 
 ## 🔧 开发工作流
@@ -117,7 +117,7 @@ edge-apiserver/
 │   ├── apiserver/main.go        # APIServer 入口
 │   └── controller/main.go       # Controller 入口
 ├── api/
-│   ├── iam/v1beta1/            # IAM CRD 定义
+│   ├── iam/v1alpha1/            # IAM CRD 定义
 │   └── scope/v1alpha1/         # Scope CRD 定义
 ├── pkg/
 │   ├── apiserver/              # APIServer 核心逻辑
