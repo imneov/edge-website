@@ -3,20 +3,20 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Project Template',
-  tagline: 'Docusaurus project template with documentation and blog',
+  title: '边缘平台',
+  tagline: '面向云原生应用的智能边缘计算平台',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-project.example.com',
+  url: 'https://docs.theriseunion.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-username', // Usually your GitHub org/user name.
-  projectName: 'your-project', // Usually your repo name.
+  organizationName: 'theriseunion', // Usually your GitHub org/user name.
+  projectName: 'edge-platform', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -25,8 +25,24 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'zh-Hans'],
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans', 'en'],
+    localeConfigs: {
+      'zh-Hans': {
+        label: '简体中文',
+        direction: 'ltr',
+        htmlLang: 'zh-CN',
+        calendar: 'gregory',
+        path: 'zh-Hans',
+      },
+      en: {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+        calendar: 'gregory',
+        path: 'en',
+      },
+    },
   },
 
   presets: [
@@ -38,15 +54,19 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-username/your-project/tree/main/docs/',
+            'https://github.com/imneov/edge-website/tree/main/',
           routeBasePath: 'docs',
         },
         blog: {
           showReadingTime: true,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            xslt: true,
+          },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-username/your-project/tree/main/docs/',
+            'https://github.com/imneov/edge-website/tree/main/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -59,9 +79,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Project Template',
+      title: '边缘平台',
       logo: {
-        alt: 'Project Template Logo',
+        alt: '边缘平台 Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -69,15 +89,15 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Docs',
+          label: '文档',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/blog', label: '博客', position: 'left'},
         {
           type: 'localeDropdown',
           position: 'right',
         },
         {
-          href: 'https://github.com/your-username/your-project',
+          href: 'https://github.com/imneov/edge-website',
           label: 'GitHub',
           position: 'right',
         },
@@ -87,46 +107,54 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: '文档',
           items: [
             {
-              label: 'Getting Started',
+              label: '快速入门',
               to: '/docs/intro',
             },
             {
-              label: 'Installation',
+              label: '安装指南',
               to: '/docs/installation',
             },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
             {
-              label: 'GitHub Discussions',
-              href: 'https://github.com/your-username/your-project/discussions',
-            },
-            {
-              label: 'Issues',
-              href: 'https://github.com/your-username/your-project/issues',
+              label: '配置说明',
+              to: '/docs/configuration',
             },
           ],
         },
         {
-          title: 'More',
+          title: '社区',
           items: [
             {
-              label: 'Blog',
+              label: 'GitHub',
+              href: 'https://github.com/imneov/edge-website',
+            },
+            {
+              label: '问题反馈',
+              href: 'https://github.com/imneov/edge-website/issues',
+            },
+          ],
+        },
+        {
+          title: '更多',
+          items: [
+            {
+              label: '博客',
               to: '/blog',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/your-username/your-project',
+              label: 'Edge API Server',
+              href: 'https://github.com/imneov/edge-apiserver',
+            },
+            {
+              label: 'Edge Console',
+              href: 'https://github.com/imneov/edge-console',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Project Template.`,
+      copyright: `Copyright © ${new Date().getFullYear()} TheriseUnion. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

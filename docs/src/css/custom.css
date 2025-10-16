@@ -421,9 +421,10 @@ body {
 }
 
 .menu__link--active {
-  background-color: var(--foal-blue-primary) !important;
-  color: white !important;
+  background-color: rgba(26, 115, 232, 0.1) !important;
+  color: var(--foal-blue-primary) !important;
   font-weight: 600 !important;
+  border-left: 3px solid var(--foal-blue-primary) !important;
 }
 
 /* Table of contents */
