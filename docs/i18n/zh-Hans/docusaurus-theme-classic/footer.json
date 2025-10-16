@@ -1,0 +1,82 @@
+{
+  "link.title.Documentation": {
+    "message": "文档",
+    "description": "The title of the footer links column with title=Documentation in the footer"
+  },
+  "link.title.Community": {
+    "message": "社区",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.title.More": {
+    "message": "更多",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.Getting Started": {
+    "message": "快速开始",
+    "description": "The label of footer link with label=Getting Started linking to /docs/intro"
+  },
+  "link.item.label.Installation Guide": {
+    "message": "安装指南",
+    "description": "The label of footer link with label=Installation Guide linking to /docs/installation"
+  },
+  "link.item.label.Configuration": {
+    "message": "配置说明",
+    "description": "The label of footer link with label=Configuration linking to /docs/configuration"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/imneov/edge-website"
+  },
+  "link.item.label.Issues": {
+    "message": "问题反馈",
+    "description": "The label of footer link with label=Issues"
+  },
+  "link.item.label.Blog": {
+    "message": "博客",
+    "description": "The label of footer link with label=Blog"
+  },
+  "link.item.label.Edge API Server": {
+    "message": "边缘 API 服务器",
+    "description": "The label of footer link with label=Edge API Server linking to https://github.com/imneov/edge-apiserver"
+  },
+  "link.item.label.Edge Console": {
+    "message": "边缘控制台",
+    "description": "The label of footer link with label=Edge Console linking to https://github.com/imneov/edge-console"
+  },
+  "copyright": {
+    "message": "版权所有 © 2025 TheriseUnion. 使用 Docusaurus 构建.",
+    "description": "The footer copyright"
+  },
+  "link.title.文档": {
+    "message": "文档",
+    "description": "The title of the footer links column with title=文档 in the footer"
+  },
+  "link.title.社区": {
+    "message": "社区",
+    "description": "The title of the footer links column with title=社区 in the footer"
+  },
+  "link.title.更多": {
+    "message": "更多",
+    "description": "The title of the footer links column with title=更多 in the footer"
+  },
+  "link.item.label.快速入门": {
+    "message": "快速入门",
+    "description": "The label of footer link with label=快速入门 linking to /docs/intro"
+  },
+  "link.item.label.安装指南": {
+    "message": "安装指南",
+    "description": "The label of footer link with label=安装指南 linking to /docs/installation"
+  },
+  "link.item.label.配置说明": {
+    "message": "配置说明",
+    "description": "The label of footer link with label=配置说明 linking to /docs/configuration"
+  },
+  "link.item.label.问题反馈": {
+    "message": "问题反馈",
+    "description": "The label of footer link with label=问题反馈 linking to https://github.com/imneov/edge-website/issues"
+  },
+  "link.item.label.博客": {
+    "message": "博客",
+    "description": "The label of footer link with label=博客 linking to /blog"
+  }
+}
