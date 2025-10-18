@@ -50,28 +50,30 @@ const config: Config = {
       'classic',
       {
         docs: {
+          id: 'default',
+          path: 'docs',
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/imneov/edge-website/tree/main/',
           routeBasePath: 'docs',
+          editUrl: 'https://github.com/imneov/edge-website/tree/main/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/imneov/edge-website/tree/main/',
-        },
+        blog: false, // 禁用博客功能
         theme: {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'developer',
+        path: 'developer',
+        routeBasePath: 'developer',
+        sidebarPath: './sidebars-developer.ts',
+        editUrl: 'https://github.com/imneov/edge-website/tree/main/',
+      },
     ],
   ],
 
@@ -89,9 +91,13 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: '文档',
+          label: '使用文档',
         },
-        {to: '/blog', label: '博客', position: 'left'},
+        {
+          to: '/developer/intro',
+          position: 'left',
+          label: '开发指南',
+        },
         {
           type: 'localeDropdown',
           position: 'right',
@@ -140,8 +146,8 @@ const config: Config = {
           title: '更多',
           items: [
             {
-              label: '博客',
-              to: '/blog',
+              label: '开发指南',
+              to: '/developer/intro',
             },
             {
               label: 'Edge API Server',
