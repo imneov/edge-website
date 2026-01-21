@@ -10,6 +10,22 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'intro',
 
+    // ==================== 技术白皮书 ====================
+    {
+      type: 'category',
+      label: '技术白皮书',
+      collapsed: false,
+      items: [
+        'whitepaper/README',
+        'whitepaper/executive-summary',
+        'whitepaper/introduction',
+        'whitepaper/advantages',
+        'whitepaper/features',
+        'whitepaper/architecture',
+        'whitepaper/deployment',
+      ],
+    },
+
     // ==================== 产品介绍 ====================
     {
       type: 'category',
