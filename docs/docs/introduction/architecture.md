@@ -2,51 +2,51 @@
 sidebar_position: 2
 ---
 
-# System Architecture
+# 系统架构
 
-## Architecture Overview
+## 架构概览
 
-Edge Platform adopts a cloud-edge collaborative architecture, consisting of a centralized cloud control plane and distributed edge nodes.
+边缘智能管理平台采用云边协同架构，由集中式云控制平面和分布式边缘节点组成。
 
 ```
                         ┌─────────────────────────────────────┐
-                        │      Cloud Control Plane            │
+                        │      云控制平面                    │
                         │                                     │
                         │  ┌──────────────────────────────┐  │
                         │  │   edge-apiserver             │  │
-                        │  │   - Authentication           │  │
-                        │  │   - Authorization            │  │
-                        │  │   - API Gateway              │  │
+                        │  │   - 身份认证               │  │
+                        │  │   - 权限授权               │  │
+                        │  │   - API 网关               │  │
                         │  └──────────────────────────────┘  │
                         │                                     │
                         │  ┌──────────────────────────────┐  │
                         │  │   edge-controller            │  │
-                        │  │   - Reconciliation           │  │
-                        │  │   - Lifecycle Management     │  │
-                        │  │   - Policy Enforcement       │  │
+                        │  │   - 调和协调                 │  │
+                        │  │   - 生命周期管理           │  │
+                        │  │   - 策略执行               │  │
                         │  └──────────────────────────────┘  │
                         │                                     │
                         │  ┌──────────────────────────────┐  │
                         │  │   edge-console               │  │
                         │  │   - Web UI                   │  │
-                        │  │   - Management Interface     │  │
+                        │  │   - 管理界面                │  │
                         │  └──────────────────────────────┘  │
                         │                                     │
                         │  ┌──────────────────────────────┐  │
-                        │  │   Monitoring Service         │  │
+                        │  │   监控服务                   │  │
                         │  │   - Prometheus               │  │
                         │  │   - Alertmanager             │  │
                         │  └──────────────────────────────┘  │
                         └─────────────────────────────────────┘
                                       ↕ ↕ ↕
-                              Network / Internet
+                              网络 / 互联网
                                       ↕ ↕ ↕
 ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
-│   Edge Cluster 1    │  │   Edge Cluster 2    │  │   Edge Cluster N    │
+│   边缘集群 1      │  │   边缘集群 2      │  │   边缘集群 N      │
 │                     │  │                     │  │                     │
 │  ┌──────────────┐   │  │  ┌──────────────┐   │  │  ┌──────────────┐   │
 │  │ Kubernetes   │   │  │  │ Kubernetes   │   │  │  │ Kubernetes   │   │
-│  │ Cluster      │   │  │  │ Cluster      │   │  │  │ Cluster      │   │
+│  │ 集群          │   │  │  │ 集群          │   │  │  │ 集群          │   │
 │  └──────────────┘   │  │  └──────────────┘   │  │  └──────────────┘   │
 │                     │  │                     │  │                     │
 │  ┌──────────────┐   │  │  ┌──────────────┐   │  │  ┌──────────────┐   │
@@ -54,183 +54,183 @@ Edge Platform adopts a cloud-edge collaborative architecture, consisting of a ce
 │  └──────────────┘   │  │  └──────────────┘   │  │  └──────────────┘   │
 │                     │  │                     │  │                     │
 │  ┌──────────────┐   │  │  ┌──────────────┐   │  │  ┌──────────────┐   │
-│  │ Workloads    │   │  │  │ Workloads    │   │  │  │ Workloads    │   │
-│  └──────────────┘   │  │  └──────────────┘   │  │  └──────────────┘   │
+│  │ 工作负载     │   │  │  │ 工作负载     │   │  │  │ 工作负载     │   │
+│  └──────────────�   │  │  └──────────────┘   │  │  └──────────────┘   │
 └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
 ```
 
-## Component Details
+## 组件详解
 
-### Cloud Control Plane
+### 云控制平面
 
 #### edge-apiserver
 
-The central API gateway providing:
+中央 API 网关提供以下功能：
 
-- **Authentication**: OAuth2/OIDC integration, token validation
-- **Authorization**: RBAC, policy evaluation
-- **API Gateway**: RESTful API endpoints for all resources
-- **Multi-tenancy**: Workspace and namespace isolation
-- **Audit Logging**: Complete request/response logging
+- **身份认证**：OAuth2/OIDC 集成、令牌验证
+- **权限授权**：RBAC、策略评估
+- **API 网关**：所有资源的 RESTful API 端点
+- **多租户**：工作空间和命名空间隔离
+- **审计日志**：完整的请求/响应日志
 
-**Key Features:**
-- Built on Kubernetes API machinery
-- Extensible with Custom Resource Definitions (CRDs)
-- High availability with multiple replicas
-- TLS encryption for all communications
+**核心特性：**
+- 基于 Kubernetes API 机制构建
+- 通过自定义资源定义（CRD）扩展
+- 多副本高可用部署
+- 所有通信使用 TLS 加密
 
 #### edge-controller
 
-The orchestration engine responsible for:
+负责编排的协调引擎：
 
-- **Cluster Lifecycle**: Registration, health checks, decommissioning
-- **Resource Reconciliation**: Desired state vs actual state
-- **Policy Enforcement**: Placement policies, resource quotas
-- **Workload Distribution**: Intelligent scheduling across clusters
-- **Configuration Management**: Centralized config distribution
+- **集群生命周期**：注册、健康检查、下线
+- **资源调和**：期望状态与实际状态对比
+- **策略执行**：放置策略、资源配额
+- **工作负载分发**：跨集群智能调度
+- **配置管理**：集中化配置分发
 
-**Key Features:**
-- Kubernetes Operator pattern
-- Event-driven reconciliation
-- Retry logic with exponential backoff
-- Comprehensive status reporting
+**核心特性：**
+- Kubernetes Operator 模式
+- 事件驱动的调和机制
+- 指数退避重试逻辑
+- 全面的状态报告
 
 #### edge-console
 
-Web-based management interface providing:
+基于 Web 的管理界面提供：
 
-- **Dashboard**: Overview of clusters, nodes, workloads
-- **Resource Management**: CRUD operations for all resources
-- **User Management**: User, role, and permission management
-- **Monitoring Integration**: Metrics dashboards and charts
-- **Audit Viewer**: Search and filter audit logs
+- **仪表板**：集群、节点、工作负载概览
+- **资源管理**：所有资源的 CRUD 操作
+- **用户管理**：用户、角色和权限管理
+- **监控集成**：指标仪表板和图表
+- **审计查看器**：搜索和过滤审计日志
 
-**Tech Stack:**
-- Next.js 14 with React 18
-- TypeScript for type safety
-- TailwindCSS for styling
-- React Query for data fetching
+**技术栈：**
+- Next.js 14 + React 18
+- TypeScript 类型安全
+- TailwindCSS 样式
+- React Query 数据获取
 
-#### Monitoring Service
+#### 监控服务
 
-Observability infrastructure including:
+可观测性基础设施包括：
 
-- **Prometheus**: Time-series metrics database
-- **Alertmanager**: Alert routing and notification
-- **Grafana**: Metrics visualization (optional)
-- **ReverseProxy**: Multi-cluster metrics aggregation
+- **Prometheus**：时序指标数据库
+- **Alertmanager**：告警路由和通知
+- **Grafana**：指标可视化（可选）
+- **ReverseProxy**：多集群指标聚合
 
-### Edge Components
+### 边缘组件
 
-#### Kubernetes Cluster
+#### Kubernetes 集群
 
-Each edge location runs a standard Kubernetes cluster:
+每个边缘位置运行标准 Kubernetes 集群：
 
-- **Control Plane**: API server, controller manager, scheduler
-- **Worker Nodes**: kubelet, container runtime (containerd/docker)
-- **Network**: CNI plugin (Calico, Flannel, etc.)
-- **Storage**: CSI driver for persistent storage
+- **控制平面**：API 服务器、控制器管理器、调度器
+- **工作节点**：kubelet、容器运行时（containerd/docker）
+- **网络**：CNI 插件（Calico、Flannel 等）
+- **存储**：持久卷的 CSI 驱动
 
 #### Edge Agent
 
-Local agent running on edge clusters:
+运行在边缘集群的本地代理：
 
-- **Registration**: Automatic cluster registration to control plane
-- **Heartbeat**: Periodic health status reporting
-- **Resource Sync**: Bidirectional resource synchronization
-- **Local Cache**: Cache frequently accessed data
-- **Metrics Export**: Forward metrics to control plane
+- **注册**：自动向控制平面注册集群
+- **心跳**：定期上报健康状态
+- **资源同步**：双向资源同步
+- **本地缓存**：缓存频繁访问的数据
+- **指标导出**：向控制平面转发指标
 
-#### Edge Autonomy
+#### 边缘自治
 
-Continues operations during network partition:
+网络分区期间继续运行：
 
-- **Local API Server**: Cached API responses
-- **Workload Management**: Existing workloads continue running
-- **State Synchronization**: Auto-sync when connection restored
+- **本地 API 服务器**：缓存的 API 响应
+- **工作负载管理**：现有工作负载继续运行
+- **状态同步**：连接恢复后自动同步
 
-## Data Flow
+## 数据流
 
-### 1. User Request Flow
-
-```
-User → Console/CLI → edge-apiserver → Authentication → Authorization → CRD Controller → Kubernetes API
-```
-
-### 2. Cluster Registration Flow
+### 1. 用户请求流程
 
 ```
-Edge Cluster → Edge Agent → edge-apiserver → edge-controller → Cluster CRD Created → Status Update
+用户 → Console/CLI → edge-apiserver → 身份认证 → 权限授权 → CRD Controller → Kubernetes API
 ```
 
-### 3. Workload Deployment Flow
+### 2. 集群注册流程
 
 ```
-User → edge-apiserver → Workload CRD → edge-controller → Target Cluster Selection → Edge Agent → Kubernetes Apply
+边缘集群 → Edge Agent → edge-apiserver → edge-controller → 集群 CRD 创建 → 状态更新
 ```
 
-### 4. Monitoring Flow
+### 3. 工作负载部署流程
 
 ```
-Edge Cluster Metrics → Prometheus → ReverseProxy → Monitoring Service → edge-console Dashboard
+用户 → edge-apiserver → 工作负载 CRD → edge-controller → 目标集群选择 → Edge Agent → Kubernetes 应用
 ```
 
-## Security Architecture
+### 4. 监控流程
 
-### Authentication & Authorization
+```
+边缘集群指标 → Prometheus → ReverseProxy → 监控服务 → edge-console 仪表板
+```
 
-- **Multi-level Auth**: OAuth2, OIDC, static tokens
-- **RBAC**: Role-based access control at platform and cluster levels
-- **Service Accounts**: Automated service authentication
-- **Certificate Management**: Auto-rotation, mutual TLS
+## 安全架构
 
-### Network Security
+### 身份认证与授权
 
-- **TLS Everywhere**: Encrypted communication between all components
-- **Network Policies**: Kubernetes-native network segmentation
-- **Ingress Control**: Rate limiting, IP whitelisting
-- **Secret Management**: Kubernetes secrets, external secret stores
+- **多级认证**：OAuth2、OIDC、静态令牌
+- **RBAC**：平台级和集群级基于角色的访问控制
+- **服务账户**：自动化服务认证
+- **证书管理**：自动轮换、双向 TLS
 
-### Data Security
+### 网络安全
 
-- **Encryption at Rest**: etcd encryption, encrypted volumes
-- **Encryption in Transit**: TLS 1.3 for all connections
-- **Audit Logging**: Immutable audit trail
-- **Compliance**: GDPR, SOC 2 ready
+- **全链路 TLS**：所有组件间加密通信
+- **网络策略**：Kubernetes 原生网络分段
+- **入口控制**：速率限制、IP 白名单
+- **密钥管理**：Kubernetes Secrets、外部密钥存储
 
-## High Availability
+### 数据安全
 
-### Control Plane HA
+- **静态加密**：etcd 加密、加密卷
+- **传输加密**：所有连接使用 TLS 1.3
+- **审计日志**：不可变审计追踪
+- **合规性**：符合 GDPR、SOC 2 标准
 
-- **Multi-replica Deployment**: 3+ replicas of critical components
-- **Load Balancing**: Kubernetes service load balancing
-- **Leader Election**: Raft consensus for controllers
-- **Database HA**: etcd clustering, automated backups
+## 高可用性
 
-### Edge HA
+### 控制平面高可用
 
-- **Node Redundancy**: Multiple worker nodes per cluster
-- **Workload Redundancy**: Pod replicas across nodes
-- **Network Redundancy**: Multiple network paths
-- **Data Replication**: Persistent volume replication
+- **多副本部署**：关键组件 3+ 副本
+- **负载均衡**：Kubernetes 服务负载均衡
+- **领导者选举**：控制器的 Raft 共识
+- **数据库高可用**：etcd 集群、自动备份
 
-## Scalability
+### 边缘高可用
 
-### Horizontal Scalability
+- **节点冗余**：每个集群多个工作节点
+- **工作负载冗余**：跨节点的 Pod 副本
+- **网络冗余**：多条网络路径
+- **数据复制**：持久卷复制
 
-- **Control Plane**: Scale replicas based on load
-- **Edge Clusters**: Support 1000+ clusters
-- **Edge Nodes**: Support 10,000+ nodes per cluster
-- **Workloads**: Support 100,000+ pods
+## 可扩展性
 
-### Vertical Scalability
+### 水平扩展
 
-- **Resource Limits**: Configurable CPU/memory limits
-- **Storage**: Scalable persistent storage
-- **Network**: High-throughput networking
+- **控制平面**：基于负载扩展副本数
+- **边缘集群**：支持 1000+ 集群
+- **边缘节点**：每集群支持 10,000+ 节点
+- **工作负载**：支持 100,000+ Pod
 
-## Next Steps
+### 垂直扩展
 
-- Learn about [Use Cases](/docs/introduction/use-cases)
-- Review [Installation Requirements](/docs/installation/requirements)
-- Get started with [Quick Start Guide](/docs/quick-start/install-edge-node)
+- **资源限制**：可配置的 CPU/内存限制
+- **存储**：可扩展的持久化存储
+- **网络**：高吞吐量网络
+
+## 下一步
+
+- 了解[应用场景](/docs/introduction/use-cases)
+- 查看[安装要求](/docs/installation/requirements)
+- 按照[快速入门指南](/docs/quick-start/install-edge-node) 开始使用

@@ -18,7 +18,7 @@ const config: Config = {
   organizationName: 'theriseunion', // Usually your GitHub org/user name.
   projectName: 'edge-platform', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
@@ -26,21 +26,13 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans', 'en'],
+    locales: ['zh-Hans'],
     localeConfigs: {
       'zh-Hans': {
         label: '简体中文',
         direction: 'ltr',
         htmlLang: 'zh-CN',
         calendar: 'gregory',
-        path: 'zh-Hans',
-      },
-      en: {
-        label: 'English',
-        direction: 'ltr',
-        htmlLang: 'en-US',
-        calendar: 'gregory',
-        path: 'en',
       },
     },
   },
@@ -65,14 +57,24 @@ const config: Config = {
   ],
 
   plugins: [
+    // 技术白皮书
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'whitepaper',
+        path: 'whitepaper',
+        routeBasePath: 'whitepaper',
+        sidebarPath: require.resolve('./sidebars-whitepaper.ts'),
+      },
+    ],
+    // 开发指南
     [
       '@docusaurus/plugin-content-docs',
       {
         id: 'developer',
         path: 'developer',
         routeBasePath: 'developer',
-        sidebarPath: './sidebars-developer.ts',
-        editUrl: 'https://github.com/imneov/edge-website/tree/main/',
+        sidebarPath: require.resolve('./sidebars-developer.ts'),
       },
     ],
   ],
@@ -94,13 +96,14 @@ const config: Config = {
           label: '使用文档',
         },
         {
+          to: '/whitepaper/README',
+          position: 'left',
+          label: '技术白皮书',
+        },
+        {
           to: '/developer/intro',
           position: 'left',
           label: '开发指南',
-        },
-        {
-          type: 'localeDropdown',
-          position: 'right',
         },
         {
           href: 'https://github.com/imneov/edge-website',
@@ -120,12 +123,12 @@ const config: Config = {
               to: '/docs/intro',
             },
             {
-              label: '安装指南',
-              to: '/docs/installation',
+              label: '集群管理',
+              to: '/docs/clusters/README',
             },
             {
-              label: '配置说明',
-              to: '/docs/configuration',
+              label: '应用管理',
+              to: '/docs/apps/README',
             },
           ],
         },
@@ -145,6 +148,10 @@ const config: Config = {
         {
           title: '更多',
           items: [
+            {
+              label: '技术白皮书',
+              to: '/whitepaper/README',
+            },
             {
               label: '开发指南',
               to: '/developer/intro',

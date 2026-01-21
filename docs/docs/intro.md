@@ -2,117 +2,114 @@
 sidebar_position: 1
 ---
 
-# Welcome to Edge Platform
+# 欢迎使用边缘智能管理平台
 
-**Edge Platform** is an intelligent edge computing platform designed for cloud-native applications, enabling seamless management of distributed edge infrastructure with Kubernetes.
+**边缘智能管理平台**是一款面向云原生应用的智能边缘计算平台，支持 Kubernetes 分布式边缘基础设施的无缝管理。
 
-## 🎯 What is Edge Platform?
+## 平台简介
 
-Edge Platform extends Kubernetes capabilities to the edge, providing:
+边缘智能管理平台将 Kubernetes 能力延伸至边缘，提供：
 
-- **Cloud-Native Edge Management**: Manage edge nodes and workloads using familiar Kubernetes APIs
-- **Distributed Architecture**: Support for geographically distributed edge locations
-- **Intelligent Orchestration**: Automated workload placement and lifecycle management
-- **Unified Observability**: Centralized monitoring and logging across cloud and edge
-- **Security & Compliance**: Built-in security policies and compliance controls
+- **云原生边缘管理**：使用标准 Kubernetes API 管理边缘节点和工作负载
+- **分布式架构**：支持地理分布式边缘场景
+- **智能编排**：自动化工作负载部署和生命周期管理
+- **统一可观测性**：跨云端和边缘的集中监控和日志
+- **安全与合规**：内置安全策略和合规控制
 
-## 🌟 Key Features
+## 核心功能
 
-### Multi-Cluster Management
-- Manage multiple edge clusters from a single control plane
-- Cross-cluster workload orchestration
-- Unified resource management and monitoring
+### 多集群管理
+- 单一控制平面管理多个边缘集群
+- 跨集群工作负载编排
+- 统一资源管理和监控
 
-### Edge-Native Capabilities
-- Network autonomy for disconnected scenarios
-- Edge node auto-registration and discovery
-- Local data processing and aggregation
+### 边缘原生能力
+- 断网场景下的节点自治
+- 边缘节点自动注册和发现
+- 本地数据处理和聚合
 
-### Developer-Friendly
-- Standard Kubernetes APIs
-- GitOps-ready with ArgoCD/Flux support
-- Rich CLI and Web Console interfaces
-- Comprehensive RESTful APIs
+### 多租户支持
+- 基于工作空间的资源隔离
+- 细粒度角色权限控制（RBAC）
+- 资源配额管理
 
-### Enterprise-Grade
-- Multi-tenancy with workspace isolation
-- Role-based access control (RBAC)
-- Audit logging and compliance
-- High availability and disaster recovery
+### 企业级特性
+- 审计日志和合规性
+- 高可用和灾难恢复
+- 完善的 API 支持
 
-## 🚀 Learning Path
+## 快速导航
 
-### 📚 Learn
-Get familiar with Edge Platform concepts and architecture:
-- [Product Introduction](/docs/introduction/overview) - Understand what Edge Platform offers
-- [Architecture](/docs/introduction/architecture) - Learn about the system design
-- [Use Cases](/docs/introduction/use-cases) - Discover real-world scenarios
+### 新用户入门
 
-### 🎓 Get Started
-Set up your first edge cluster:
-- [Quick Start](/docs/quick-start/install-edge-node) - Install your first edge node
-- [Deploy Applications](/docs/quick-start/deploy-app) - Deploy sample applications
-- [Access Control](/docs/quick-start/access-control) - Configure user permissions
+1. **[快速入门](/docs/quick-start/prerequisites)** - 环境准备和首次登录
+2. **[创建第一个集群](/docs/quick-start/first-cluster)** - 导入或创建集群
+3. **[安装边缘节点](/docs/quick-start/install-edge-node)** - 部署边缘节点
 
-### 🔧 Manage
-Learn platform management and operations:
-- [Installation Guide](/docs/installation) - Production deployment options
-- [Platform Management](/docs/management/platform) - Configure platform settings
-- [Cluster Management](/docs/management/clusters) - Manage edge clusters
-- [User Management](/docs/management/users) - Control user access
+### 用户指南
 
-## 🏗️ Architecture Overview
+| 模块 | 说明 | 链接 |
+|------|------|------|
+| **集群管理** | 集群创建、节点组、项目配置 | [查看文档](/docs/clusters/README) |
+| **工作空间管理** | 多租户空间、成员和配额 | [查看文档](/docs/workspaces/README) |
+| **租户管理** | 租户资源和权限配置 | [查看文档](/docs/tenant/README) |
+| **应用管理** | 应用商店、部署和管理 | [查看文档](/docs/apps/README) |
+| **身份访问管理** | 用户、角色和权限 | [查看文档](/docs/iam/README) |
+| **OTA升级管理** | 边缘设备远程升级 | [查看文档](/docs/ota/README) |
+| **镜像管理** | 容器镜像仓库管理 | [查看文档](/docs/image/README) |
+| **可观测性** | 监控、告警和日志 | [查看文档](/docs/o11y/README) |
 
-Edge Platform consists of three core components:
+### 按角色学习
+
+**平台管理员**
+1. [身份访问管理](/docs/iam/README) - 用户和权限管理
+2. [集群管理](/docs/clusters/README) - 基础设施管理
+3. [工作空间管理](/docs/workspaces/README) - 多租户管理
+4. [可观测性](/docs/o11y/README) - 平台监控
+
+**集群管理员**
+1. [集群管理](/docs/clusters/README) - 集群和节点管理
+2. [OTA升级管理](/docs/ota/README) - 设备升级维护
+3. [镜像管理](/docs/image/README) - 镜像仓库配置
+
+**应用开发者**
+1. [应用管理](/docs/apps/README) - 应用部署管理
+2. [租户管理](/docs/tenant/README) - 租户内资源操作
+3. [可观测性](/docs/o11y/README) - 应用监控
+
+## 技术架构
 
 ```
-┌─────────────────────────────────────────────────┐
-│              Cloud Control Plane                 │
-│  ┌──────────────┐  ┌──────────────┐            │
-│  │  API Server  │  │  Controller  │            │
-│  └──────────────┘  └──────────────┘            │
-│  ┌──────────────┐  ┌──────────────┐            │
-│  │   Console    │  │  Monitoring  │            │
-│  └──────────────┘  └──────────────┘            │
-└─────────────────────────────────────────────────┘
-                      ↕
-┌─────────────────────────────────────────────────┐
-│                 Edge Clusters                    │
-│  ┌──────────────┐  ┌──────────────┐            │
-│  │ Edge Node 1  │  │ Edge Node 2  │            │
-│  └──────────────┘  └──────────────┘            │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    边缘智能管理平台                           │
+│                   EdgePlatform v1.0.0                       │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+   ┌────▼────┐          ┌────▼────┐          ┌────▼────┐
+   │ 集群管理 │          │ 工作空间 │          │ IAM模块 │
+   │Clusters │          │Workspace │          │   IAM   │
+   └────┬────┘          └────┬────┘          └────┬────┘
+        │                     │                     │
+   ┌────▼────┐          ┌────▼────┐          ┌────▼────┐
+   │ 租户管理 │          │ 应用管理 │          │ OTA模块 │
+   │ Tenant  │          │   Apps  │          │   OTA   │
+   └────┬────┘          └────┬────┘          └────┬────┘
+        │                     │                     │
+   ┌────▼────┐          ┌────▼────┐          ┌────▼────┐
+   │ 镜像管理 │          │可观测性 │          │  其他   │
+   │  Image  │          │  O11y   │          │ Others  │
+   └─────────┘          └─────────┘          └─────────┘
 ```
 
-## 💡 Why Edge Platform?
+## 获取帮助
 
-Traditional cloud infrastructure struggles with edge computing challenges:
-- **High Latency**: Round-trip delays to centralized cloud
-- **Bandwidth Costs**: Expensive data transfer from edge to cloud
-- **Connectivity Issues**: Unreliable network connections
-- **Data Sovereignty**: Regulatory requirements for local data processing
+- **[常见问题](/docs/reference/faq)** - FAQ 解答
+- **[技术支持](/docs/reference/support)** - 联系支持团队
 
-Edge Platform addresses these by:
-- Processing data close to the source
-- Maintaining autonomy during network disruptions
-- Reducing bandwidth usage through local aggregation
-- Enabling compliance with data residency requirements
+---
 
-## 📖 What's Next?
-
-Choose your path based on your role:
-
-**For Platform Administrators:**
-1. Review [System Requirements](/docs/installation/requirements)
-2. Follow the [Installation Guide](/docs/installation)
-3. Configure [Platform Settings](/docs/management/platform)
-
-**For Developers:**
-1. Learn about [Edge Node Setup](/docs/quick-start/install-edge-node)
-2. Explore [Application Deployment](/docs/quick-start/deploy-app)
-3. Check out [API Documentation](/docs/api-reference)
-
-**For End Users:**
-1. Access the [Console Guide](/docs/console/overview)
-2. Learn about [Workload Management](/docs/workloads)
-3. Review [Best Practices](/docs/best-practices)
+**平台版本**: v1.0.0
+**文档版本**: v1.0.0
+**最后更新**: 2025-01-21

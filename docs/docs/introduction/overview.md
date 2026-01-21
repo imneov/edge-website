@@ -2,105 +2,105 @@
 sidebar_position: 1
 ---
 
-# Product Overview
+# 产品概述
 
-## What is Edge Platform?
+## 什么是边缘智能管理平台？
 
-Edge Platform is a cloud-native edge computing platform built on Kubernetes, designed to extend cloud capabilities to edge locations while maintaining operational consistency and simplicity.
+边缘智能管理平台是一款基于 Kubernetes 构建的云原生边缘计算平台，旨在将云能力扩展至边缘位置，同时保持操作的一致性和简洁性。
 
-## Core Capabilities
+## 核心能力
 
-### 1. Edge Cluster Management
+### 1. 边缘集群管理
 
-Manage distributed edge infrastructure as easily as managing a single Kubernetes cluster:
+像管理单个 Kubernetes 集群一样轻松管理分布式边缘基础设施：
 
-- **Centralized Control**: Single control plane for all edge clusters
-- **Unified API**: Standard Kubernetes APIs across cloud and edge
-- **Cluster Lifecycle**: Automated cluster provisioning and upgrades
-- **Health Monitoring**: Real-time cluster health and status tracking
+- **集中控制**：所有边缘集群的单一控制平面
+- **统一 API**：云边统一的 标准 Kubernetes API
+- **集群生命周期**：自动化的集群配置和升级
+- **健康监控**：实时集群健康状态跟踪
 
-### 2. Workload Orchestration
+### 2. 工作负载编排
 
-Deploy and manage applications across edge locations intelligently:
+在边缘位置智能地部署和管理应用：
 
-- **Automated Placement**: Smart workload scheduling based on resources and policies
-- **Edge Autonomy**: Continue operations during cloud disconnection
-- **Rolling Updates**: Zero-downtime application updates
-- **Resource Optimization**: Efficient resource utilization across clusters
+- **自动调度**：基于资源和策略的智能工作负载调度
+- **边缘自治**：云断连期间继续运行
+- **滚动更新**：零停机应用更新
+- **资源优化**：跨集群高效资源利用
 
-### 3. Multi-Tenancy & Access Control
+### 3. 多租户与访问控制
 
-Enterprise-grade security and isolation:
+企业级安全和隔离：
 
-- **Workspace Isolation**: Logical separation of teams and projects
-- **RBAC**: Fine-grained role-based access control
-- **Network Policies**: Secure network communication
-- **Audit Logging**: Complete audit trail for compliance
+- **工作空间隔离**：团队和项目的逻辑隔离
+- **RBAC**：细粒度的基于角色的访问控制
+- **网络策略**：安全的网络通信
+- **审计日志**：完整的合规审计追踪
 
-### 4. Observability
+### 4. 可观测性
 
-Comprehensive monitoring and troubleshooting:
+全面的监控和故障排查：
 
-- **Unified Monitoring**: Prometheus-based metrics collection
-- **Centralized Logging**: Aggregated logs from all edge locations
-- **Alerting**: Configurable alerts for critical events
-- **Distributed Tracing**: End-to-end request tracing
+- **统一监控**：基于 Prometheus 的指标采集
+- **集中日志**：所有边缘位置的日志聚合
+- **告警管理**：可配置的关键事件告警
+- **链路追踪**：端到端请求追踪
 
-## Technical Advantages
+## 技术优势
 
-### Cloud-Native Architecture
+### 云原生架构
 
-Built on proven cloud-native technologies:
-- **Kubernetes**: Industry-standard container orchestration
-- **Operators**: Kubernetes-native lifecycle management
-- **CRDs**: Extensible resource definitions
-- **Helm**: Standardized application packaging
+基于成熟的云原生技术构建：
+- **Kubernetes**：行业标准容器编排
+- **Operators**：Kubernetes 原生生命周期管理
+- **CRDs**：可扩展的资源定义
+- **Helm**：标准化应用打包
 
-### Production-Ready
+### 生产就绪
 
-Designed for enterprise deployments:
-- **High Availability**: Multi-replica components with failover
-- **Scalability**: Support for thousands of edge nodes
-- **Security**: TLS encryption, certificate management, secrets management
-- **Compliance**: Audit logs, data residency controls
+为企业部署设计：
+- **高可用性**：多副本组件和故障转移
+- **可扩展性**：支持数千个边缘节点
+- **安全性**：TLS 加密、证书管理、密钥管理
+- **合规性**：审计日志、数据驻留控制
 
-### Developer Experience
+### 开发者友好
 
-Built for productivity:
-- **GitOps Ready**: Native integration with ArgoCD and Flux
-- **REST API**: Comprehensive RESTful API
-- **CLI Tools**: Command-line interface for automation
-- **Web Console**: Intuitive web-based management UI
+为生产力而构建：
+- **GitOps 就绪**：原生集成 ArgoCD 和 Flux
+- **REST API**：全面的 RESTful API
+- **CLI 工具**：自动化命令行界面
+- **Web 控制台**：直观的 Web 管理界面
 
-## Use Case Scenarios
+## 应用场景
 
-Edge Platform excels in scenarios requiring:
+边缘智能管理平台在以下场景中表现出色：
 
-1. **Low Latency Processing**: Real-time data processing at the edge
-2. **Bandwidth Optimization**: Reduce data transfer costs
-3. **Offline Operations**: Continue operations during network outages
-4. **Data Sovereignty**: Meet regulatory requirements for data residency
-5. **Distributed Applications**: Run applications across multiple locations
+1. **低延迟处理**：边缘位置的实时数据处理
+2. **带宽优化**：降低数据传输成本
+3. **离线运行**：网络中断期间继续运行
+4. **数据主权**：满足数据驻留合规要求
+5. **分布式应用**：在多个位置运行应用
 
-## Platform Components
+## 平台组件
 
-### Control Plane Components
+### 控制平面组件
 
-- **API Server**: Central API gateway and authentication
-- **Controller Manager**: Resource reconciliation and orchestration
-- **Console**: Web-based management interface
-- **Monitoring Service**: Metrics collection and alerting
+- **API Server**：中央 API 网关和身份认证
+- **Controller Manager**：资源协调和编排
+- **Console**：基于 Web 的管理界面
+- **Monitoring Service**：指标采集和告警
 
-### Edge Components
+### 边缘组件
 
-- **Edge Agent**: Node-level orchestration and management
-- **Edge Hub**: Local API server for edge autonomy
-- **Edge Metrics**: Local metrics collection and forwarding
+- **Edge Agent**：节点级编排和管理
+- **Edge Hub**：边缘自治的本地 API 服务器
+- **Edge Metrics**：本地指标采集和转发
 
-## Getting Started
+## 快速开始
 
-Ready to try Edge Platform?
+准备试用边缘智能管理平台？
 
-1. **Explore**: Learn more about the [Architecture](/docs/introduction/architecture)
-2. **Install**: Follow the [Quick Start Guide](/docs/quick-start/install-edge-node)
-3. **Deploy**: Try [Deploying Your First Application](/docs/quick-start/deploy-app)
+1. **探索**：了解更多关于[系统架构](/docs/introduction/architecture)
+2. **安装**：按照[快速入门指南](/docs/quick-start/install-edge-node)
+3. **部署**：尝试[部署您的第一个应用](/docs/quick-start/deploy-app)

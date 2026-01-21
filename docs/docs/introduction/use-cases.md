@@ -2,227 +2,227 @@
 sidebar_position: 3
 ---
 
-# Use Cases
+# 应用场景
 
-Edge Platform is designed to solve real-world challenges in edge computing scenarios. Here are common use cases where Edge Platform excels.
+边缘智能管理平台旨在解决边缘计算场景中的实际挑战。以下是边缘平台表现出色的常见应用场景。
 
-## 1. IoT Data Processing
+## 1. IoT 数据处理
 
-### Scenario
-Manufacturing facilities with thousands of IoT sensors generating real-time data that needs immediate processing.
+### 场景
+制造工厂中有数千个 IoT 传感器生成实时数据，需要立即处理。
 
-### Challenges
-- High data volumes overwhelming cloud bandwidth
-- Latency-sensitive decision making (< 100ms)
-- Intermittent network connectivity
-- Data sovereignty requirements
+### 挑战
+- 海量数据占满云带宽
+- 延迟敏感的决策（< 100ms）
+- 网络连接不稳定
+- 数据主权合规要求
 
-### Edge Platform Solution
-- **Local Processing**: Process sensor data at edge locations
-- **Data Aggregation**: Reduce data volume before cloud upload
-- **Edge Autonomy**: Continue operations during network outages
-- **Real-time Analytics**: Sub-millisecond decision making
+### 边缘平台解决方案
+- **本地处理**：在边缘位置处理传感器数据
+- **数据聚合**：在上传前减少数据量
+- **边缘自治**：网络中断期间继续运行
+- **实时分析**：毫秒级决策
 
-### Benefits
-- 90% reduction in cloud bandwidth costs
-- Less than 10ms processing latency
-- 99.9% uptime even with network issues
-- Compliance with local data regulations
+### 收益
+- 云带宽成本降低 90%
+- 处理延迟低于 10ms
+- 网络问题下仍保持 99.9% 可用性
+- 符合本地数据合规要求
 
-## 2. Content Delivery & CDN
+## 2. 内容分发与 CDN
 
-### Scenario
-Media streaming service serving millions of users across different geographic regions.
+### 场景
+媒体流服务为数百万不同地理区域的用户提供服务。
 
-### Challenges
-- High latency for users far from central cloud
-- Expensive bandwidth costs for video streaming
-- Need for localized content caching
-- Variable network conditions
+### 挑战
+- 远离中心云的用户高延迟
+- 视频流传输带宽成本高
+- 需要本地化内容缓存
+- 网络条件不稳定
 
-### Edge Platform Solution
-- **Edge Caching**: Deploy caching services at edge locations
-- **Geo-distribution**: Automatically route users to nearest edge
-- **Intelligent Prefetching**: Predict and cache popular content
-- **Adaptive Streaming**: Adjust quality based on local network
+### 边缘平台解决方案
+- **边缘缓存**：在边缘位置部署缓存服务
+- **地理分布**：自动将用户路由到最近的边缘
+- **智能预取**：预测并缓存热门内容
+- **自适应流**：根据本地网络调整质量
 
-### Benefits
-- 70% reduction in origin server load
-- 50% reduction in streaming latency
-- 60% reduction in bandwidth costs
-- Improved user experience
+### 收益
+- 源服务器负载降低 70%
+- 流式传输延迟降低 50%
+- 带宽成本降低 60%
+- 改善用户体验
 
-## 3. Retail & Point of Sale
+## 3. 零售与销售点
 
-### Scenario
-Retail chain with hundreds of stores running POS systems, inventory management, and customer analytics.
+### 场景
+零售连锁店拥有数百家门店，运行 POS 系统、库存管理和客户分析。
 
-### Challenges
-- Store operations must continue during internet outages
-- Real-time inventory updates across locations
-- Customer data privacy requirements
-- Centralized management of distributed systems
+### 挑战
+- 互联网中断期间门店运营必须继续
+- 跨位置的实时库存更新
+- 客户数据隐私要求
+- 分布式系统的集中管理
 
-### Edge Platform Solution
-- **Store-level Clusters**: Each store as an edge cluster
-- **Offline Operations**: POS works without internet
-- **Data Synchronization**: Auto-sync when connection restored
-- **Centralized Visibility**: Monitor all stores from headquarters
+### 边缘平台解决方案
+- **门店级集群**：每个门店作为一个边缘集群
+- **离线运营**：POS 无需互联网即可工作
+- **数据同步**：连接恢复后自动同步
+- **集中可见性**：从总部监控所有门店
 
-### Benefits
-- Zero downtime for store operations
-- Real-time inventory visibility
-- GDPR/CCPA compliance
-- 80% reduction in operational overhead
+### 收益
+- 门店运营零停机
+- 实时库存可见性
+- 符合 GDPR/CCPA 标准
+- 运营开销降低 80%
 
-## 4. Smart City Infrastructure
+## 4. 智慧城市基础设施
 
-### Scenario
-City-wide deployment of smart traffic lights, parking sensors, and environmental monitoring.
+### 场景
+全市范围部署智能交通灯、停车传感器和环境监测设备。
 
-### Challenges
-- Distributed infrastructure across large geographic area
-- Need for real-time traffic management
-- Multiple city departments accessing same infrastructure
-- Security and privacy concerns
+### 挑战
+- 大地理区域的分布式基础设施
+- 需要实时交通管理
+- 多个城市部门访问同一基础设施
+- 安全和隐私问题
 
-### Edge Platform Solution
-- **District-level Clusters**: Deploy edge clusters per city district
-- **Multi-tenancy**: Separate access for different departments
-- **Real-time Control**: Sub-second traffic light adjustments
-- **Unified Monitoring**: City-wide dashboard
+### 边缘平台解决方案
+- **区域级集群**：每个城市区域部署边缘集群
+- **多租户**：为不同部门提供独立访问
+- **实时控制**：亚秒级交通灯调整
+- **统一监控**：全市范围仪表板
 
-### Benefits
-- 30% reduction in traffic congestion
-- Improved public safety response times
-- Energy savings through smart lighting
-- Simplified infrastructure management
+### 收益
+- 交通拥堵减少 30%
+- 公共安全响应时间缩短
+- 智能照明节能
+- 简化基础设施管理
 
-## 5. Telecommunications & 5G
+## 5. 电信与 5G
 
-### Scenario
-Telecom provider deploying 5G network with edge compute capabilities for enterprise customers.
+### 场景
+电信运营商部署具有边缘计算能力的 5G 网络，为企业客户提供服务。
 
-### Challenges
-- Ultra-low latency requirements (< 1ms)
-- Massive scale (10,000+ edge sites)
-- Multi-tenant edge infrastructure
-- Service lifecycle automation
+### 挑战
+- 超低延迟要求（< 1ms）
+- 大规模（10,000+ 边缘站点）
+- 多租户边缘基础设施
+- 服务生命周期自动化
 
-### Edge Platform Solution
-- **MEC Integration**: Multi-access edge computing support
-- **Network Slicing**: Isolated virtual networks per tenant
-- **Dynamic Scaling**: Auto-scale based on demand
-- **Service Orchestration**: Automated service deployment
+### 边缘平台解决方案
+- **MEC 集成**：多接入边缘计算支持
+- **网络切片**：每个租户的隔离虚拟网络
+- **动态扩缩容**：基于需求自动扩展
+- **服务编排**：自动化服务部署
 
-### Benefits
-- Sub-1ms latency for 5G applications
-- Support for thousands of edge sites
-- 99.999% service availability
-- Rapid service deployment (minutes vs days)
+### 收益
+- 5G 应用亚 1ms 延迟
+- 支持数千个边缘站点
+- 99.999% 服务可用性
+- 服务部署时间从天缩短到分钟
 
-## 6. Healthcare & Medical Imaging
+## 6. 医疗与医学影像
 
-### Scenario
-Hospital network with medical imaging devices requiring real-time processing and HIPAA compliance.
+### 场景
+医院网络拥有医学影像设备，需要实时处理和 HIPAA 合规。
 
-### Challenges
-- Large image files (100MB+ per scan)
-- Real-time AI inference for diagnosis
-- Strict data privacy regulations (HIPAA)
-- Integration with existing hospital systems
+### 挑战
+- 大型影像文件（每份扫描 100MB+）
+- 诊断的实时 AI 推理
+- 严格的数据隐私法规（HIPAA）
+- 与现有医院系统集成
 
-### Edge Platform Solution
-- **On-premise Processing**: Process images locally
-- **AI/ML Inference**: Deploy ML models at edge
-- **Data Residency**: Keep sensitive data on-premise
-- **Secure Integration**: TLS-encrypted connections
+### 边缘平台解决方案
+- **本地处理**：在本地处理影像
+- **AI/ML 推理**：在边缘部署 ML 模型
+- **数据驻留**：敏感数据保留在本地
+- **安全集成**：TLS 加密连接
 
-### Benefits
-- Immediate image processing results
-- 100% HIPAA compliance
-- No sensitive data leaves hospital
-- Improved patient care quality
+### 收益
+- 立即获得影像处理结果
+- 100% HIPAA 合规
+- 敏感数据不离开医院
+- 改善患者护理质量
 
-## 7. Autonomous Vehicles
+## 7. 自动驾驶车辆
 
-### Scenario
-Fleet management for autonomous vehicles requiring real-time decision making and coordination.
+### 场景
+自动驾驶车队管理需要实时决策和车辆协调。
 
-### Challenges
-- Split-second decision making required
-- Vehicle-to-vehicle communication
-- Intermittent connectivity while moving
-- Massive sensor data volume
+### 挑战
+- 需要毫秒级决策
+- 车对车辆通信
+- 移动时网络连接不稳定
+- 海量传感器数据
 
-### Edge Platform Solution
-- **Vehicle Edge Computing**: Process sensor data on vehicle
-- **Roadside Edge Units**: Additional compute at intersections
-- **Fleet Coordination**: Cloud-based fleet management
-- **Offline Operation**: Autonomous operation without cloud
+### 边缘平台解决方案
+- **车载边缘计算**：在车辆上处理传感器数据
+- **路侧单元**：交叉路口的额外计算能力
+- **车队协调**：基于云的车队管理
+- **离线运行**：无云连接的自主运行
 
-### Benefits
-- Sub-10ms decision latency
-- Safe operation without connectivity
-- Efficient bandwidth utilization
-- Scalable fleet management
+### 收益
+- 亚 10ms 决策延迟
+- 无连接情况下的安全运行
+- 高效带宽利用
+- 可扩展的车队管理
 
-## 8. Industrial Automation
+## 8. 工业自动化
 
-### Scenario
-Factory automation with robotic systems, quality control cameras, and predictive maintenance.
+### 场景
+工厂自动化系统包括机器人、质量检测摄像头和预测性维护。
 
-### Challenges
-- Real-time control of industrial robots
-- High-resolution vision system processing
-- Predictive maintenance analytics
-- Zero tolerance for downtime
+### 挑战
+- 工业机器人的实时控制
+- 高分辨率视觉系统处理
+- 预测性维护分析
+- 零停机容忍度
 
-### Edge Platform Solution
-- **Factory-level Clusters**: Deploy at each facility
-- **Real-time Processing**: Sub-millisecond control loops
-- **AI/ML at Edge**: Predictive maintenance models
-- **High Availability**: Redundant edge infrastructure
+### 边缘平台解决方案
+- **工厂级集群**：在每个设施部署
+- **实时处理**：亚毫秒级控制回路
+- **边缘 AI/ML**：预测性维护模型
+- **高可用性**：冗余边缘基础设施
 
-### Benefits
-- 99.99% production uptime
-- 40% reduction in maintenance costs
-- Real-time quality control
-- Improved worker safety
+### 收益
+- 99.99% 生产正常运行时间
+- 维护成本降低 40%
+- 实时质量控制
+- 改善工人安全
 
-## Common Patterns
+## 通用模式
 
-Across these use cases, common patterns emerge:
+这些用例中出现了常见的模式：
 
-### Low Latency Requirements
-When applications need sub-100ms response times, edge processing is essential.
+### 低延迟要求
+当应用需要亚 100ms 响应时间时，边缘处理至关重要。
 
-### Bandwidth Optimization
-When transferring large volumes of data to cloud is expensive or impractical.
+### 带宽优化
+当向云传输大量数据成本高昂或不切实际时。
 
-### Offline Operations
-When business continuity during network outages is critical.
+### 离线运行
+当网络中断期间业务连续性至关重要时。
 
-### Data Sovereignty
-When regulatory requirements mandate local data processing and storage.
+### 数据主权
+当法规要求本地数据处理和存储时。
 
-### Scale & Distribution
-When managing thousands of distributed locations from central control.
+### 规模与分布
+当从中央控制管理数千个分布式位置时。
 
-## Choosing Edge Platform
+## 选择边缘平台
 
-Edge Platform is the right choice when you need:
+在以下情况下，边缘智能管理平台是您的正确选择：
 
-✅ **Cloud-native technologies** at the edge
-✅ **Kubernetes-based** orchestration
-✅ **Enterprise-grade** security and compliance
-✅ **Unified management** of distributed infrastructure
-✅ **Edge autonomy** during network disruptions
+✅ 边缘位置的**云原生技术**
+✅ 基于 **Kubernetes** 的编排
+✅ **企业级**安全与合规
+✅ 分布式基础设施的**统一管理**
+✅ 网络中断期间的**边缘自治**
 
-## Get Started
+## 快速开始
 
-Ready to build your edge solution?
+准备构建您的边缘解决方案？
 
-1. Review [System Architecture](/docs/introduction/architecture)
-2. Check [Installation Requirements](/docs/installation/requirements)
-3. Follow [Quick Start Guide](/docs/quick-start/install-edge-node)
+1. 查看[系统架构](/docs/introduction/architecture)
+2. 检查[安装要求](/docs/installation/requirements)
+3. 按照[快速入门指南](/docs/quick-start/install-edge-node) 操作
