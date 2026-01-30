@@ -57,6 +57,10 @@ const config: Config = {
   ],
 
   plugins: [
+    // Webpack 别名配置
+    ['./src/plugins/webpack-alias.js', {}],
+    // Tailwind CSS 配置
+    ['./src/plugins/tailwind-config.js', {}],
     // 技术白皮书
     [
       '@docusaurus/plugin-content-docs',
@@ -107,8 +111,9 @@ const config: Config = {
         },
         {
           href: 'https://github.com/imneov/edge-website',
-          label: 'GitHub',
           position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
         },
       ],
     },

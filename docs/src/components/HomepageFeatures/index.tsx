@@ -1,92 +1,105 @@
+/**
+ * Core Capabilities Section
+ *
+ * Displays 6 feature cards in a 3x2 grid, each representing
+ * a core platform capability with icon, title, and description.
+ */
 import React from 'react';
 import clsx from 'clsx';
+import {
+  Server,
+  Globe,
+  GitBranch,
+  Users,
+  BarChart3,
+  Cpu,
+} from 'lucide-react';
 import styles from './styles.module.css';
 
-type FeatureItem = {
+/** Feature card data shape */
+interface FeatureItem {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
-  description: React.ReactNode;
-};
+  Icon: React.ComponentType<{ className?: string }>;
+  description: string;
+}
 
-const FeatureList: FeatureItem[] = [
+/** All 6 core capabilities */
+const FEATURES: FeatureItem[] = [
   {
-    title: 'Ready to Use',
-    Svg: require('@site/static/img/terminal.svg').default,
-    description: (
-      <>
-        Pre-configured Docusaurus setup with modern design and best practices.
-        Start writing documentation immediately without setup hassle.
-      </>
-    ),
+    title: '边缘集群管理',
+    Icon: Server,
+    description:
+      '统一管理多个边缘 Kubernetes 集群，支持集群注册、健康监控、资源调度等核心能力，简化边缘基础设施运维。',
   },
   {
-    title: 'Multi-language Support',
-    Svg: require('@site/static/img/monitor.svg').default,
-    description: (
-      <>
-        Built-in internationalization with English and Chinese support.
-        Easy to extend with additional languages as needed.
-      </>
-    ),
+    title: '应用分发引擎',
+    Icon: Globe,
+    description:
+      '基于 Helm 的应用模板系统，支持多集群应用分发、版本管理、配置覆盖，实现应用的标准化交付。',
   },
   {
-    title: 'Blog Integration',
-    Svg: require('@site/static/img/interaction.svg').default,
-    description: (
-      <>
-        Complete blog platform with author profiles, tags, and RSS feeds.
-        Share updates and engage with your community seamlessly.
-      </>
-    ),
+    title: 'GitOps 工作流',
+    Icon: GitBranch,
+    description:
+      '内置 GitOps 能力，支持基于 Git 仓库的声明式配置管理，实现应用变更的可追溯、可回滚、可审计。',
+  },
+  {
+    title: '多租户管理',
+    Icon: Users,
+    description:
+      '工作空间级别的多租户隔离，细粒度 RBAC 权限控制，支持团队协作与资源配额管理。',
+  },
+  {
+    title: '可观测性',
+    Icon: BarChart3,
+    description:
+      '集成 Prometheus 监控体系，提供集群、节点、应用多维度的指标采集、告警和可视化仪表盘。',
+  },
+  {
+    title: '设备管理',
+    Icon: Cpu,
+    description:
+      '边缘设备全生命周期管理，支持设备模型定义、OTA 升级、资源池化调度，释放边缘算力。',
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+/** Renders a single feature card with hover animation */
+function FeatureCard({ title, Icon, description }: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="feature-card">
-        <div className="text--center">
-          <Svg className={styles.featureSvg} role="img" />
+    <div className={clsx('col col--4', styles.featureCol)}>
+      <div className={clsx('feature-card', styles.card)}>
+        <div className={styles.iconWrapper}>
+          <Icon className={styles.featureIcon} />
         </div>
-        <div className="text--center">
-          <h3>{title}</h3>
-          <p>{description}</p>
-        </div>
+        <h3 className={styles.featureTitle}>{title}</h3>
+        <p className={styles.featureDesc}>{description}</p>
       </div>
     </div>
   );
 }
 
+/** Core capabilities section with section header and 3x2 grid */
 export default function HomepageFeatures(): React.ReactNode {
   return (
-    <section className={styles.features}>
+    <section className={clsx(styles.features, 'features-section')}>
       <div className="container">
+        {/* Section header */}
         <div className="row">
           <div className="col col--8 col--offset-2">
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <h2 style={{ 
-                fontSize: '2rem', 
-                fontWeight: 600, 
-                marginBottom: '1rem',
-                color: '#202124'
-              }}>
-                Why Use This Template?
-              </h2>
-              <p style={{ 
-                fontSize: '1.1rem', 
-                color: '#5f6368', 
-                lineHeight: 1.6,
-                maxWidth: '600px',
-                margin: '0 auto'
-              }}>
-                Skip the setup and focus on your content. This template provides everything you need for professional documentation sites.
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>核心能力</h2>
+              <p className={styles.sectionSubtitle}>
+                边缘平台提供从基础设施管理到应用交付的全栈能力，
+                助力企业构建云边协同的分布式计算架构。
               </p>
             </div>
           </div>
         </div>
+
+        {/* 3x2 feature grid */}
         <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
+          {FEATURES.map((feature) => (
+            <FeatureCard key={feature.title} {...feature} />
           ))}
         </div>
       </div>
