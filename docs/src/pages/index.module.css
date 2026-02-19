@@ -1,12 +1,15 @@
 /**
- * Homepage module styles
+ * Homepage module styles - Tech/Futuristic Edition
+ *
+ * Design language: Aurora UI + Glassmorphism + subtle neon glow
+ * Color: Trust blue (#2563EB) + Cyan (#06B6D4) accent
  *
  * Sections:
- * 1. Hero Banner (enhanced with mesh, stats, tech pills)
- * 2. Architecture Diagram (SVG boxes, lines, labels)
- * 3. Platform Highlights (numbered list)
- * 4. Technology Ecosystem (logo grid)
- * 5. Quick Start Steps (3-step timeline)
+ * 1. Hero Banner (aurora blobs, glass badge, glowing stats)
+ * 2. Architecture Diagram (glow borders, animated lines)
+ * 3. Platform Highlights (gradient numbers, glass cards)
+ * 4. Technology Ecosystem (glow ring icons)
+ * 5. Quick Start Steps (pulse step numbers, glow connectors)
  * 6. Shared section header styles
  */
 
@@ -48,43 +51,69 @@
    ============================================ */
 
 .heroBanner {
-  padding: 4rem 0 5rem;
+  padding: 5rem 0 6rem;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-/* Animated mesh / dot background overlay */
+/* Aurora blob background - two animated gradient blobs */
 .heroMesh {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.12;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
-  background-size: 32px 32px;
-  animation: meshDrift 40s linear infinite;
+  overflow: hidden;
 }
 
-@keyframes meshDrift {
-  0% { background-position: 0 0; }
-  100% { background-position: 320px 320px; }
+.heroMesh::before,
+.heroMesh::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: auroraFloat 12s ease-in-out infinite alternate;
+}
+
+.heroMesh::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+  top: -150px;
+  right: -100px;
+}
+
+.heroMesh::after {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+  bottom: -200px;
+  left: -150px;
+  animation-delay: -6s;
+}
+
+@keyframes auroraFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, -30px) scale(1.15); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroMesh {
+  .heroMesh::before,
+  .heroMesh::after {
     animation: none;
   }
 }
 
-/* Badge */
+/* Badge - glass pill with subtle glow border */
 .heroBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  padding: 0.375rem 1rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.375rem 1.25rem;
   margin-bottom: 1.5rem;
 }
 
@@ -99,7 +128,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -110,25 +139,29 @@
 }
 
 .heroStatValue {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   color: white;
   line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .heroStatLabel {
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.6);
   margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 .heroStatDivider {
   width: 1px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.2);
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
-/* Tech pills */
+/* Tech pills - glass capsules */
 .techPills {
   display: flex;
   flex-wrap: wrap;
@@ -141,23 +174,25 @@
   display: inline-flex;
   align-items: center;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(4px);
   padding: 0.5rem 1rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease-out;
   cursor: default;
 }
 
 .techPill:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .techPillIcon {
   width: 20px;
   height: 20px;
   margin-right: 0.5rem;
-  /* make white icons visible on blue */
   filter: brightness(0) invert(1);
 }
 
@@ -182,35 +217,61 @@
 
 .architectureSection {
   padding: 5rem 0;
-  background-color: white;
+  background-color: #f8fafc;
+  position: relative;
 }
 
 :global([data-theme='dark']) .architectureSection {
-  background-color: #0f172a;
+  background-color: #0a0f1e;
+}
+
+/* Subtle tech grid background for architecture section */
+.architectureSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
+}
+
+:global([data-theme='dark']) .architectureSection::before {
+  opacity: 0.15;
+  background-image:
+    linear-gradient(rgba(96, 165, 250, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px);
 }
 
 .architectureDiagram {
   max-width: 960px;
   margin: 0 auto;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(59, 130, 246, 0.15);
   border-radius: 1rem;
   padding: 2rem;
   overflow-x: auto;
+  position: relative;
+  z-index: 1;
 }
 
 :global([data-theme='dark']) .architectureDiagram {
-  background: #1e293b;
-  border-color: #334155;
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(96, 165, 250, 0.15);
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.08);
 }
 
 .architectureSvg {
   width: 100%;
   height: auto;
   display: block;
+  min-width: 640px;
 }
 
-/* Cloud box */
+/* Cloud box - primary blue glow */
 .archCloudBox {
   fill: #dbeafe;
   stroke: #3b82f6;
@@ -218,11 +279,12 @@
 }
 
 :global([data-theme='dark']) .archCloudBox {
-  fill: rgba(59, 130, 246, 0.15);
+  fill: rgba(59, 130, 246, 0.12);
   stroke: #60a5fa;
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.3));
 }
 
-/* Gateway boxes */
+/* Gateway boxes - cyan accent glow */
 .archGatewayBox {
   fill: #e0f2fe;
   stroke: #0ea5e9;
@@ -230,11 +292,12 @@
 }
 
 :global([data-theme='dark']) .archGatewayBox {
-  fill: rgba(14, 165, 233, 0.12);
-  stroke: #38bdf8;
+  fill: rgba(6, 182, 212, 0.08);
+  stroke: #22d3ee;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.2));
 }
 
-/* Node boxes */
+/* Node boxes - green accent */
 .archNodeBox {
   fill: #f0fdf4;
   stroke: #22c55e;
@@ -242,11 +305,12 @@
 }
 
 :global([data-theme='dark']) .archNodeBox {
-  fill: rgba(34, 197, 94, 0.1);
+  fill: rgba(34, 197, 94, 0.08);
   stroke: #4ade80;
+  filter: drop-shadow(0 0 3px rgba(74, 222, 128, 0.15));
 }
 
-/* Connection lines */
+/* Connection lines - animated dash in dark mode */
 .archLine {
   stroke: #94a3b8;
   stroke-width: 1.5;
@@ -254,7 +318,18 @@
 }
 
 :global([data-theme='dark']) .archLine {
-  stroke: #64748b;
+  stroke: #475569;
+  animation: dashFlow 3s linear infinite;
+}
+
+@keyframes dashFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global([data-theme='dark']) .archLine {
+    animation: none;
+  }
 }
 
 /* SVG icons */
@@ -282,7 +357,7 @@
 }
 
 :global([data-theme='dark']) .archTitle {
-  fill: #f1f5f9;
+  fill: #e2e8f0;
 }
 
 .archSubtext {
@@ -301,7 +376,7 @@
 }
 
 :global([data-theme='dark']) .archNodeTitle {
-  fill: #f1f5f9;
+  fill: #e2e8f0;
 }
 
 .archNodeSubtext {
@@ -322,7 +397,7 @@
 }
 
 :global([data-theme='dark']) .archLayerLabel {
-  fill: #64748b;
+  fill: #475569;
 }
 
 /* ============================================
@@ -353,13 +428,14 @@
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   background: #f8fafc;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease-out;
   cursor: default;
 }
 
 :global([data-theme='dark']) .highlightItem {
-  border-color: #334155;
-  background: #1e293b;
+  border-color: rgba(96, 165, 250, 0.1);
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(4px);
 }
 
 .highlightItem:hover {
@@ -369,21 +445,28 @@
 }
 
 :global([data-theme='dark']) .highlightItem:hover {
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
-  border-color: #60a5fa;
+  box-shadow: 0 12px 32px -8px rgba(59, 130, 246, 0.15);
+  border-color: rgba(96, 165, 250, 0.3);
 }
 
+/* Gradient number text for tech feel */
 .highlightNumber {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 800;
-  color: #3b82f6;
   line-height: 1;
   flex-shrink: 0;
-  opacity: 0.3;
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.4;
 }
 
 :global([data-theme='dark']) .highlightNumber {
-  color: #60a5fa;
+  background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.5;
 }
 
 .highlightContent {
@@ -438,18 +521,34 @@
 .ecosystemSection {
   padding: 5rem 0;
   background-color: #f8fafc;
+  position: relative;
 }
 
 :global([data-theme='dark']) .ecosystemSection {
-  background-color: #0c1222;
+  background-color: #080d1a;
+}
+
+/* Subtle radial glow behind ecosystem grid in dark mode */
+:global([data-theme='dark']) .ecosystemSection::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(59, 130, 246, 0.06), transparent 70%);
+  pointer-events: none;
 }
 
 .ecosystemGrid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 1.5rem;
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .ecosystemItem {
@@ -461,13 +560,14 @@
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   background: white;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease-out;
   cursor: default;
 }
 
 :global([data-theme='dark']) .ecosystemItem {
-  border-color: #334155;
-  background: #1e293b;
+  border-color: rgba(96, 165, 250, 0.08);
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 .ecosystemItem:hover {
@@ -477,8 +577,8 @@
 }
 
 :global([data-theme='dark']) .ecosystemItem:hover {
-  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.3);
-  border-color: #60a5fa;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.3);
 }
 
 .ecosystemLogo {
@@ -540,14 +640,15 @@
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   background: #f8fafc;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease-out;
   cursor: default;
   position: relative;
 }
 
 :global([data-theme='dark']) .stepCard {
-  border-color: #334155;
-  background: #1e293b;
+  border-color: rgba(96, 165, 250, 0.1);
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(4px);
 }
 
 .stepCard:hover {
@@ -557,22 +658,28 @@
 }
 
 :global([data-theme='dark']) .stepCard:hover {
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
-  border-color: #60a5fa;
+  box-shadow: 0 12px 32px -8px rgba(59, 130, 246, 0.15);
+  border-color: rgba(96, 165, 250, 0.3);
 }
 
+/* Glowing step number badge */
 .stepNumber {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
   color: white;
   font-size: 0.875rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.3);
+}
+
+:global([data-theme='dark']) .stepNumber {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
 .stepIcon {
@@ -608,6 +715,7 @@
   color: #94a3b8;
 }
 
+/* Glowing arrow connector */
 .stepArrow {
   width: 24px;
   height: 24px;
@@ -616,7 +724,8 @@
 }
 
 :global([data-theme='dark']) .stepArrow {
-  color: #64748b;
+  color: #3b82f6;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.4));
 }
 
 .quickStartCta {
@@ -644,10 +753,6 @@
     grid-template-columns: 1fr;
   }
 
-  .ecosystemGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .stepsRow {
     flex-direction: column;
     gap: 1.5rem;
@@ -672,9 +777,6 @@
   .heroStatDivider {
     width: 40px;
     height: 1px;
-  }
-
-  .ecosystemGrid {
-    grid-template-columns: repeat(2, 1fr);
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
   }
 }

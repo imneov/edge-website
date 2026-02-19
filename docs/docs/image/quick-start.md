@@ -1,337 +1,55 @@
-# 镜像管理快速入门
-
-## 欢迎使用镜像管理功能
-
-本指南将帮助您在 10 分钟内快速上手边缘计算平台的镜像管理功能。
-
-## 前置条件
-
-- 已部署边缘计算平台
-- 具有管理员权限或镜像管理权限
-- 可访问的镜像仓库（Harbor、Docker Hub 等）
-
-## 快速开始（5 步配置）
-
-### 第一步：登录平台
-
-1. 打开浏览器，访问平台地址：`http://your-platform-ip:port`
-2. 使用管理员账号登录
-3. 进入主界面
-
-### 第二步：配置镜像源
-
-#### 点击「镜像管理」→「镜像源管理」
-
-在左侧导航栏找到「镜像管理」，选择「镜像源管理」进入镜像源列表页面。
-
-#### 添加第一个镜像源
-
-点击右上角的「添加镜像源」按钮，填写以下信息：
-
-| 字段 | 示例值 | 说明 |
-|------|--------|------|
-| 名称 | `harbor-prod` | 唯一标识符 |
-| 显示名称 | `生产环境 Harbor` | 易识别的名称 |
-| 命名空间 | `default` | 所属命名空间 |
-| 域名 | `harbor.example.com` | 镜像仓库地址 |
-| 用户名 | `admin` | 登录用户名 |
-| 密码 | `********` | 登录密码 |
-| 提供者 | `Harbor` | 镜像仓库类型 |
-
-#### 测试连接
-
-点击「测试连接」按钮，确认配置正确：
-
-- ✅ **连接成功**：继续下一步
-- ❌ **连接失败**：检查配置信息，修正后重试
-
-### 第三步：添加镜像
-
-#### 导航到镜像管理
-
-在左侧菜单选择「镜像管理」→「镜像管理」进入镜像列表页面。
-
-#### 添加镜像
-
-点击右上角的「添加镜像」按钮，填写以下信息：
-
-| 字段 | 示例值 | 说明 |
-|------|--------|------|
-| 名称 | `nginx-latest` | 镜像标识符 |
-| 显示名称 | `Nginx 最新版本` | 显示名称 |
-| 命名空间 | `default` | 所属命名空间 |
-| 镜像源 | `harbor-prod` | 选择上一步创建的镜像源 |
-| 镜像仓库 | `library/nginx` | 镜像路径 |
-| 镜像标签 | `latest` | 镜像版本标签 |
-| 同步间隔 | `1h` | 自动同步间隔 |
-
-点击「确定」完成配置。系统会自动开始同步镜像信息。
-
-### 第四步：查看同步状态
-
-#### 检查镜像列表
-
-返回镜像列表页面，查看新添加的镜像：
-
-- **已同步** 🟢：镜像信息已同步完成
-- **同步中** 🔄：正在同步中，请稍候
-- **同步失败** 🔴：检查配置并手动重试
-
-#### 查看详细信息
-
-点击镜像名称进入详情页面，可以查看：
-- 镜像基本信息
-- 同步历史记录
-- 镜像清单信息
-- 镜像大小和架构
-
-### 第五步：在应用中使用镜像
-
-#### 部署应用
-
-在部署应用时，引用已同步的镜像：
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  namespace: default
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: harbor.example.com/library/nginx:latest
-        imagePullPolicy: IfNotPresent
-```
-
-#### 验证部署
-
-```bash
-# 查看 Pod 状态
-kubectl get pods -n default
-
-# 查看镜像拉取日志
-kubectl logs -f nginx-deployment-xxx -n default
-```
-
-## 常见操作
-
-### 更新镜像源密码
-
-由于安全考虑，不支持直接更新密码。需要删除后重新创建：
-
-1. 删除旧的镜像源配置
-2. 重新创建镜像源并填写新密码
-3. 测试连接确保新密码正确
-
-### 批量添加镜像
-
-使用 YAML 配置文件批量创建：
-
-```bash
-# 创建配置文件
-cat > images.yaml <<EOF
-apiVersion: image.theriseunion.io/v1alpha1
-kind: Repository
-metadata:
-  name: nginx-latest
-  namespace: default
-spec:
-  repository: "library/nginx"
-  tag: "latest"
-  registryRef:
-    name: harbor-prod
-    namespace: "default"
 ---
-apiVersion: image.theriseunion.io/v1alpha1
-kind: Repository
-metadata:
-  name: redis-latest
-  namespace: default
-spec:
-  repository: "library/redis"
-  tag: "latest"
-  registryRef:
-    name: harbor-prod
-    namespace: "default"
-EOF
+sidebar_position: 5
+title: "快速上手"
+description: "添加第一个镜像源并同步第一个镜像"
+---
 
-# 应用配置
-kubectl apply -f images.yaml
-```
+# 快速上手
 
-### 删除不需要的镜像
+> **所需权限**: 平台管理员
 
-1. 进入镜像管理页面
-2. 勾选要删除的镜像
-3. 点击「删除选中」按钮
-4. 输入删除数量确认删除
+## 前提条件
 
-### 重新同步镜像
+- 已部署边缘智能管理平台
+- 具有平台管理员权限
+- 有一个可访问的镜像仓库（如 Harbor）及其登录凭证
 
-**自动同步**：系统会按照配置的间隔自动同步
+## 步骤一：添加镜像源
 
-**手动同步**：
-1. 点击镜像右侧的「操作」菜单（⋯）
-2. 选择「立即同步」
-3. 等待同步完成
+1. 进入 **控制台 > 镜像仓库 > 镜像源管理**
 
-## 实用技巧
+2. 点击 **添加镜像源**
 
-### 技巧 1：使用命名空间隔离环境
+3. 填写镜像仓库的连接信息：
+   - 选择命名空间
+   - 输入镜像仓库地址（如 `harbor.example.com`）
+   - 输入用户名和密码
 
-```
-dev-namespace  → 开发环境镜像
-test-namespace → 测试环境镜像
-prod-namespace → 生产环境镜像
-```
+4. 点击 **创建**
 
-### 技巧 2：设置合理的同步间隔
+5. 在镜像源列表中，点击操作菜单 > **测试连接**，确认状态为「连接成功」
 
-- **开发环境**：30 分钟（快速获取最新版本）
-- **测试环境**：1 小时（平衡实时性和性能）
-- **生产环境**：2 小时或更长（稳定优先）
+## 步骤二：添加镜像
 
-### 技巧 3：使用固定版本标签
+1. 切换到 **镜像管理** 页面
 
-```yaml
-# ❌ 不推荐：使用 latest
-tag: "latest"
+2. 点击 **添加镜像**
 
-# ✅ 推荐：使用固定版本
-tag: "v1.0.0"
-```
+3. 选择命名空间和刚添加的镜像源
 
-### 技巧 4：为镜像添加描述信息
+4. 浏览并选择要同步的镜像
 
-在创建镜像时填写清晰的描述，便于团队协作：
+5. 确认添加
 
-- 用途说明
-- 维护者信息
-- 依赖关系
-- 重要配置
+## 步骤三：验证同步
 
-## 进阶功能
+1. 在镜像仓库列表中查看新添加的镜像
 
-### 配置多个镜像源
+2. 等待同步状态变为「已同步」
 
-为不同环境或地理位置配置多个镜像源：
-
-```yaml
-# 国内镜像源
-apiVersion: image.theriseunion.io/v1alpha1
-kind: RegistrySecret
-metadata:
-  name: aliyun-cn
-spec:
-  domain: "registry.cn-hangzhou.aliyuncs.com"
-  provider: "aliyun"
-
-# 海外镜像源
-apiVersion: image.theriseunion.io/v1alpha1
-kind: RegistrySecret
-metadata:
-  name: dockerhub
-spec:
-  domain: "docker.io"
-  provider: "dockerhub"
-```
-
-### 监控镜像状态
-
-设置告警规则，及时发现镜像同步问题：
-
-1. 进入「监控告警」→「告警规则」
-2. 创建镜像同步失败告警
-3. 配置通知渠道（邮件、钉钉等）
-
-### 自动清理旧镜像
-
-配置镜像保留策略，自动清理不需要的版本：
-
-```yaml
-apiVersion: image.theriseunion.io/v1alpha1
-kind: ImageCleanupPolicy
-metadata:
-  name: auto-cleanup
-spec:
-  keepRecent: 3          # 保留最近的 3 个版本
-  unusedDays: 30         # 清理 30 天未使用的镜像
-  schedule: "0 2 * * *"  # 每天凌晨 2 点执行
-```
-
-## 故障排查
-
-### 问题 1：镜像源连接失败
-
-**症状**：测试连接时显示"连接失败"
-
-**解决方法**：
-1. 检查域名是否正确
-2. 确认网络连接正常
-3. 验证用户名密码
-4. 检查镜像仓库服务状态
-
-### 问题 2：镜像同步失败
-
-**症状**：同步状态显示"同步失败"
-
-**解决方法**：
-1. 确认镜像路径和标签正确
-2. 检查镜像源连接状态
-3. 查看错误日志获取详细信息
-4. 手动触发重新同步
-
-### 问题 3：镜像拉取慢
-
-**症状**：Pod 启动时间长
-
-**解决方法**：
-1. 使用本地或近端的镜像源
-2. 预先同步镜像到边缘节点
-3. 使用更小的镜像基础版本
-4. 调整镜像拉取策略
+3. 同步完成后，该镜像即可在应用部署中使用
 
 ## 下一步
 
-恭喜您已完成镜像管理的基础配置！
-
-接下来您可以：
-
-1. **深入学习**：阅读详细的 [镜像源管理](./registry-management.md) 和 [镜像仓库管理](./repository-management.md) 文档
-2. **安全配置**：了解 [镜像安全与认证](./security-authentication.md) 最佳实践
-3. **生命周期管理**：学习 [镜像生命周期管理](./lifecycle-management.md) 优化资源使用
-4. **API 集成**：参考 [API 文档](./api-reference.md) 实现自动化管理
-
-## 获取帮助
-
-如果在使用过程中遇到问题：
-
-- **查看文档**：浏览左侧导航栏的详细文档
-- **故障排查**：参考 [故障排查指南](./troubleshooting.md)
-- **技术支持**：联系 platform@example.com
-- **社区论坛**：访问 https://community.theriseunion.io
-
-## 视频教程
-
-我们提供了一系列视频教程帮助您快速上手：
-
-1. [5 分钟快速入门](https://docs.theriseunion.io/videos/quick-start)
-2. [镜像源配置详解](https://docs.theriseunion.io/videos/registry-config)
-3. [镜像同步最佳实践](https://docs.theriseunion.io/videos/sync-best-practices)
-4. [常见问题解答](https://docs.theriseunion.io/videos/faq)
-
----
-
-**祝您使用愉快！** 🎉
-
-如有任何问题或建议，欢迎随时联系我们。
+- [镜像源管理](./registry-management.md) — 了解镜像源管理的完整功能
+- [镜像仓库管理](./repository-management.md) — 了解镜像仓库管理的完整功能
