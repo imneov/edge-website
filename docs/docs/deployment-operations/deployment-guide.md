@@ -66,56 +66,94 @@ cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 ```
 
-### 2.2 部署 Edge APIServer
+### 2.2 一键安装（推荐）
+
+使用 [edge-installer](https://github.com/theriseunion/edge-installer) 统一安装工具：
 
 ```bash
-# 添加 Helm 仓库
-helm repo add edge-platform https://charts.edge-platform.io
-helm repo update
+# 克隆安装仓库
+git clone https://github.com/theriseunion/edge-installer.git
+cd edge-installer
 
-# 安装 CRDs
-kubectl apply -f https://github.com/theriseunion/edge-apiserver/releases/latest/download/crds.yaml
+# 一键安装所有组件（Host 集群）
+helm install edge-platform ./edge-controller \
+  --namespace edge-system \
+  --create-namespace
 
-# 部署 APIServer
-helm install edge-apiserver edge-platform/edge-apiserver \
+# 成员集群（不含 Console）
+helm install edge-platform ./edge-controller \
   --namespace edge-system \
   --create-namespace \
-  --set replicas=2 \
-  --set authentication.oauth2.enabled=true
+  --set global.mode=member
 ```
 
-### 2.3 部署 Edge Console
+**验证安装：**
 
 ```bash
-# 部署前端控制台
-helm install edge-console edge-platform/edge-console \
-  --namespace edge-system \
-  --set apiServer.url=http://edge-apiserver:8080 \
-  --set ingress.enabled=true \
-  --set ingress.host=console.edge-platform.local
+# 检查组件状态
+kubectl get pods -n edge-system
+kubectl get components -A
+
+# 访问 Console
+kubectl port-forward svc/edge-console 3000:3000 -n edge-system
+# 浏览器访问: http://localhost:3000
 ```
 
-### 2.4 部署 OTA 服务
+### 2.3 安装模式说明
+
+| 模式 | Controller | APIServer | Console | Monitoring | 适用场景 |
+|------|------------|-----------|---------|------------|----------|
+| **all** | ✅ | ✅ | ✅ | ✅ | 单机/测试环境 |
+| **host** | ✅ | ✅ | ✅ | ✅ | 主集群 |
+| **member** | ✅ | ✅ | ❌ | ✅ | 成员集群 |
+| **none** | ✅ | ❌ | ❌ | ❌ | 仅基础设施 |
+
+### 2.4 自定义安装
 
 ```bash
-# 部署 NATS
-helm install nats nats/nats \
+# 自定义镜像仓库
+helm install edge-platform ./edge-controller \
   --namespace edge-system \
-  --set cluster.enabled=true \
-  --set jetstream.enabled=true
+  --create-namespace \
+  --set global.imageRegistry=your-registry.com/edge
 
-# 部署 OTA Server
-helm install edge-ota edge-platform/edge-ota \
+# 自定义副本数
+helm install edge-platform ./edge-controller \
   --namespace edge-system \
-  --set nats.url=nats://nats:4222
+  --create-namespace \
+  --set autoInstall.apiserver.values.replicaCount=3
+
+# 禁用监控组件
+helm install edge-platform ./edge-controller \
+  --namespace edge-system \
+  --create-namespace \
+  --set autoInstall.monitoring.enabled=false
 ```
 
-### 2.5 部署监控服务
+### 2.5 分步安装（可选）
+
+如需分步安装各组件：
 
 ```bash
-# 部署 Prometheus + Grafana
-helm install monitoring edge-platform/monitoring-service \
-  --namespace monitoring \
+# 1. 安装 CRDs
+kubectl apply -f edge-installer/edge-controller/crds/
+
+# 2. 部署 APIServer
+helm install edge-apiserver ./edge-apiserver \
+  --namespace edge-system \
+  --create-namespace
+
+# 3. 部署 Console
+helm install edge-console ./edge-console \
+  --namespace edge-system
+
+# 4. 部署 OTA 服务
+helm install edge-ota ./edge-ota \
+  --namespace edge-system
+
+# 5. 部署监控服务
+helm install edge-monitoring ./edge-monitoring \
+  --namespace observability-system \
   --create-namespace
 ```
 
@@ -123,61 +161,70 @@ helm install monitoring edge-platform/monitoring-service \
 
 ### 3.1 准备离线安装包
 
-在有网络的环境中准备：
+使用 edge-installer 构建离线包：
 
 ```bash
-# 1. 下载所有 Docker 镜像
-./scripts/download-images.sh
+# 克隆安装仓库
+git clone https://github.com/theriseunion/edge-installer.git
+cd edge-installer
 
-# 镜像列表
-# - edge-apiserver:latest
-# - edge-console:latest
-# - edge-ota-server:latest
-# - edge-ota-agent:latest
-# - monitoring-service:latest
-# - nats:2.10
-# - prometheus:v2.48.0
-# - grafana:10.2.0
+# 构建 ChartMuseum 镜像（包含所有 Charts）
+make package-charts
+make docker-build-museum MUSEUM_IMG=edge-museum:latest
 
-# 2. 打包镜像
+# 导出所有镜像
 docker save -o edge-platform-images.tar \
+  edge-museum:latest \
   edge-apiserver:latest \
   edge-console:latest \
+  edge-controller:latest \
   edge-ota-server:latest \
-  edge-ota-agent:latest
+  edge-ota-agent:latest \
+  monitoring-service:latest
 
-# 3. 下载 Helm Charts
-helm pull edge-platform/edge-apiserver --destination ./charts/
-helm pull edge-platform/edge-console --destination ./charts/
-helm pull edge-platform/edge-ota --destination ./charts/
-
-# 4. 打包离线安装包
-tar -czvf edge-platform-offline.tar.gz \
+# 打包安装仓库
+tar -czvf edge-installer-offline.tar.gz \
+  edge-controller/ \
   edge-platform-images.tar \
-  charts/ \
-  scripts/ \
-  config/
+  scripts/
 ```
 
 ### 3.2 离线环境部署
 
 ```bash
 # 1. 传输安装包到离线环境
-scp edge-platform-offline.tar.gz user@offline-server:/opt/
+scp edge-installer-offline.tar.gz user@offline-server:/opt/
 
 # 2. 解压
-cd /opt && tar -xzvf edge-platform-offline.tar.gz
+cd /opt && tar -xzvf edge-installer-offline.tar.gz
 
 # 3. 导入镜像到本地 Harbor
 docker load -i edge-platform-images.tar
-docker tag edge-apiserver:latest harbor.local/edge/edge-apiserver:latest
-docker push harbor.local/edge/edge-apiserver:latest
-# ... 重复其他镜像
 
-# 4. 修改 Helm values 使用本地镜像仓库
-helm install edge-apiserver ./charts/edge-apiserver \
-  --set image.repository=harbor.local/edge/edge-apiserver \
-  --set image.pullPolicy=IfNotPresent
+# 推送到本地仓库
+for img in edge-museum edge-apiserver edge-console edge-controller edge-ota-server monitoring-service; do
+  docker tag ${img}:latest harbor.local/edge/${img}:latest
+  docker push harbor.local/edge/${img}:latest
+done
+
+# 4. 一键安装（使用本地镜像仓库）
+helm install edge-platform ./edge-controller \
+  --namespace edge-system \
+  --create-namespace \
+  --set global.imageRegistry=harbor.local/edge \
+  --set chartmuseum.image.repository=harbor.local/edge/edge-museum \
+  --set controller.image.repository=harbor.local/edge/edge-controller
+```
+
+### 3.3 验证离线安装
+
+```bash
+# 检查所有组件状态
+kubectl get pods -n edge-system
+kubectl get components -A
+
+# 确认镜像来源
+kubectl get pods -n edge-system -o jsonpath='{.items[*].spec.containers[*].image}' | tr ' ' '\n' | sort -u
 ```
 
 ## 4. 边缘节点部署
