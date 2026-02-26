@@ -11,9 +11,9 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ${{ vars.DOCKER_REGISTRY }}
-  REPO: ${{ vars.DOCKER_REPO }}
-  DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+  REGISTRY: quanzhenglong.com
+  REPO: edge
+  DOCKER_USERNAME: edge_admin
 
 jobs:
   build:
