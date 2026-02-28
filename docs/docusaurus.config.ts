@@ -3,6 +3,10 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
   title: '边缘平台',
   tagline: '面向云原生应用的智能边缘计算平台',
   favicon: 'img/favicon.ico',
