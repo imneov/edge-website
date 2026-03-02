@@ -88,6 +88,16 @@ const sidebars: SidebarsConfig = {
             'clusters/cluster-settings',
           ],
         },
+        // 边缘节点管理
+        {
+          type: 'category',
+          label: '边缘节点管理',
+          items: [
+            'edge-nodes/README',
+            'edge-nodes/cluster-runtime-setup',
+            'edge-nodes/add-edge-node',
+          ],
+        },
         // 租户空间管理（对应产品导航 /boss/workspaces）
         {
           type: 'category',
