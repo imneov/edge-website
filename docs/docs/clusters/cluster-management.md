@@ -200,6 +200,12 @@ description: "查看集群列表、创建集群和查看集群概览"
 
 ![导入集群成功 - 集群列表](./images/import-cluster-success.png)
 
+## 相关文档
+
+- [vCluster 参考](../appendix/vcluster) — vCluster 架构、发行版与版本说明
+- [KubeEdge 参考](../appendix/kubeedge) — KubeEdge 架构、组件与版本说明
+- [OpenYurt 参考](../appendix/openyurt) — OpenYurt 架构、组件与版本说明
+
 ## 常见问题
 
 ### 问题：集群状态显示异常

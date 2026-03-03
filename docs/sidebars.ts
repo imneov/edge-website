@@ -195,6 +195,9 @@ const sidebars: SidebarsConfig = {
         'appendix/crd-reference',
         'appendix/api-reference',
         'appendix/glossary',
+        'appendix/vcluster',
+        'appendix/kubeedge',
+        'appendix/openyurt',
       ],
     },
 

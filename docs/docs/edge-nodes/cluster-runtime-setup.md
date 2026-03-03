@@ -120,3 +120,5 @@ description: "在创建集群时选择边缘运行时，或对已有集群手动
 
 - [添加边缘节点](./add-edge-node)
 - [集群管理](../clusters/cluster-management)
+- [KubeEdge 参考](../appendix/kubeedge) — KubeEdge 架构、组件与版本说明
+- [OpenYurt 参考](../appendix/openyurt) — OpenYurt 架构、组件与版本说明
