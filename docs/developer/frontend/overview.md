@@ -450,7 +450,7 @@ make docker-run
 # 部署 console
 helm upgrade --install console ./charts/edge-console \
   --namespace edge-system \
-  --set image.repository=quanzhenglong.com/edge/console \
+  --set image.repository=registry.example.com/edge/console \
   --set image.tag=main \
   --set 'env[0].name=NEXT_PUBLIC_API_BASE_URL' \
   --set 'env[0].value=http://apiserver:8080'

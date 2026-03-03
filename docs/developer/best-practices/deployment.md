@@ -38,7 +38,7 @@ edge-installer/
 replicaCount: 2
 
 image:
-  repository: quanzhenglong.com/edge/apiserver
+  repository: registry.example.com/edge/apiserver
   pullPolicy: IfNotPresent
   tag: "main"
 
@@ -234,7 +234,7 @@ cd edge-installer
 
 # 自定义配置部署
 NAMESPACE=edge-prod \
-REGISTRY=quanzhenglong.com/edge \
+REGISTRY=registry.example.com/edge \
 TAG=v1.0.0 \
 ENABLE_MONITORING=true \
 ./deploy.sh
@@ -248,7 +248,7 @@ ENABLE_MONITORING=true \
 # 配置变量
 NAMESPACE=${NAMESPACE:-edge-system}
 KUBECONFIG_PATH=${KUBECONFIG_PATH:-~/.kube/config}
-REGISTRY=${REGISTRY:-quanzhenglong.com/edge}
+REGISTRY=${REGISTRY:-registry.example.com/edge}
 TAG=${TAG:-main}
 PULL_POLICY=${PULL_POLICY:-Always}
 ENABLE_MONITORING=${ENABLE_MONITORING:-false}
@@ -320,7 +320,7 @@ on:
     branches: [ main ]
 
 env:
-  REGISTRY: quanzhenglong.com/edge
+  REGISTRY: registry.example.com/edge
   REGISTRY_USER: edge_admin
 
 jobs:
@@ -470,7 +470,7 @@ stages:
   - deploy
 
 variables:
-  REGISTRY: quanzhenglong.com/edge
+  REGISTRY: registry.example.com/edge
   REGISTRY_USER: edge_admin
 
 build:apiserver:
@@ -887,7 +887,7 @@ kubectl create namespace edge-prod
 
 # 创建镜像拉取凭据
 kubectl create secret docker-registry edge-registry-secret \
-  --docker-server=quanzhenglong.com \
+  --docker-server=registry.example.com \
   --docker-username=edge_admin \
   --docker-password=<password> \
   -n edge-prod

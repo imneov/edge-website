@@ -53,6 +53,7 @@ const sidebars: SidebarsConfig = {
         'api/api-service',
         'api/reverse-proxy',
         'api/metrics',
+        'api/edge-node-join-scripts',
       ],
     },
 
