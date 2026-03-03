@@ -184,8 +184,8 @@ Next.js App Router 的布局系统支持嵌套,自动共享 UI 和状态:
 ```mermaid
 graph TD
     A[根布局 app/layout.tsx] --> B[Boss 路由组布局]
-    B --> C[集群详情布局 clusters/[id]/layout.tsx]
-    C --> D[命名空间布局 namespaces/[namespace]/layout.tsx]
+    B --> C["集群详情布局 clusters/[id]/layout.tsx"]
+    C --> D["命名空间布局 namespaces/[namespace]/layout.tsx"]
     D --> E[具体页面 page.tsx]
 
     style A fill:#e3f2fd
