@@ -261,6 +261,25 @@ keadm join \
   journalctl -u edgecore -f       # KubeEdge
   ```
 
+**节点加入失败，日志提示版本不兼容？**
+
+OpenYurt 边缘节点上运行的 kubelet 版本**必须与目标集群的 Kubernetes API Server 版本保持一致**，版本不匹配会导致节点无法注册。
+
+平台生成的安装命令中已自动注入正确的 `K8S_VERSION`，通常无需手动处理。若遇到加入失败，可按以下步骤排查：
+
+1. 查看目标集群的 K8s 版本：
+   ```bash
+   kubectl version --short
+   ```
+2. 查看边缘节点当前 kubelet 版本：
+   ```bash
+   kubelet --version
+   ```
+3. 两者需完全一致，例如：
+   - vCluster 子集群（K8s v1.24.17）→ 边缘节点 kubelet 必须为 **v1.24.17**
+   - 托管 K8s 集群（K8s v1.30.12）→ 边缘节点 kubelet 必须为 **v1.30.12**
+4. 如版本不一致，重新在平台上点击「验证」重新生成安装命令，或手动指定 `K8S_VERSION` 环境变量后执行安装脚本。
+
 **容器运行时安装失败？**
 
 - 勾选「自动安装容器运行时」后如安装失败，可手动安装后重新执行 join 命令
