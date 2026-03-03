@@ -150,8 +150,8 @@ flowchart TD
     H --> I[合并 CR Values + Controller 强制值]
     I --> J[Helm Install / Upgrade]
     J -- 成功 --> K[更新 Status: Installed<br/>记录 Hash、ReleaseName、Version]
-    J -- 失败（可重试） --> L[Requeue 5s]
-    J -- 失败（不可重试） --> M[更新 Status: Failed]
+    J -- 失败（可重试 Helm 错误） --> L[Requeue 5s]
+    J -- 失败（不可重试） --> M[更新 Status: Failed<br/>不再自动重试]
 ```
 
 ### 变更检测机制
@@ -166,6 +166,11 @@ Controller 在每次调谐时对 `spec` 字段计算 SHA256 Hash，与 `status.o
 ### 并发保护
 
 Controller 使用实例级锁（Instance Lock），防止同一 Component CR 被并发调谐，避免 Helm 操作冲突。冲突时自动重新入队（5 秒后重试）。
+
+### 失败处理策略
+
+- **可重试错误**（如 `another operation is in progress`）：5 秒后重新入队，自动重试
+- **不可重试错误**（如 Chart 不存在、Values 格式错误）：更新 Status 为 `Failed`，**不再自动重试**，需人工介入修复后触发新事件才会重新调谐（`ctrl.Result{}`）
 
 ---
 
@@ -196,7 +201,16 @@ Controller 强制注入值（不可覆盖）
   - global.mode: "host" | "member"
 ```
 
-**`global.mode` 的作用**：这是 Controller 在所有集群中强制注入的关键字段，Chart 内部通过此字段控制不同集群类型下的行为差异（详见下文各集群类型说明）。
+**`global.mode` 支持的值**：
+
+| 值 | 含义 |
+|----|------|
+| `host` | 主集群，安装完整控制面（apiserver、console、monitoring、traefik 等） |
+| `member` | 子集群，不安装 console，traefik 和 binDownloader 视是否 vCluster 而定 |
+| `all` | 独立部署模式，等同于 host，安装所有组件 |
+| `none` | 仅安装 controller 基础设施（ChartMuseum），不自动安装其他组件 |
+
+Controller 强制注入此字段，Chart 内部通过它控制不同集群类型下的行为差异（详见下文各集群类型说明）。
 
 ---
 
@@ -206,33 +220,22 @@ Controller 强制注入值（不可覆盖）
 
 主集群是平台的主控集群，运行完整的平台控制面组件。
 
-**安装入口**：`edge-installer/components/host-components.yaml`
+**安装入口**：`edge-installer/edge-controller/values.yaml`（`autoInstall` 字段）
 
-**组件列表**：
+> 注：历史版本中使用 `edge-installer/components/host-components.yaml`，已废弃并移除，当前统一由 `edge-controller` Chart 的 `autoInstall` 配置驱动。
+
+**主集群 `autoInstall` 组件列表**：
 
 | 组件 | Namespace | 说明 |
 |------|-----------|------|
 | `edge-apiserver` | `edge-system` | 平台 API Server |
-| `edge-console` | `edge-system` | 前端控制台 |
+| `edge-console` | `edge-system` | 前端控制台（仅 host/all 模式） |
 | `edge-monitoring` | `observability-system` | 监控组件（Prometheus + Grafana） |
-
-**Helm Values 示例**（主集群）：
-
-```yaml
-global:
-  mode: host        # Controller 强制注入，不可覆盖
-
-# 主集群特有配置
-console:
-  enabled: true     # 仅主集群部署控制台
-
-traefik:
-  enabled: true     # 主集群启用 Ingress
-
-monitoring:
-  edgeTraefikRemoteWrite:
-    enabled: true   # 主集群启用 Traefik 监控
-```
+| `traefik` | `edge-system` | Ingress 控制器 |
+| `bin-downloader` | `edge-system` | 边缘节点二进制文件下载服务 |
+| `duty` | `observability-system` | 值班管理服务 |
+| `postgresql` | `edge-system` | 数据库 |
+| `vast` | `rise-vast-system` | VAST 算力平台（可选） |
 
 **边缘运行时安装**：
 
@@ -240,10 +243,10 @@ monitoring:
 
 ```
 cluster.theriseunion.io/edge-runtime: "kubeedge"   → 安装 KubeEdge
-cluster.theriseunion.io/edge-runtime: "openyurt"   → 安装 OpenYurt
+cluster.theriseunion.io/edge-runtime: "openyurt"   → 安装 OpenYurt（yurt-manager + yurthub + openyurt-addition）
 ```
 
-安装通过各自的 `ComponentInstaller` 实现，支持 `ShouldInstall → PreInstall → Install → PostInstall` 四阶段生命周期。
+安装通过各自的 `ComponentInstaller` 实现，支持 `ShouldInstall → PreInstall → Install → PostInstall` 四阶段生命周期（详见下文 OpenYurt 安装流程）。
 
 ---
 
@@ -295,7 +298,9 @@ hami-scheduler.imageTag = "v1.24.17"        // 固定调度器镜像版本
 
 托管 K8s 是将已有 Kubernetes 集群导入平台管理，组件安装通过 `installMemberController()` 完成。
 
-**安装入口**：`edge-installer/components/member-components.yaml`
+**安装入口**：`edge-controller` Helm Chart（`global.mode=member` 时自动裁剪）
+
+> 注：历史版本中使用 `edge-installer/components/member-components.yaml`，已废弃并移除，当前统一由 `edge-controller` Chart 的 `autoInstall` 配置驱动，通过 `global.mode` 区分主集群与子集群。
 
 **安装流程**：
 
@@ -348,8 +353,73 @@ monitoring:
 | `binDownloader` | ✅ | ❌ | ✅ |
 | `edgeTraefikRemoteWrite` | ✅ | ❌ | ✅ |
 | 边缘运行时（KubeEdge/OpenYurt） | 可选 | 可选 | 可选 |
-| 安装入口 | `host-components.yaml` | `vcluster installer` | `member-components.yaml` |
+| 安装入口 | `edge-controller autoInstall` (mode=host) | `vcluster installer` | `edge-controller autoInstall` (mode=member) |
 | Kubeconfig 来源 | 本地集群 | vCluster Secret 自动提取 | 用户提供 |
+
+---
+
+## OpenYurt 安装流程详解
+
+OpenYurt 边缘运行时的安装不同于普通 Helm 组件，采用**分阶段顺序启用**策略，避免 yurt-manager 未就绪时其他组件安装失败。
+
+**源文件**：`internal/component/openyurt/installer.go`
+
+### 安装的三个组件
+
+| 组件 | Namespace | 版本 | 说明 |
+|------|-----------|------|------|
+| `yurt-manager` | `kube-system` | 1.6.0 | OpenYurt 核心控制器，**必须最先就绪** |
+| `yurthub` | `kube-system` | 1.6.0 | 边缘节点本地代理缓存 |
+| `openyurt-addition` | `kube-system` | 0.1.0 | 边缘节点补丁（kube-proxy / coredns / nodelocaldns） |
+
+### 分阶段安装流程
+
+```mermaid
+flowchart TD
+    PRE[PreInstall] --> PRE1[确保 kube-system namespace]
+    PRE1 --> PRE2{三个 Component CR<br/>是否都已存在?}
+    PRE2 -- 全部存在 --> PRE3[跳过 patch，幂等]
+    PRE2 -- 缺少任意一个 --> PRE4[patchCloudResources<br/>打通云端组件]
+
+    PRE --> INSTALL[Install]
+    INSTALL --> I1[创建 yurt-manager Component CR<br/>spec.enabled=false]
+    I1 --> I2[创建 yurthub Component CR<br/>spec.enabled=false]
+    I2 --> I3[创建 openyurt-addition Component CR<br/>spec.enabled=false<br/>动态检测 kube-proxy/coredns 版本]
+
+    INSTALL --> POST[PostInstall]
+    POST --> P1[启用 yurt-manager<br/>spec.enabled=true]
+    P1 --> P2[等待 yurt-manager Installed<br/>超时 5 分钟]
+    P2 --> P3[启用 yurthub + openyurt-addition]
+    P3 --> P4[等待三个组件全部 Installed]
+    P4 --> P5[自动启用 IOT 组件<br/>iot-apiserver / iot-controller / yurt-iot-dock]
+```
+
+> **为什么先装 yurt-manager 再装其他**：yurt-manager 包含 OpenYurt 的 Webhook 和 CRD，yurthub 的安装配置依赖这些资源。若同时启用，yurthub 可能因 Webhook 未就绪而安装失败。
+
+### openyurt-addition 动态版本检测
+
+`openyurt-addition` Chart 负责在边缘节点上部署与主集群版本一致的 kube-proxy、coredns 和 nodelocaldns。为避免版本不匹配，安装时自动从主集群检测：
+
+```go
+// GetOpenYurtAdditionValuesWithDetection 动态检测逻辑
+// 1. 检测 kube-proxy DaemonSet 的镜像 tag 和 clusterCIDR
+// 2. 检测 coredns Deployment 的镜像 tag
+// 3. 检测 coredns Service 的 ClusterIP（作为 nodelocaldns 的上游 DNS）
+```
+
+检测失败时回退到默认值（`kube-proxy: v1.30.12`，`coredns: 1.9.3`）。
+
+### IOT 组件自动启用
+
+OpenYurt 核心组件全部就绪后，PostInstall 自动启用 IOT 相关组件：
+
+| 组件 | Namespace |
+|------|-----------|
+| `iot-apiserver` | `edge-system` |
+| `iot-controller` | `edge-system` |
+| `yurt-iot-dock` | `kube-system` |
+
+IOT 组件启用失败不会阻断安装流程（非致命错误），会在下次调谐时重试。
 
 ---
 
@@ -427,5 +497,6 @@ kubectl annotate cluster my-cluster \
 | `internal/component/vcluster/installer.go` | vCluster 安装器 |
 | `internal/controller/cluster/cluster_controller_member.go` | Member 集群组件安装 |
 | `internal/controller/cluster/cluster_controller_local_cluster.go` | 本地集群运行时安装 |
-| `edge-installer/components/host-components.yaml` | 主集群组件配置 |
-| `edge-installer/components/member-components.yaml` | Member 集群组件配置 |
+| `internal/component/openyurt/config.go` | OpenYurt 组件名称、版本常量、动态检测逻辑 |
+| `edge-installer/edge-controller/values.yaml` | 主集群/子集群组件 autoInstall 配置（含 traefik、binDownloader、duty、postgresql、vast） |
+| `edge-installer/openyurt-addition/values.yaml` | openyurt-addition Chart 默认值（kube-proxy/coredns/nodelocaldns） |
