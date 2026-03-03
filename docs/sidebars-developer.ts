@@ -21,6 +21,7 @@ const sidebars: SidebarsConfig = {
         'concepts/scope-system',
         'concepts/roletemplate',
         'concepts/oauth',
+        'concepts/component',
       ],
     },
 
