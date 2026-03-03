@@ -1,267 +1,155 @@
 ---
-sidebar_position: 1
+sidebar_position: 4
+title: "快速入门：添加边缘节点"
+description: "五分钟内将一台 Linux 机器接入平台，全程无需公网，纯离线安装"
 ---
 
-# 快速入门：安装边缘节点
+# 快速入门：添加边缘节点
 
-本指南将帮助你设置第一个边缘节点并将其连接到 Edge Platform 控制平面。
+本指南带你用最短路径将一台 Linux 机器接入平台，完成后你的边缘节点将出现在集群节点列表中并处于「运行中」状态。
 
-## 前置条件
+> **全程离线**：节点所需的所有二进制文件（containerd、kubelet、yurtadm/keadm 等）均由平台内网的 bin-downloader 服务提供，边缘节点无需访问公网。
 
-开始之前，请确保你具备：
+---
 
-- ✅ 一个 Kubernetes 集群（推荐 1.24+）
-- ✅ kubectl 已配置并连接到集群
-- ✅ 集群管理员权限
-- ✅ 到控制平面的网络连接
-- ✅ 至少 4GB RAM 和 2 CPU 核心
+## 前提条件
 
-## 步骤 1：安装 Edge Platform 控制平面
+| 条件 | 说明 |
+|------|------|
+| 已有集群 | 目标集群已创建，且已配置边缘运行时（KubeEdge 或 OpenYurt） |
+| 网络可达 | 边缘节点可访问平台网关（Traefik NodePort `30080`、`30443`、`6443` 等） |
+| 操作系统 | Linux（Ubuntu 22.04 推荐），具有 root 权限 |
+| 机器配置 | 2 核 CPU、4 GB 内存以上 |
 
-如果你还没有设置控制平面，请按照以下步骤操作：
+如果集群尚未配置边缘运行时，请先参考 [配置集群边缘运行时](../edge-nodes/cluster-runtime-setup)。
 
-```bash
-# 添加 Edge Platform Helm 仓库
-helm repo add edge-platform https://charts.theriseunion.io
-helm repo update
+---
 
-# 安装控制平面组件
-helm install edge-platform edge-platform/edge-platform \
-  --namespace edge-system \
-  --create-namespace \
-  --set global.domain=your-domain.com
-```
+## 第一步：进入添加节点对话框
 
-等待所有 Pod 运行：
+平台提供三种入口，任选其一：
 
-```bash
-kubectl get pods -n edge-system
-```
+| 入口 | 操作路径 | 适用场景 |
+|------|---------|---------|
+| **集群入口** | 目标集群 → 节点 → 边缘节点 → **+ 添加节点** | 按集群维度管理所有边缘节点 |
+| **节点组入口** | 目标集群 → 节点组 → 选择节点组 → 节点管理 → **+ 加入节点** | 节点上线后自动归入指定节点组 |
+| **租户空间入口** | 租户空间 → 边缘资源 → 节点资源 → **+ 加入节点** | 在租户视角下管理本租户边缘节点 |
 
-预期输出：
-```
-NAME                                READY   STATUS    RESTARTS   AGE
-edge-apiserver-7d8f9c5b4d-abc12    1/1     Running   0          2m
-edge-controller-6c7b8d9f5e-def34   1/1     Running   0          2m
-edge-console-5a6b7c8d9e-ghi56      1/1     Running   0          2m
-```
+三种入口的对话框和后续步骤完全相同。
 
-## 步骤 2：获取控制平面访问信息
+---
 
-获取控制平面端点：
+## 第二步：填写节点信息
 
-```bash
-export CONTROL_PLANE_ENDPOINT=$(kubectl get svc edge-apiserver \
-  -n edge-system \
-  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+在弹出的「加入节点」对话框中完成配置：
 
-echo "控制平面: $CONTROL_PLANE_ENDPOINT"
-```
+| 字段 | 说明 |
+|------|------|
+| **容器运行时** | 选择 `Containerd`（推荐，K8s v1.24+）或 `Docker` |
+| **名称** | 节点名称：小写字母、数字、连字符（`-`），最长 63 个字符 |
+| **自动安装容器运行时** | 勾选后脚本将自动安装所选运行时，无需预先安装 |
 
-获取引导令牌：
+填写完成后点击「**验证**」，系统校验节点名称未被占用，并自动生成「**边缘节点配置命令**」。
+
+---
+
+## 第三步：在边缘节点执行命令
+
+点击命令区域右上角的复制图标，将完整命令复制到剪贴板。
+
+登录边缘节点，以 **root** 身份粘贴并执行命令：
 
 ```bash
-export BOOTSTRAP_TOKEN=$(kubectl get secret edge-bootstrap-token \
-  -n edge-system \
-  -o jsonpath='{.data.token}' | base64 -d)
-
-echo "引导令牌: $BOOTSTRAP_TOKEN"
+# 示例（实际命令由平台生成，包含加密 Token 和集群地址）
+echo '<base64编码的安装脚本>' | base64 -d | bash
 ```
 
-## 步骤 3：准备边缘集群
+脚本将自动依次执行以下操作：
 
-在你的边缘 Kubernetes 集群上，创建命名空间：
+1. **配置 `/etc/hosts`** — 写入平台域名解析（`bin-downloader.rise.io`、`host.rise.io` 等），所有后续下载走内网
+2. **安装容器运行时** — 从内网 bin-downloader 下载 Containerd / Docker 及依赖（runc、CNI、crictl 等）
+3. **安装 kubelet** — 下载与目标集群 K8s 版本完全一致的 kubelet（OpenYurt）
+4. **安装 KubeEdge 环境** — 下载 keadm（KubeEdge）
+5. **执行 join** — `yurtadm join`（OpenYurt）或 `keadm join`（KubeEdge），节点注册到集群
 
+出现以下输出表示安装成功：
+
+```
+# OpenYurt
+[edge] This node has joined the cluster: ...
+
+# KubeEdge
+Install Complete!
+```
+
+---
+
+## 第四步：验证节点上线
+
+返回平台节点列表页刷新，节点状态变为「**运行中**」即表示接入成功。
+
+节点上线后，可在节点上执行 `crictl ps` 查看运行中的容器：
+
+**OpenYurt** 会自动运行以下系统容器：
+
+| 容器 | 说明 |
+|------|------|
+| `yurt-hub` | 边缘自治核心，断网后缓存数据保障节点自治 |
+| `kube-proxy` | 服务代理 |
+| `coredns` | 边缘 DNS |
+| `calico-node` | 网络插件 |
+| `prometheus` / `node-exporter` | 监控采集 |
+
+**KubeEdge** 设计更轻量，节点加入后仅运行业务容器，`edgecore` 以系统服务形式运行，不占用容器位。
+
+---
+
+## 常见问题
+
+**节点长时间未上线？**
+
+检查节点到平台网关的网络联通性：
 ```bash
-# 切换到边缘集群上下文
-kubectl config use-context edge-cluster
+# 检查 bin-downloader 是否可访问（30080 为 Traefik web EntryPoint）
+curl -I http://<平台网关IP>:30080
 
-# 创建命名空间
-kubectl create namespace edge-system
+# 检查 API Server 端口是否可达
+# OpenYurt vCluster：30443（websecure）→ 6443
+# KubeEdge CloudCore：30002（cc-https）、30003（cc-stream）
 ```
 
-## 步骤 4：安装边缘代理
-
-为边缘代理创建配置文件：
-
-```yaml title="edge-agent-config.yaml"
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: edge-agent-config
-  namespace: edge-system
-data:
-  config.yaml: |
-    controlPlane:
-      endpoint: "https://${CONTROL_PLANE_ENDPOINT}:6443"
-      token: "${BOOTSTRAP_TOKEN}"
-
-    cluster:
-      name: "edge-cluster-01"
-      location: "datacenter-east"
-      labels:
-        env: "production"
-        region: "us-east-1"
-
-    agent:
-      syncInterval: 30s
-      heartbeatInterval: 10s
-      logLevel: "info"
-```
-
-应用配置：
-
+确认 `/etc/hosts` 中域名解析是否正确：
 ```bash
-# 替换环境变量
-envsubst < edge-agent-config.yaml | kubectl apply -f -
+grep "rise.io" /etc/hosts
 ```
 
-安装边缘代理：
-
+查看 agent 日志：
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/theriseunion/edge-platform/main/deploy/edge-agent.yaml
+journalctl -u yurthub -f     # OpenYurt
+journalctl -u edgecore -f    # KubeEdge
 ```
 
-## 步骤 5：验证安装
+**节点加入失败，提示版本不兼容？**
 
-检查边缘代理是否运行：
+OpenYurt 要求边缘节点 kubelet 版本与目标集群 K8s API Server 版本**完全一致**：
+- vCluster 子集群（K8s v1.24.17）→ kubelet 必须是 **v1.24.17**
+- 托管 K8s 集群（K8s v1.30.12）→ kubelet 必须是 **v1.30.12**
 
+平台生成的安装命令中已自动注入正确的 `K8S_VERSION`，若仍失败，在平台上重新点击「验证」生成新命令后再执行。
+
+**容器运行时安装失败？**
+
+若自动安装失败，可手动安装后再执行 join 命令，或排查 bin-downloader 是否正常运行：
 ```bash
-kubectl get pods -n edge-system
+kubectl get pod -n edge-system | grep bin-downloader
 ```
 
-预期输出：
-```
-NAME                          READY   STATUS    RESTARTS   AGE
-edge-agent-5b6c7d8e9f-xyz12   1/1     Running   0          1m
-```
-
-查看代理日志：
-
-```bash
-kubectl logs -n edge-system -l app=edge-agent --tail=20
-```
-
-你应该看到表示成功注册的日志：
-```
-INFO  成功连接到控制平面
-INFO  集群已注册: edge-cluster-01
-INFO  发送心跳，状态: healthy
-```
-
-## 步骤 6：从控制平面验证
-
-切换回控制平面集群：
-
-```bash
-kubectl config use-context control-plane
-```
-
-列出已注册的集群：
-
-```bash
-kubectl get clusters -n edge-system
-```
-
-预期输出：
-```
-NAME              STATUS   AGE   REGION      NODES
-edge-cluster-01   Ready    2m    us-east-1   3
-```
-
-查看集群详情：
-
-```bash
-kubectl describe cluster edge-cluster-01 -n edge-system
-```
-
-## 步骤 7：访问控制台
-
-在浏览器中打开 Edge Platform 控制台：
-
-```bash
-# 获取控制台 URL
-kubectl get ingress edge-console -n edge-system
-```
-
-使用默认凭据登录：
-- 用户名：`admin`
-- 密码：（从 secret 获取）
-
-```bash
-kubectl get secret edge-admin-password \
-  -n edge-system \
-  -o jsonpath='{.data.password}' | base64 -d
-```
-
-你应该在仪表板中看到新注册的集群！
-
-## 故障排查
-
-### 代理无法连接到控制平面
-
-**症状**：边缘代理日志显示连接错误
-
-```bash
-ERROR  无法连接到控制平面: connection refused
-```
-
-**解决方案**：
-1. 验证控制平面端点可访问：
-   ```bash
-   curl -k https://${CONTROL_PLANE_ENDPOINT}:6443/healthz
-   ```
-
-2. 检查防火墙规则是否允许端口 6443 上的流量
-
-3. 验证引导令牌是否有效：
-   ```bash
-   kubectl get secret edge-bootstrap-token -n edge-system
-   ```
-
-### 集群显示为"未就绪"
-
-**症状**：控制台中集群状态为"未就绪"
-
-**解决方案**：
-1. 检查代理心跳是否正常：
-   ```bash
-   kubectl logs -n edge-system -l app=edge-agent | grep heartbeat
-   ```
-
-2. 验证集群资源是否健康：
-   ```bash
-   kubectl get nodes
-   kubectl get pods --all-namespaces
-   ```
-
-3. 检查边缘和控制平面之间的网络连接问题
-
-### 证书错误
-
-**症状**：TLS/证书验证错误
-
-**解决方案**：
-1. 确保系统时钟同步（NTP）
-
-2. 验证证书未过期：
-   ```bash
-   kubectl get secret -n edge-system edge-agent-cert -o yaml
-   ```
-
-3. 如果使用自签名证书，确保已配置 CA 捆绑包
+---
 
 ## 下一步
 
-恭喜！你已成功设置了第一个边缘节点。现在你可以：
-
-1. [部署第一个应用](/zh-Hans/docs/quick-start/deploy-app)
-2. [配置访问控制](/zh-Hans/docs/quick-start/access-control)
-3. [设置监控](/zh-Hans/docs/management/monitoring)
-4. [探索高级特性](/zh-Hans/docs/management/advanced)
-
-## 需要帮助？
-
-- 📖 阅读[安装指南](/zh-Hans/docs/installation)了解生产部署
-- 💬 加入我们的[社区论坛](https://community.theriseunion.io)
-- 🐛 在 [GitHub](https://github.com/imneov/edge-platform/issues) 上报告问题
+- [节点组管理](../clusters/node-groups) — 将节点归入节点组，按地域批量管理
+- [配置集群边缘运行时](../edge-nodes/cluster-runtime-setup) — 了解 OpenYurt / KubeEdge 两种运行时的配置方式
+- [添加边缘节点（完整文档）](../edge-nodes/add-edge-node) — 包含三种入口的完整截图操作说明
+- [KubeEdge 参考](../appendix/kubeedge) — KubeEdge 架构与版本说明
+- [OpenYurt 参考](../appendix/openyurt) — OpenYurt 架构与版本说明
