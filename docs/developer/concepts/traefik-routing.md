@@ -35,31 +35,31 @@ flowchart LR
     subgraph SRC["流量来源"]
         Browser["浏览器 / 运维人员"]
         EdgeScript["边缘节点安装脚本"]
-        EdgeOY["边缘节点\nOpenYurt 运行时"]
-        EdgeKE["边缘节点\nKubeEdge 运行时"]
-        PromAgent["prometheus-agent\nvCluster / 托管集群"]
+        EdgeOY["边缘节点<br/>OpenYurt 运行时"]
+        EdgeKE["边缘节点<br/>KubeEdge 运行时"]
+        PromAgent["prometheus-agent<br/>vCluster / 托管集群"]
     end
 
     subgraph TRAEFIK["Traefik (主集群 NodePort)"]
         EP_web["web :30080"]
         EP_sec["websecure :30443"]
-        EP_ke["cc-ws/https/stream/tunnel\n:30000 / :30002 / :30003 / :30004"]
+        EP_ke["cc-ws/https/stream/tunnel<br/>:30000 / :30002 / :30003 / :30004"]
         EP_prom["prometheusRemoteWrite"]
     end
 
     subgraph DEST["最终目标"]
-        Console["edge-console\nedge-system:3000"]
-        BinDL["bin-downloader\nedge-system:80"]
-        VCAPI["vCluster API Server\n(OpenYurt 集群)"]
-        CloudCore["KubeEdge CloudCore\n(KubeEdge 集群)"]
-        Prometheus["prometheus-operated\nobservability-system:9090"]
+        Console["edge-console<br/>edge-system:3000"]
+        BinDL["bin-downloader<br/>edge-system:80"]
+        VCAPI["vCluster API Server<br/>(OpenYurt 集群)"]
+        CloudCore["KubeEdge CloudCore<br/>(KubeEdge 集群)"]
+        Prometheus["prometheus-operated<br/>observability-system:9090"]
     end
 
     Browser -->|"HTTP"| EP_web --> Console
-    EdgeScript -->|"HTTP\nHost: bin-downloader.rise.io"| EP_web --> BinDL
-    EdgeOY -->|"TLS SNI\n{name}.rise.io"| EP_sec --> VCAPI
-    EdgeKE -->|"TLS SNI\n{name}.rise.io"| EP_ke --> CloudCore
-    PromAgent -->|"HTTP\nHost: {name}.rise.io\n或 host.rise.io"| EP_prom --> Prometheus
+    EdgeScript -->|"HTTP<br/>Host: bin-downloader.rise.io"| EP_web --> BinDL
+    EdgeOY -->|"TLS SNI<br/>{name}.rise.io"| EP_sec --> VCAPI
+    EdgeKE -->|"TLS SNI<br/>{name}.rise.io"| EP_ke --> CloudCore
+    PromAgent -->|"HTTP<br/>Host: {name}.rise.io<br/>或 host.rise.io"| EP_prom --> Prometheus
 
     classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef ep fill:#fef3c7,stroke:#f59e0b,color:#78350f
@@ -82,15 +82,15 @@ flowchart LR
 
     subgraph HOST["主集群 Traefik — web EntryPoint :30080"]
         direction TB
-        R_bin["IngressRoute: bin-downloader\nHost(bin-downloader.rise.io)\npriority: 10（更高）"]
-        R_console["IngressRoute: console\nPathPrefix(/)\npriority: 1（兜底）"]
+        R_bin["IngressRoute: bin-downloader<br/>Host(bin-downloader.rise.io)<br/>priority: 10（更高）"]
+        R_console["IngressRoute: console<br/>PathPrefix(/)<br/>priority: 1（兜底）"]
     end
 
-    SVC_bin["bin-downloader\nedge-system :80\n提供 yurtadm/keadm 二进制"]
-    SVC_console["console\nedge-system :3000\n前端控制台页面"]
+    SVC_bin["bin-downloader<br/>edge-system :80<br/>提供 yurtadm/keadm 二进制"]
+    SVC_console["console<br/>edge-system :3000<br/>前端控制台页面"]
 
-    Browser -->|"HTTP :30080\n无特定 Host"| R_console --> SVC_console
-    EdgeScript -->|"HTTP :30080\nHost: bin-downloader.rise.io"| R_bin --> SVC_bin
+    Browser -->|"HTTP :30080<br/>无特定 Host"| R_console --> SVC_console
+    EdgeScript -->|"HTTP :30080<br/>Host: bin-downloader.rise.io"| R_bin --> SVC_bin
 
     classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
@@ -108,27 +108,27 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    EdgeOY["边缘节点\nyurtadm join\n{clusterName}.rise.io:30443"]
+    EdgeOY["边缘节点<br/>yurtadm join<br/>{clusterName}.rise.io:30443"]
 
     subgraph HOST["主集群 Traefik — websecure EntryPoint :30443"]
-        R_oy1["IngressRouteTCP: api-v-oy-001\nHostSNI(v-oy-001.rise.io)\ntls.passthrough: true"]
-        R_oy2["IngressRouteTCP: api-v-oy-002\nHostSNI(v-oy-002.rise.io)\ntls.passthrough: true"]
-        R_oyn["IngressRouteTCP: api-{name}\nHostSNI({name}.rise.io)\ntls.passthrough: true"]
+        R_oy1["IngressRouteTCP: api-v-oy-001<br/>HostSNI(v-oy-001.rise.io)<br/>tls.passthrough: true"]
+        R_oy2["IngressRouteTCP: api-v-oy-002<br/>HostSNI(v-oy-002.rise.io)<br/>tls.passthrough: true"]
+        R_oyn["IngressRouteTCP: api-{name}<br/>HostSNI({name}.rise.io)<br/>tls.passthrough: true"]
     end
 
     subgraph NS1["主集群 Namespace: vcluster-v-oy-001"]
-        VC1["vcluster-vcluster-v-oy-001\nService :443 → vCluster API Server"]
+        VC1["vcluster-vcluster-v-oy-001<br/>Service :443 → vCluster API Server"]
     end
     subgraph NS2["主集群 Namespace: vcluster-v-oy-002"]
-        VC2["vcluster-vcluster-v-oy-002\nService :443 → vCluster API Server"]
+        VC2["vcluster-vcluster-v-oy-002<br/>Service :443 → vCluster API Server"]
     end
     subgraph NSN["主集群 Namespace: vcluster-{name}"]
-        VCN["vcluster-vcluster-{name}\nService :443 → vCluster API Server"]
+        VCN["vcluster-vcluster-{name}<br/>Service :443 → vCluster API Server"]
     end
 
-    EdgeOY -->|"TLS ClientHello\nSNI: v-oy-001.rise.io"| R_oy1 --> VC1
-    EdgeOY -->|"TLS ClientHello\nSNI: v-oy-002.rise.io"| R_oy2 --> VC2
-    EdgeOY -->|"TLS ClientHello\nSNI: {name}.rise.io"| R_oyn --> VCN
+    EdgeOY -->|"TLS ClientHello<br/>SNI: v-oy-001.rise.io"| R_oy1 --> VC1
+    EdgeOY -->|"TLS ClientHello<br/>SNI: v-oy-002.rise.io"| R_oy2 --> VC2
+    EdgeOY -->|"TLS ClientHello<br/>SNI: {name}.rise.io"| R_oyn --> VCN
 
     classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
@@ -148,28 +148,28 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    EdgeKE["边缘节点 EdgeCore\nkeadm join\n{clusterName}.rise.io"]
+    EdgeKE["边缘节点 EdgeCore<br/>keadm join<br/>{clusterName}.rise.io"]
 
     subgraph HOST["主集群 Traefik — 4 个 KubeEdge 专用 EntryPoint"]
         direction TB
-        EP_ws["cc-ws\nNodePort :30000"]
-        EP_https["cc-https\nNodePort :30002"]
-        EP_stream["cc-stream\nNodePort :30003"]
-        EP_tunnel["cc-tunnel\nNodePort :30004"]
+        EP_ws["cc-ws<br/>NodePort :30000"]
+        EP_https["cc-https<br/>NodePort :30002"]
+        EP_stream["cc-stream<br/>NodePort :30003"]
+        EP_tunnel["cc-tunnel<br/>NodePort :30004"]
     end
 
     subgraph RULES["IngressRouteTCP 规则 (每集群 4 条)"]
-        R_ws["cloudcore-cc-ws-{name}\nHostSNI({name}.rise.io)"]
-        R_https["cloudcore-cc-https-{name}\nHostSNI({name}.rise.io)"]
-        R_stream["cloudcore-cc-stream-{name}\nHostSNI({name}.rise.io)"]
-        R_tunnel["cloudcore-cc-tunnel-{name}\nHostSNI({name}.rise.io)"]
+        R_ws["cloudcore-cc-ws-{name}<br/>HostSNI({name}.rise.io)"]
+        R_https["cloudcore-cc-https-{name}<br/>HostSNI({name}.rise.io)"]
+        R_stream["cloudcore-cc-stream-{name}<br/>HostSNI({name}.rise.io)"]
+        R_tunnel["cloudcore-cc-tunnel-{name}<br/>HostSNI({name}.rise.io)"]
     end
 
     subgraph NS["主集群 Namespace: vcluster-{name}"]
-        CC_ws["cloudcore-x-kubeedge-x-*\ncloudhub :10000\nWebSocket 长连接"]
-        CC_https["cloudcore-x-kubeedge-x-*\ncloudhub-https :10002\nHTTPS 通信"]
-        CC_stream["cloudcore-x-kubeedge-x-*\ncloudstream :10003\nexec/logs 流传输"]
-        CC_tunnel["cloudcore-x-kubeedge-x-*\ntunnelport :10004\n隧道穿透"]
+        CC_ws["cloudcore-x-kubeedge-x-*<br/>cloudhub :10000<br/>WebSocket 长连接"]
+        CC_https["cloudcore-x-kubeedge-x-*<br/>cloudhub-https :10002<br/>HTTPS 通信"]
+        CC_stream["cloudcore-x-kubeedge-x-*<br/>cloudstream :10003<br/>exec/logs 流传输"]
+        CC_tunnel["cloudcore-x-kubeedge-x-*<br/>tunnelport :10004<br/>隧道穿透"]
     end
 
     EdgeKE -->|"SNI: {name}.rise.io"| EP_ws --> R_ws --> CC_ws
@@ -198,18 +198,18 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph SRC["各集群 prometheus-agent (remote_write 来源)"]
-        PA_host["主集群自身\nremote_write: host.rise.io"]
-        PA_oy["vCluster OpenYurt\nremote_write: {name}.rise.io"]
-        PA_ke["vCluster KubeEdge\nremote_write: {name}.rise.io"]
-        PA_m["托管 K8s 集群\nremote_write: host.rise.io"]
+        PA_host["主集群自身<br/>remote_write: host.rise.io"]
+        PA_oy["vCluster OpenYurt<br/>remote_write: {name}.rise.io"]
+        PA_ke["vCluster KubeEdge<br/>remote_write: {name}.rise.io"]
+        PA_m["托管 K8s 集群<br/>remote_write: host.rise.io"]
     end
 
     subgraph HOST["主集群 Traefik — prometheusRemoteWrite EntryPoint"]
-        R_host["IngressRoute: prometheus-remote-write\nHost(host.rise.io)\nNS: observability-system"]
-        R_vc["IngressRoute: prometheus-{name}\nHost({name}.rise.io)\nNS: edge-system"]
+        R_host["IngressRoute: prometheus-remote-write<br/>Host(host.rise.io)<br/>NS: observability-system"]
+        R_vc["IngressRoute: prometheus-{name}<br/>Host({name}.rise.io)<br/>NS: edge-system"]
     end
 
-    PROM["prometheus-operated\nobservability-system :9090\n统一存储所有集群指标"]
+    PROM["prometheus-operated<br/>observability-system :9090<br/>统一存储所有集群指标"]
 
     PA_host -->|"host.rise.io"| R_host --> PROM
     PA_m    -->|"host.rise.io"| R_host
