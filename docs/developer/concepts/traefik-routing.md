@@ -24,136 +24,207 @@ Traefik 是平台的统一流量入口，承担以下核心职责：
 
 ---
 
-## 全局数据流向图
+## 数据流向图
 
-下图展示平台当前完整配置下，各流量来源经 Traefik 路由到最终服务的完整路径。
+### 图一：主流向总览
+
+所有流量来源及其对应的 Traefik EntryPoint 和最终目标服务的全局映射关系。
 
 ```mermaid
-flowchart TB
-    %% ── 流量来源 ──────────────────────────────────────────
-    Browser["🖥️ 浏览器 / 运维人员"]
-    EdgeOY["📦 边缘节点\n(OpenYurt 运行时)\nyurtadm join"]
-    EdgeKE["📦 边缘节点\n(KubeEdge 运行时)\nkeadm join"]
-    EdgeScript["🔧 边缘节点安装脚本\n下载 yurtadm / keadm"]
-    PA_vOY["📊 prometheus-agent\n(vCluster OpenYurt 内)"]
-    PA_vKE["📊 prometheus-agent\n(vCluster KubeEdge 内)"]
-
-    %% ── 主集群 Traefik NodePort ────────────────────────────
-    subgraph HOST["主集群 (Host Cluster)"]
-        direction TB
-        subgraph TRAEFIK["Traefik NodePort Service"]
-            EP_web["web\n:30080 → :80"]
-            EP_sec["websecure\n:30443 → :443"]
-            EP_ws["cc-ws\n:30000 → :10000"]
-            EP_https["cc-https\n:30002 → :10002"]
-            EP_stream["cc-stream\n:30003 → :10003"]
-            EP_tunnel["cc-tunnel\n:30004 → :10004"]
-            EP_prom["prometheusRemoteWrite\n(端口见 values)"]
-        end
-
-        subgraph RULES["IngressRoute / IngressRouteTCP 规则 (edge-system)"]
-            R_console["IngressRoute: console\nPathPrefix(/)"]
-            R_bin["IngressRoute: bin-downloader\nHost(bin-downloader.rise.io)"]
-            R_api["IngressRouteTCP: api-{clusterName}\nHostSNI({clusterName}.rise.io)"]
-            R_ccws["IngressRouteTCP: cloudcore-cc-ws-{clusterName}\nHostSNI({clusterName}.rise.io)"]
-            R_cchttps["IngressRouteTCP: cloudcore-cc-https-{clusterName}\nHostSNI({clusterName}.rise.io)"]
-            R_ccstream["IngressRouteTCP: cloudcore-cc-stream-{clusterName}\nHostSNI({clusterName}.rise.io)"]
-            R_cctunnel["IngressRouteTCP: cloudcore-cc-tunnel-{clusterName}\nHostSNI({clusterName}.rise.io)"]
-            R_prom_host["IngressRoute: prometheus-remote-write\nHost(host.rise.io)\n[observability-system]"]
-            R_prom_vc["IngressRoute: prometheus-{clusterName}\nHost({clusterName}.rise.io)"]
-        end
-
-        subgraph SVCS["最终目标服务"]
-            SVC_console["console:3000\n(edge-system)"]
-            SVC_bin["bin-downloader:80\n(edge-system)"]
-            SVC_prom["prometheus-operated:9090\n(observability-system)"]
-        end
-
-        subgraph VCLUSTER_OY["vCluster (OpenYurt) — 在主集群 Namespace 中运行"]
-            VC_api_oy["vcluster-vcluster-{name}:443\nAPI Server"]
-            VC_prom_oy["prometheus-agent\n(remote_write → host.rise.io)"]
-        end
-
-        subgraph VCLUSTER_KE["vCluster (KubeEdge) — 在主集群 Namespace 中运行"]
-            VC_cc_ws["cloudcore-x-kubeedge-x-*\ncloudhub :10000"]
-            VC_cc_https["cloudcore-x-kubeedge-x-*\ncloudhub-https :10002"]
-            VC_cc_stream["cloudcore-x-kubeedge-x-*\ncloudstream :10003"]
-            VC_cc_tunnel["cloudcore-x-kubeedge-x-*\ntunnelport :10004"]
-            VC_prom_ke["prometheus-agent\n(remote_write → host.rise.io)"]
-        end
+flowchart LR
+    subgraph SRC["流量来源"]
+        Browser["浏览器 / 运维人员"]
+        EdgeScript["边缘节点安装脚本"]
+        EdgeOY["边缘节点\nOpenYurt 运行时"]
+        EdgeKE["边缘节点\nKubeEdge 运行时"]
+        PromAgent["prometheus-agent\nvCluster / 托管集群"]
     end
 
-    subgraph MANAGED["托管 K8s 子集群 (Member Cluster)"]
-        M_traefik["自有 Traefik\n(mode=member 安装)"]
-        M_prom_agent["prometheus-agent\n(remote_write → host.rise.io)"]
+    subgraph TRAEFIK["Traefik (主集群 NodePort)"]
+        EP_web["web :30080"]
+        EP_sec["websecure :30443"]
+        EP_ke["cc-ws/https/stream/tunnel\n:30000 / :30002 / :30003 / :30004"]
+        EP_prom["prometheusRemoteWrite"]
     end
 
-    %% ── 流量路径 ───────────────────────────────────────────
+    subgraph DEST["最终目标"]
+        Console["edge-console\nedge-system:3000"]
+        BinDL["bin-downloader\nedge-system:80"]
+        VCAPI["vCluster API Server\n(OpenYurt 集群)"]
+        CloudCore["KubeEdge CloudCore\n(KubeEdge 集群)"]
+        Prometheus["prometheus-operated\nobservability-system:9090"]
+    end
 
-    %% 浏览器 → 控制台
-    Browser -->|"HTTP :30080"| EP_web
-    EP_web --> R_console
-    R_console --> SVC_console
+    Browser -->|"HTTP"| EP_web --> Console
+    EdgeScript -->|"HTTP\nHost: bin-downloader.rise.io"| EP_web --> BinDL
+    EdgeOY -->|"TLS SNI\n{name}.rise.io"| EP_sec --> VCAPI
+    EdgeKE -->|"TLS SNI\n{name}.rise.io"| EP_ke --> CloudCore
+    PromAgent -->|"HTTP\nHost: {name}.rise.io\n或 host.rise.io"| EP_prom --> Prometheus
 
-    %% 安装脚本 → bin-downloader
-    EdgeScript -->|"HTTP :30080\nHost: bin-downloader.rise.io"| EP_web
-    EP_web --> R_bin
-    R_bin --> SVC_bin
-
-    %% OpenYurt 边缘节点 → vCluster API Server
-    EdgeOY -->|"TLS :30443\nSNI: {name}.rise.io"| EP_sec
-    EP_sec --> R_api
-    R_api -->|"TLS passthrough"| VC_api_oy
-
-    %% KubeEdge 边缘节点 → CloudCore
-    EdgeKE -->|":30000 SNI: {name}.rise.io"| EP_ws
-    EdgeKE -->|":30002 SNI: {name}.rise.io"| EP_https
-    EdgeKE -->|":30003 SNI: {name}.rise.io"| EP_stream
-    EdgeKE -->|":30004 SNI: {name}.rise.io"| EP_tunnel
-    EP_ws --> R_ccws --> VC_cc_ws
-    EP_https --> R_cchttps --> VC_cc_https
-    EP_stream --> R_ccstream --> VC_cc_stream
-    EP_tunnel --> R_cctunnel --> VC_cc_tunnel
-
-    %% vCluster prometheus-agent → 主集群 Prometheus
-    PA_vOY -->|"HTTP prometheusRemoteWrite\nHost: {name}.rise.io"| EP_prom
-    PA_vKE -->|"HTTP prometheusRemoteWrite\nHost: {name}.rise.io"| EP_prom
-    EP_prom --> R_prom_vc --> SVC_prom
-
-    %% 托管集群 prometheus-agent → 主集群 Prometheus
-    M_prom_agent -->|"HTTP prometheusRemoteWrite\nHost: host.rise.io"| EP_prom
-    EP_prom --> R_prom_host --> SVC_prom
-
-    %% 内部关联（虚线）
-    VC_prom_oy -.->|"实际是 PA_vOY"| PA_vOY
-    VC_prom_ke -.->|"实际是 PA_vKE"| PA_vKE
-
-    %% ── 样式 ──────────────────────────────────────────────
-    classDef source fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef ep fill:#fef3c7,stroke:#f59e0b,color:#78350f
-    classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
-    classDef svc fill:#fdf4ff,stroke:#a855f7,color:#581c87
-    classDef vc fill:#fff7ed,stroke:#f97316,color:#7c2d12
-    classDef managed fill:#f0f9ff,stroke:#0ea5e9,color:#0c4a6e
-
-    class Browser,EdgeOY,EdgeKE,EdgeScript,PA_vOY,PA_vKE source
-    class EP_web,EP_sec,EP_ws,EP_https,EP_stream,EP_tunnel,EP_prom ep
-    class R_console,R_bin,R_api,R_ccws,R_cchttps,R_ccstream,R_cctunnel,R_prom_host,R_prom_vc rule
-    class SVC_console,SVC_bin,SVC_prom svc
-    class VC_api_oy,VC_prom_oy,VC_cc_ws,VC_cc_https,VC_cc_stream,VC_cc_tunnel,VC_prom_ke vc
-    class M_traefik,M_prom_agent managed
+    classDef dest fill:#fdf4ff,stroke:#a855f7,color:#581c87
+    class Browser,EdgeScript,EdgeOY,EdgeKE,PromAgent src
+    class EP_web,EP_sec,EP_ke,EP_prom ep
+    class Console,BinDL,VCAPI,CloudCore,Prometheus dest
 ```
 
-**说明**：
+---
 
-| 颜色 | 含义 |
-|------|------|
-| 蓝色 | 流量来源（客户端） |
-| 黄色 | Traefik EntryPoint（监听端口） |
-| 绿色 | 路由规则（IngressRoute/IngressRouteTCP） |
-| 紫色 | 最终目标服务 |
-| 橙色 | vCluster 内部服务（运行在主集群 Namespace 中） |
-| 浅蓝 | 托管 K8s 子集群 |
+### 图二：HTTP 服务流向（控制台 + 二进制下载）
+
+两个 HTTP 服务共享 `web` EntryPoint（:30080），通过路由规则中的 **优先级** 和 **匹配条件** 区分流量。
+
+```mermaid
+flowchart LR
+    Browser["浏览器 / 运维人员"]
+    EdgeScript["边缘节点安装脚本"]
+
+    subgraph HOST["主集群 Traefik — web EntryPoint :30080"]
+        direction TB
+        R_bin["IngressRoute: bin-downloader\nHost(bin-downloader.rise.io)\npriority: 10（更高）"]
+        R_console["IngressRoute: console\nPathPrefix(/)\npriority: 1（兜底）"]
+    end
+
+    SVC_bin["bin-downloader\nedge-system :80\n提供 yurtadm/keadm 二进制"]
+    SVC_console["console\nedge-system :3000\n前端控制台页面"]
+
+    Browser -->|"HTTP :30080\n无特定 Host"| R_console --> SVC_console
+    EdgeScript -->|"HTTP :30080\nHost: bin-downloader.rise.io"| R_bin --> SVC_bin
+
+    classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
+    classDef svc fill:#fdf4ff,stroke:#a855f7,color:#581c87
+    class Browser,EdgeScript src
+    class R_bin,R_console rule
+    class SVC_bin,SVC_console svc
+```
+
+---
+
+### 图三：OpenYurt 边缘节点 → vCluster API Server
+
+边缘节点执行 `yurtadm join` 时，通过 Traefik 的 **SNI 路由 + TLS Passthrough** 接入对应 vCluster 的 API Server。
+
+```mermaid
+flowchart LR
+    EdgeOY["边缘节点\nyurtadm join\n{clusterName}.rise.io:30443"]
+
+    subgraph HOST["主集群 Traefik — websecure EntryPoint :30443"]
+        R_oy1["IngressRouteTCP: api-v-oy-001\nHostSNI(v-oy-001.rise.io)\ntls.passthrough: true"]
+        R_oy2["IngressRouteTCP: api-v-oy-002\nHostSNI(v-oy-002.rise.io)\ntls.passthrough: true"]
+        R_oyn["IngressRouteTCP: api-{name}\nHostSNI({name}.rise.io)\ntls.passthrough: true"]
+    end
+
+    subgraph NS1["主集群 Namespace: vcluster-v-oy-001"]
+        VC1["vcluster-vcluster-v-oy-001\nService :443 → vCluster API Server"]
+    end
+    subgraph NS2["主集群 Namespace: vcluster-v-oy-002"]
+        VC2["vcluster-vcluster-v-oy-002\nService :443 → vCluster API Server"]
+    end
+    subgraph NSN["主集群 Namespace: vcluster-{name}"]
+        VCN["vcluster-vcluster-{name}\nService :443 → vCluster API Server"]
+    end
+
+    EdgeOY -->|"TLS ClientHello\nSNI: v-oy-001.rise.io"| R_oy1 --> VC1
+    EdgeOY -->|"TLS ClientHello\nSNI: v-oy-002.rise.io"| R_oy2 --> VC2
+    EdgeOY -->|"TLS ClientHello\nSNI: {name}.rise.io"| R_oyn --> VCN
+
+    classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
+    classDef svc fill:#fff7ed,stroke:#f97316,color:#7c2d12
+    class EdgeOY src
+    class R_oy1,R_oy2,R_oyn rule
+    class VC1,VC2,VCN svc
+```
+
+> **TLS Passthrough 的意义**：Traefik 不解密 TLS，直接将加密流量转发到 vCluster API Server。边缘节点与 API Server 之间进行完整的 TLS 握手，证书验证在 vCluster 侧完成，确保 kubeconfig 中的证书有效。
+
+---
+
+### 图四：KubeEdge 边缘节点 → CloudCore
+
+每个 KubeEdge vCluster 对应 **4 条** IngressRouteTCP，分别处理 CloudCore 的不同通信通道。同一 SNI 域名（`{clusterName}.rise.io`）通过不同 EntryPoint 端口区分。
+
+```mermaid
+flowchart LR
+    EdgeKE["边缘节点 EdgeCore\nkeadm join\n{clusterName}.rise.io"]
+
+    subgraph HOST["主集群 Traefik — 4 个 KubeEdge 专用 EntryPoint"]
+        direction TB
+        EP_ws["cc-ws\nNodePort :30000"]
+        EP_https["cc-https\nNodePort :30002"]
+        EP_stream["cc-stream\nNodePort :30003"]
+        EP_tunnel["cc-tunnel\nNodePort :30004"]
+    end
+
+    subgraph RULES["IngressRouteTCP 规则 (每集群 4 条)"]
+        R_ws["cloudcore-cc-ws-{name}\nHostSNI({name}.rise.io)"]
+        R_https["cloudcore-cc-https-{name}\nHostSNI({name}.rise.io)"]
+        R_stream["cloudcore-cc-stream-{name}\nHostSNI({name}.rise.io)"]
+        R_tunnel["cloudcore-cc-tunnel-{name}\nHostSNI({name}.rise.io)"]
+    end
+
+    subgraph NS["主集群 Namespace: vcluster-{name}"]
+        CC_ws["cloudcore-x-kubeedge-x-*\ncloudhub :10000\nWebSocket 长连接"]
+        CC_https["cloudcore-x-kubeedge-x-*\ncloudhub-https :10002\nHTTPS 通信"]
+        CC_stream["cloudcore-x-kubeedge-x-*\ncloudstream :10003\nexec/logs 流传输"]
+        CC_tunnel["cloudcore-x-kubeedge-x-*\ntunnelport :10004\n隧道穿透"]
+    end
+
+    EdgeKE -->|"SNI: {name}.rise.io"| EP_ws --> R_ws --> CC_ws
+    EdgeKE -->|"SNI: {name}.rise.io"| EP_https --> R_https --> CC_https
+    EdgeKE -->|"SNI: {name}.rise.io"| EP_stream --> R_stream --> CC_stream
+    EdgeKE -->|"SNI: {name}.rise.io"| EP_tunnel --> R_tunnel --> CC_tunnel
+
+    classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef ep fill:#fef3c7,stroke:#f59e0b,color:#78350f
+    classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
+    classDef svc fill:#fff7ed,stroke:#f97316,color:#7c2d12
+    class EdgeKE src
+    class EP_ws,EP_https,EP_stream,EP_tunnel ep
+    class R_ws,R_https,R_stream,R_tunnel rule
+    class CC_ws,CC_https,CC_stream,CC_tunnel svc
+```
+
+> **CloudCore Service 命名规律**：vCluster Syncer 将 vCluster 内部的 `cloudcore`（`kubeedge` namespace）同步到主集群时，按 `{name}-x-{namespace}-x-{vclusterRelease}` 规则重写，完整名称为 `cloudcore-x-kubeedge-x-vcluster-vcluster-{clusterName}`。
+
+---
+
+### 图五：Prometheus 监控数据汇聚
+
+各集群的 `prometheus-agent` 将采集到的指标通过 Traefik 统一写入主集群的 `prometheus-operated`，实现集中存储。
+
+```mermaid
+flowchart LR
+    subgraph SRC["各集群 prometheus-agent (remote_write 来源)"]
+        PA_host["主集群自身\nremote_write: host.rise.io"]
+        PA_oy["vCluster OpenYurt\nremote_write: {name}.rise.io"]
+        PA_ke["vCluster KubeEdge\nremote_write: {name}.rise.io"]
+        PA_m["托管 K8s 集群\nremote_write: host.rise.io"]
+    end
+
+    subgraph HOST["主集群 Traefik — prometheusRemoteWrite EntryPoint"]
+        R_host["IngressRoute: prometheus-remote-write\nHost(host.rise.io)\nNS: observability-system"]
+        R_vc["IngressRoute: prometheus-{name}\nHost({name}.rise.io)\nNS: edge-system"]
+    end
+
+    PROM["prometheus-operated\nobservability-system :9090\n统一存储所有集群指标"]
+
+    PA_host -->|"host.rise.io"| R_host --> PROM
+    PA_m    -->|"host.rise.io"| R_host
+    PA_oy   -->|"{name}.rise.io"| R_vc --> PROM
+    PA_ke   -->|"{name}.rise.io"| R_vc
+
+    classDef src fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef rule fill:#f0fdf4,stroke:#22c55e,color:#14532d
+    classDef svc fill:#fdf4ff,stroke:#a855f7,color:#581c87
+    class PA_host,PA_oy,PA_ke,PA_m src
+    class R_host,R_vc rule
+    class PROM svc
+```
+
+> **两类路由的差异**：`prometheus-remote-write`（`observability-system`）是随 `edge-monitoring` Helm Chart 安装的固定规则，目标为 `host.rise.io`；`prometheus-{name}`（`edge-system`）是每创建一个 vCluster 时由 Controller 自动生成，目标为各集群域名，两者最终都路由到同一个 `prometheus-operated:9090`。
 
 ---
 
