@@ -18,11 +18,11 @@ description: "通过集群、节点组或租户空间三种入口，将边缘节
 
 三种入口均支持 **KubeEdge** 和 **OpenYurt** 两种运行时，对话框和操作步骤完全一致，仅生成的节点注册命令不同（`keadm join` / `yurtadm join`）。
 
-| 入口 | 路径 | 适用场景 |
-|------|------|---------|
-| **集群入口** | 目标集群 > 节点 > 边缘节点 | 按集群维度统一管理所有边缘节点 |
-| **节点组入口** | 目标集群 > 节点组 > 目标节点组 | 将节点直接归入指定节点组，上线后自动关联 |
-| **租户空间入口** | 租户空间 > 目标租户 > 边缘资源 > 节点资源 | 在租户视角下管理本租户边缘节点 |
+| 入口 | URL 路径 | 适用场景 |
+|------|---------|---------|
+| **集群入口** | `/boss/clusters/{集群ID}/edge-nodes` | 按集群维度统一管理所有边缘节点 |
+| **节点组入口** | `/boss/clusters/{集群ID}/nodegroups/{节点组ID}/nodes` | 将节点直接归入指定节点组，上线后自动关联 |
+| **租户空间入口** | `/express/clusters/{集群ID}/workspaces/{租户ID}/nodegroups/{节点组ID}/nodes` | 在租户视角下管理本租户边缘节点 |
 
 ---
 
@@ -33,6 +33,8 @@ description: "通过集群、节点组或租户空间三种入口，将边缘节
 ### 第一步：进入租户空间
 
 进入平台「**租户空间**」页面，找到目标租户，点击「**查看详情**」。
+
+> URL 格式：`/express/clusters/{集群ID}/workspaces/{租户ID}/nodegroups/{节点组ID}/nodes`
 
 ![租户空间列表](./images/tenant-list.png)
 
@@ -103,6 +105,8 @@ description: "通过集群、节点组或租户空间三种入口，将边缘节
 
 在左侧导航中选择目标集群（需已配置边缘运行时），点击「**节点 > 边缘节点**」，进入边缘节点列表页。
 
+> URL 格式：`/boss/clusters/{集群ID}/edge-nodes`
+
 点击右上角「**+ 添加节点**」，弹出节点配置对话框。
 
 ### 第二步：填写节点信息并生成命令
@@ -155,6 +159,8 @@ description: "通过集群、节点组或租户空间三种入口，将边缘节
 ### 第一步：进入节点组节点管理页
 
 在目标集群中，点击左侧菜单「**节点组**」，进入节点组列表，点击目标节点组，在左侧菜单点击「**节点管理**」。
+
+> URL 格式：`/boss/clusters/{集群ID}/nodegroups/{节点组ID}/nodes`
 
 点击右上角「**+ 加入节点**」，弹出节点配置对话框。
 
@@ -259,6 +265,35 @@ keadm join \
 
 - 勾选「自动安装容器运行时」后如安装失败，可手动安装后重新执行 join 命令
 - Kubernetes v1.24+ 建议使用 Containerd，Docker 需配合 `cri-dockerd` 使用
+
+---
+
+## 节点上线后的容器运行情况
+
+边缘节点成功加入集群后，可在节点上执行 `crictl ps` 查看运行中的容器。不同运行时部署的组件有所差异。
+
+### KubeEdge
+
+KubeEdge 的边缘侧设计非常轻量，节点加入后仅运行业务容器本身，系统组件（edgecore）以系统服务形式运行，不体现在 `crictl ps` 中。
+
+![KubeEdge 边缘节点容器列表](./images/edge-containers-kubeedge.png)
+
+示例中边缘节点仅运行了 1 个业务容器（`edge-eclipse-mosquitto`），无额外系统容器占用资源。
+
+### OpenYurt
+
+OpenYurt 在边缘侧部署了完整的云边协同组件，节点加入后会自动运行以下系统容器：
+
+| 容器名 | 说明 |
+|--------|------|
+| `yurt-hub` | 边缘自治核心组件，缓存云端数据，弱网时保障节点自治 |
+| `calico-node` | 网络插件，负责 Pod 网络互通 |
+| `coredns` | 边缘 DNS 解析 |
+| `kube-proxy` | 服务代理，维护 iptables/ipvs 规则 |
+| `prometheus` | 监控指标采集 agent |
+| `node-exporter` | 节点资源指标导出 |
+
+![OpenYurt 边缘节点容器列表](./images/edge-containers-openyurt.png)
 
 ---
 
