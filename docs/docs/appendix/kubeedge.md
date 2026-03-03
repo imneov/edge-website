@@ -157,4 +157,4 @@ kubectl get all -n kubeedge
 - [KubeEdge 官方文档](https://kubeedge.io/docs)
 - [KubeEdge GitHub 仓库](https://github.com/kubeedge/kubeedge)
 - [keadm 安装指南](https://kubeedge.io/docs/setup/install-with-keadm)
-- [KubeEdge 架构设计](https://kubeedge.io/docs/architecture)
+- [KubeEdge 架构设计](https://kubeedge.io/docs/category/architecture)

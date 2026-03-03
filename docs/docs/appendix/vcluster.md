@@ -132,4 +132,4 @@ vcluster list
 
 - [vCluster 官方文档](https://www.vcluster.com/docs)
 - [vCluster GitHub 仓库](https://github.com/loft-sh/vcluster)
-- [vCluster 架构设计](https://www.vcluster.com/docs/vcluster/architecture/basics)
+- [vCluster 架构设计](https://www.vcluster.com/docs/vcluster/introduction/architecture/)
