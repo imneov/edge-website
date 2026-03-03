@@ -22,6 +22,7 @@ const sidebars: SidebarsConfig = {
         'concepts/roletemplate',
         'concepts/oauth',
         'concepts/component',
+        'concepts/traefik-routing',
       ],
     },
 
