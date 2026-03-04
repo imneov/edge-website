@@ -1,11 +1,6 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - main
-      - 'release-*'
-    tags: ['v*']
   schedule:
     - cron: '30 19 * * *'  # Daily build at 7:30 PM UTC (3:30 AM Beijing Time)
   workflow_dispatch:
