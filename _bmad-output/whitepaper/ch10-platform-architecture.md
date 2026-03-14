@@ -10,7 +10,7 @@
 
 一个自然的问题是：这些能力是七个独立系统的简单拼凑，还是一个统一架构的有机组成？
 
-答案在源码中。打开 `edge-apiserver` 的入口文件，所有能力共享同一个 HTTP Filter Chain、同一套 CRD 资源模型、同一组 Controller Reconcile 模式。从一个 HTTP 请求进入平台，到它被路由到正确的集群、通过权限验证、触发 Controller 调谐、最终在边缘节点上产生效果——整个链路是一条完整的、可追踪的数据通路。
+答案在源码中。打开 `edge-apiserver` 的入口文件，所有能力共享同一个 HTTP Filter Chain、同一套 CRD 资源模型、同一组 Controller Reconcile 模式。从一个 HTTP 请求进入平台，到它被路由到正确的集群、通过权限验证、触发 Controller 调谐、最终在边缘节点上产生效果，整个链路是一条完整的、可追踪的数据通路。
 
 本章从四个维度展开平台的架构设计：请求处理链路（Filter Chain）、多集群请求路由、CRD 资源模型与 Controller 设计模式、以及 OpenAPI 驱动的前后端类型安全。
 

@@ -16,7 +16,7 @@
 3. 逐个验证更新结果
 4. 如果出错，逐个站点回滚
 
-本章介绍平台的 Topology-Based 部署模型——通过一个声明式的 `ApplicationDeployment` 资源，统一管理应用在多个边缘站点的部署、版本切换和状态追踪。
+本章介绍平台的 Topology-Based 部署模型，通过一个声明式的 `ApplicationDeployment` 资源统一管理应用在多个边缘站点的部署、版本切换和状态追踪。
 
 ---
 
