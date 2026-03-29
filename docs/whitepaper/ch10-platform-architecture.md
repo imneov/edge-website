@@ -67,23 +67,27 @@ title: "第十章：平台架构设计 — 统一的技术底座"
 
 ---
 
-## 10.2 六层 Filter Chain 架构
+## 10.2 七层 Filter Chain 架构
 
 ### HTTP 请求的完整旅程
 
-edge-apiserver 的所有 HTTP 请求都经过一条由六层 Filter 组成的处理链。这条链路借鉴了 Kubernetes API Server 的 Filter Chain 模式，扩展了多集群路由和多租户权限能力。
+edge-apiserver 的所有 HTTP 请求都经过一条由七层 Filter 组成的处理链。这条链路借鉴了 Kubernetes API Server 的 Filter Chain 模式，扩展了多集群路由、第三方服务代理和多租户权限能力。
 
 > **源码实证**：Filter Chain 的构建过程在 `buildHandlerChain` 函数中完整展现：
 > ```go
 > func (s *APIServer) buildHandlerChain(handler http.Handler) http.Handler {
 >     // Build filter chain (from inner to outer):
->     // 1. Core handler (restful container)
->     // 2. Authorization filter
->     // 3. Authentication filter
->     // 4. Multicluster filter
->     // 5. RequestInfo filter
+>     // 1. Core handler (restful container for /oapis/* organization APIs)
+>     // 2. ReverseProxy filter (for third-party service proxy and custom proxy rules)
+>     // 3. KubeAPIServer proxy (for standard /api/* and /apis/* Kubernetes APIs)
+>     // 4. Authorization filter (our UniversalAuthorizer)
+>     // 5. Authentication filter (X-Remote-User etc.)
+>     // 6. Multicluster filter
+>     // 7. RequestInfo filter (request parsing and context injection)
 >
 >     finalHandler := handler
+>     finalHandler = filters.WithReverseProxy(finalHandler, s.RuntimeCache)
+>     finalHandler = filters.WithKubeAPIServer(finalHandler, s.KubeConfig)
 >     finalHandler = filters.WithAuthorization(finalHandler, s.Authorizer, s.AuthorizationMode)
 >     finalHandler = filters.WithAuthentication(finalHandler, s.Authenticator)
 >     finalHandler = filters.WithMulticluster(finalHandler, s.ClusterClient)
@@ -91,7 +95,7 @@ edge-apiserver 的所有 HTTP 请求都经过一条由六层 Filter 组成的处
 >     return finalHandler
 > }
 > ```
-> — `pkg/apiserver/apiserver.go:498-546`
+> — `pkg/apiserver/apiserver.go:456-496`
 
 由于 Go 的 HTTP middleware 采用"从外到内包裹"的构造方式，代码中最后添加的 Filter 最先执行。请求的实际执行顺序为：
 
@@ -122,10 +126,15 @@ HTTP 请求
 ├─────────────────────────────────────────────────────────┤
 │ Layer 5: Core Handler (go-restful Container)            │
 │  · /oapis/* → 组织级 API（IAM、Tenant、App 等）          │
-│  · /api/*, /apis/* → 标准 K8s API 代理                  │
 │  · /oauth/* → OAuth2/OIDC 认证端点                      │
 ├─────────────────────────────────────────────────────────┤
-│ Layer 6: KubeAPIServer Proxy (规划中)                   │
+│ Layer 6: ReverseProxy（第三方服务代理）                  │
+│  · 匹配 ReverseProxy CRD 规则，代理到目标服务             │
+│  · Status.State ≠ Available → 503（规划功能：           │
+│    ReverseProxyReconciler 未注册，当前恒不生效）          │
+│  · 实现：filters/reverseproxy.go                        │
+├─────────────────────────────────────────────────────────┤
+│ Layer 7: KubeAPIServer Proxy                            │
 │  · 标准 K8s API 请求透传到本地 kube-apiserver            │
 │  · UpgradeAwareHandler 支持 WebSocket/exec              │
 └─────────────────────────────────────────────────────────┘
@@ -235,12 +244,15 @@ func (r *RequestInfoResolver) resolveResourceScope(request RequestInfo) string {
         return GlobalScope
     }
     if request.Namespace != "" { return NamespaceScope }
+    if request.NodeGroup != "" { return NodeGroupScope }
     if request.Workspace != "" { return WorkspaceScope }
     return ClusterScope
 }
 ```
 
-这个四级作用域（Global → Cluster → Workspace → Namespace）与第五章介绍的五层权限模型完全对齐，为授权 Filter 提供了精确的决策依据。
+> — `pkg/apiserver/request/requestinfo.go:370-393`
+
+这个五级作用域（Global → Cluster → Workspace → NodeGroup → Namespace）与第五章介绍的六层权限模型完全对齐，为授权 Filter 提供了精确的决策依据。
 
 ### ScopePattern：动态 URL 模式匹配
 
