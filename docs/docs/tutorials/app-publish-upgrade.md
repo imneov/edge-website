@@ -83,3 +83,8 @@ description: "将应用提交审核、上架到应用商店，并在多个租户
 :::tip
 版本切换不会删除旧版本数据，随时可以回滚。
 :::
+
+## 相关文档
+
+- [应用管理 — 应用商店指南](/docs/apps/application-store-guide)：应用上架流程的完整说明
+- [应用管理 — 应用实例管理](/docs/apps/application-instance-management)：运行中应用的监控和操作

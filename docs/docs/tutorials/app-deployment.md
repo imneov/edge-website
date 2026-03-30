@@ -88,3 +88,9 @@ description: "接入镜像仓库、创建应用模板、部署到边缘节点，
 :::tip
 部署后状态显示「等待中」属正常，镜像拉取需要一定时间，等待1-3分钟后刷新即可。
 :::
+
+## 相关文档
+
+- [镜像管理 — 镜像仓库配置](/docs/image/registry-management)：详细的镜像源配置和认证说明
+- [应用管理 — 应用部署](/docs/apps/application-deployment)：高级部署选项和配置说明
+- [工作台 — 工作负载管理](/docs/tenant/multi-tenant-architecture)：工作负载的监控和生命周期管理

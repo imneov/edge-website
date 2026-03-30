@@ -7,7 +7,7 @@ description: "在工作台中部署和管理工作负载"
 # 工作负载管理
 
 > **导航路径**: 智能边缘平台 > 工作台 > 边缘应用 > 工作负载
-> **访问地址**: `/tenant/{工作台ID}/namespaces/{项目ID}/deployments`
+> **访问地址**: `/express/{工作台ID}/namespaces/{项目ID}/deployments`
 > **所需权限**: 工作台管理员或应用管理权限
 
 ## 功能说明

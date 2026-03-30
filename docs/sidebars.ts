@@ -49,21 +49,6 @@ const sidebars: SidebarsConfig = {
       label: '用户手册',
       collapsed: false,
       items: [
-        // 工作台（原租户管理，对应产品导航 /tenant）
-        {
-          type: 'category',
-          label: '工作台',
-          items: [
-            'tenant/README',
-            'tenant/quick-start',
-            'tenant/tenant-management',
-            'tenant/resource-management',
-            'tenant/permission-management',
-            'tenant/tenant-configuration',
-            'tenant/multi-tenant-architecture',
-            'tenant/security-isolation',
-          ],
-        },
         // 监控平台（对应产品导航 /metrics）
         {
           type: 'category',
@@ -74,6 +59,18 @@ const sidebars: SidebarsConfig = {
             'o11y/cluster-metrics',
             'o11y/alert-management',
             'o11y/trend-analysis',
+          ],
+        },
+        // 集群管理（对应产品导航 /boss/clusters）
+        {
+          type: 'category',
+          label: '集群管理',
+          items: [
+            'clusters/README',
+            'clusters/cluster-management',
+            'clusters/node-groups',
+            'clusters/projects',
+            'clusters/cluster-settings',
           ],
         },
         // 应用管理（含应用商店 + 应用商店管理）
@@ -91,18 +88,6 @@ const sidebars: SidebarsConfig = {
             'apps/application-troubleshooting',
           ],
         },
-        // 集群管理（对应产品导航 /boss/clusters）
-        {
-          type: 'category',
-          label: '集群管理',
-          items: [
-            'clusters/README',
-            'clusters/cluster-management',
-            'clusters/node-groups',
-            'clusters/projects',
-            'clusters/cluster-settings',
-          ],
-        },
         // 边缘节点管理
         {
           type: 'category',
@@ -111,32 +96,6 @@ const sidebars: SidebarsConfig = {
             'edge-nodes/README',
             'edge-nodes/cluster-runtime-setup',
             'edge-nodes/add-edge-node',
-          ],
-        },
-        // 租户空间管理（对应产品导航 /boss/workspaces）
-        {
-          type: 'category',
-          label: '租户空间管理',
-          items: [
-            'workspaces/README',
-            'workspaces/workspace-management',
-            'workspaces/workspace-projects',
-            'workspaces/workspace-overview',
-            'workspaces/workspace-settings',
-            'workspaces/workspace-quotas',
-            'workspaces/workspace-members',
-          ],
-        },
-        // 算力管理（GPU/vGPU 资源调度）
-        {
-          type: 'category',
-          label: '算力管理',
-          items: [
-            'compute/README',
-            'compute/compute-resources',
-            'compute/compute-ratios',
-            'compute/gpu-models',
-            'compute/nodegroup-compute',
           ],
         },
         // IoT 设备管理（工作台 → 边缘资源）
@@ -162,6 +121,18 @@ const sidebars: SidebarsConfig = {
             'ota/troubleshooting',
           ],
         },
+        // 算力管理（GPU/vGPU 资源调度）
+        {
+          type: 'category',
+          label: '算力管理',
+          items: [
+            'compute/README',
+            'compute/compute-resources',
+            'compute/compute-ratios',
+            'compute/gpu-models',
+            'compute/nodegroup-compute',
+          ],
+        },
         // 镜像管理
         {
           type: 'category',
@@ -175,7 +146,7 @@ const sidebars: SidebarsConfig = {
             'image/troubleshooting',
           ],
         },
-        // 权限管理（含权限矩阵）
+        // 权限管理（对应产品导航 /boss/iam）
         {
           type: 'category',
           label: '权限管理',
@@ -188,6 +159,35 @@ const sidebars: SidebarsConfig = {
             'iam/permission-management',
             'iam/access-control-best-practices',
             'iam/troubleshooting',
+          ],
+        },
+        // 租户空间管理（对应产品导航 /boss/workspaces）
+        {
+          type: 'category',
+          label: '租户空间管理',
+          items: [
+            'workspaces/README',
+            'workspaces/workspace-management',
+            'workspaces/workspace-projects',
+            'workspaces/workspace-overview',
+            'workspaces/workspace-settings',
+            'workspaces/workspace-quotas',
+            'workspaces/workspace-members',
+          ],
+        },
+        // 工作台（对应产品导航 /express，原 /tenant）
+        {
+          type: 'category',
+          label: '工作台',
+          items: [
+            'tenant/README',
+            'tenant/quick-start',
+            'tenant/tenant-management',
+            'tenant/resource-management',
+            'tenant/permission-management',
+            'tenant/tenant-configuration',
+            'tenant/multi-tenant-architecture',
+            'tenant/security-isolation',
           ],
         },
       ],

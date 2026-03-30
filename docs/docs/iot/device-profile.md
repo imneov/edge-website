@@ -7,7 +7,7 @@ description: "管理设备配置文件，定义设备属性和命令"
 # 设备模版
 
 > **导航路径**: 智能边缘平台 > 选择工作台 > 选择节点组 > 边缘资源 > 设备模版
-> **访问地址**: `/tenant/{租户空间ID}/nodegroups/{节点组ID}/device-profile`
+> **访问地址**: `/express/{租户空间ID}/nodegroups/{节点组ID}/device-profile`
 > **所需权限**: 租户空间管理员或成员
 
 ## 功能说明

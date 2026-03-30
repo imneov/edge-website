@@ -79,3 +79,8 @@ curl -sS http://bin-downloader.rise.io:30080/scripts/install_kubeedge_env.sh | .
 :::tip
 如果节点状态长时间显示「未就绪」，请检查边缘节点到平台的网络连通性（需能访问平台 30080 端口）。
 :::
+
+## 相关文档
+
+- [边缘节点管理 — 添加边缘节点](/docs/edge-nodes/add-edge-node)：详细参数说明和批量接入方法
+- [工作台 — 资源管理](/docs/tenant/resource-management)：节点接入后如何管理节点组和资源
