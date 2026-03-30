@@ -158,7 +158,7 @@
   --ifm-color-primary-light: #60a5fa;
   --ifm-color-primary-lighter: #93c5fd;
   --ifm-color-primary-lightest: #bfdbfe;
-  --ifm-h1-font-size: 2.25rem;
+  --ifm-h1-font-size: 1.875rem;
   --ifm-h2-font-size: 1.5rem;
   --ifm-h3-font-size: 1.25rem;
   --ifm-h4-font-size: 1.125rem;
@@ -255,10 +255,11 @@ html[data-theme='dark'] {
 /* ============================================
    Navbar 样式 (clean, minimal)
    ============================================ */
+/* together.ai: transparent navbar, border-bottom 1px gray-200, ~56px height */
 .navbar {
   background: white;
   box-shadow: none;
-  border-bottom: 1px solid rgb(var(--gray-100));
+  border-bottom: 1px solid rgb(var(--gray-200));
   padding: 0 1.5rem;
   height: 56px;
 }
@@ -525,15 +526,21 @@ html[data-theme='dark'] .featureSvg {
    Sidebar 样式 (together.ai clean style)
    ============================================ */
 
-/* 侧边栏容器 */
+/* 侧边栏容器 - together.ai: 240px, transparent, no border */
 .theme-doc-sidebar-container {
-  border-right: 1px solid rgb(var(--gray-100));
-  background-color: white;
+  border-right: none !important;
+  background-color: transparent !important;
+  --doc-sidebar-width: 240px !important;
 }
 
 html[data-theme='dark'] .theme-doc-sidebar-container {
-  border-right-color: rgb(var(--gray-800));
-  background-color: rgb(5, 6, 8);
+  border-right: none !important;
+  background-color: transparent !important;
+}
+
+/* 侧边栏宽度覆盖 */
+:root {
+  --doc-sidebar-width: 240px !important;
 }
 
 /* 侧边栏菜单 */
@@ -550,18 +557,18 @@ html[data-theme='dark'] .theme-doc-sidebar-container {
   margin-bottom: 1px;
 }
 
-/* 菜单链接基础样式 */
+/* 菜单链接基础样式 - together.ai: 14px/20px, weight 400, padding 6 12 6 16, radius 12px */
 .menu__link {
-  color: rgb(var(--gray-600));
+  color: rgb(var(--gray-700));
   font-weight: 400;
   font-size: 0.875rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
+  padding: 6px 12px 6px 16px;
+  border-radius: 12px;
   transition: all 0.1s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  line-height: 1.5;
+  line-height: 1.43;
 }
 
 html[data-theme='dark'] .menu__link {
@@ -580,17 +587,28 @@ html[data-theme='dark'] .menu__link:hover {
   color: rgb(var(--gray-100));
 }
 
-/* 菜单链接激活状态 */
-.menu__link--active {
-  background-color: rgba(59, 130, 246, 0.06);
-  color: var(--ifm-color-primary);
-  font-weight: 500;
+/* 菜单链接激活状态 - together.ai: primary color, rgba(primary, 0.1), radius 12px, weight 400 */
+/* Only apply to leaf page links, not category headers */
+.menu__link--active:not(.menu__link--sublist-caret):not(.menu__list-item-collapsible > .menu__link) {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  color: var(--ifm-color-primary) !important;
+  font-weight: 400;
   position: relative;
 }
 
-html[data-theme='dark'] .menu__link--active {
-  background-color: rgba(96, 165, 250, 0.08);
-  color: #60a5fa;
+html[data-theme='dark'] .menu__link--active:not(.menu__link--sublist-caret):not(.menu__list-item-collapsible > .menu__link) {
+  background-color: rgba(96, 165, 250, 0.1) !important;
+  color: #60a5fa !important;
+}
+
+/* Category headers with active children should NOT change color */
+.menu__list-item-collapsible > .menu__link--active {
+  background-color: transparent !important;
+  color: rgb(var(--gray-700)) !important;
+}
+
+html[data-theme='dark'] .menu__list-item-collapsible > .menu__link--active {
+  color: rgb(var(--gray-100)) !important;
 }
 
 /* 子菜单展开/折叠按钮 */
@@ -602,16 +620,16 @@ html[data-theme='dark'] .menu__link--active {
   transform: rotate(-90deg);
 }
 
-/* 分类标题样式 */
+/* 分类标题样式 - together.ai: same as regular links, 14px weight 600, no uppercase */
 .menu__list-item-collapsible > .menu__link {
   font-weight: 600;
-  color: rgb(var(--gray-900));
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-top: 1.25rem;
-  margin-bottom: 0.25rem;
-  padding: 0.25rem 0.75rem;
+  color: rgb(var(--gray-700));
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: normal;
+  margin-top: 1rem;
+  margin-bottom: 0.125rem;
+  padding: 6px 12px 6px 16px;
 }
 
 html[data-theme='dark'] .menu__list-item-collapsible > .menu__link {
@@ -622,15 +640,15 @@ html[data-theme='dark'] .menu__list-item-collapsible > .menu__link {
   background-color: transparent;
 }
 
-/* 子菜单缩进 */
+/* 子菜单缩进 - together.ai: simple indent, no border */
 .menu__list .menu__list {
   padding-left: 0.75rem;
-  margin-left: 0.5rem;
-  border-left: 1px solid rgb(var(--gray-100));
+  margin-left: 0;
+  border-left: none;
 }
 
 html[data-theme='dark'] .menu__list .menu__list {
-  border-left-color: rgb(var(--gray-800));
+  border-left: none;
 }
 
 /* 侧边栏滚动条 */
@@ -653,14 +671,14 @@ html[data-theme='dark'] aside.theme-doc-sidebar-container::-webkit-scrollbar-thu
 
 /* 侧边栏展开/收起按钮 */
 .collapseSidebarButton {
-  background-color: white;
+  background-color: transparent;
   border: 1px solid rgb(var(--gray-200));
-  border-radius: 0.375rem;
+  border-radius: 12px;
   transition: all 0.15s ease;
 }
 
 html[data-theme='dark'] .collapseSidebarButton {
-  background-color: rgb(var(--gray-900));
+  background-color: transparent;
   border-color: rgb(var(--gray-800));
 }
 
@@ -757,7 +775,7 @@ div[class^='tableOfContents_']::before {
   font-size: 0.75rem;
   font-weight: 600;
   margin-left: 12px;
-  color: rgb(var(--gray-900));
+  color: rgb(var(--gray-500));
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -769,10 +787,11 @@ html[data-theme='dark'] div[class^='tableOfContents_']::before {
 /* ============================================
    Code Block 样式 (together.ai style)
    ============================================ */
+/* together.ai: 14px code, line-height 24px */
 .prism-code {
   border-radius: 0.5rem;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.714;
 }
 
 code[class^='codeBlockLines_'] {
@@ -784,7 +803,7 @@ code[class^='codeBlockLines_'] {
    Markdown 样式 - together.ai prose style
    ============================================ */
 .markdown h1:first-child {
-  --ifm-h1-font-size: 2.25rem;
+  --ifm-h1-font-size: 1.875rem;
 }
 
 div[class^='docItemContainer_'] article img {
@@ -851,9 +870,10 @@ a:hover {
    文档页面优化样式 (together.ai prose typography)
    ============================================ */
 
-/* 文档内容区域最大宽度 */
+/* 文档内容区域 - together.ai: padding 48px 64px, max-width none */
 div[class^='docItemContainer_'] {
-  max-width: 1080px;
+  max-width: none;
+  padding: 0 64px;
 }
 
 /* 文档主内容区域 */
@@ -867,44 +887,45 @@ html[data-theme='dark'] .theme-doc-markdown {
   color: rgb(var(--gray-300));
 }
 
-/* 文档标题样式 - together.ai typography */
+/* 文档标题样式 - together.ai: 30px, weight 500, line-height 36px, letter-spacing -0.5px */
 .theme-doc-markdown h1 {
-  font-size: 2.25rem;
+  font-size: 1.875rem;
   font-weight: 500;
   margin-top: 0;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
   padding-bottom: 0;
   border-bottom: none;
   color: rgb(var(--gray-950));
   letter-spacing: -0.5px;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h1 {
   color: rgb(var(--gray-50));
 }
 
+/* together.ai h2: 1.5em, weight 700, line-height 1.333, no border */
 .theme-doc-markdown h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 2.5em;
-  margin-bottom: 0.75em;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgb(var(--gray-100));
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 0.667em;
+  padding-bottom: 0;
+  border-bottom: none;
   color: rgb(var(--gray-900));
   letter-spacing: -0.3px;
-  line-height: 1.35;
+  line-height: 1.333;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h2 {
-  border-bottom-color: rgb(var(--gray-800));
   color: rgb(var(--gray-50));
 }
 
+/* together.ai h3: 1.25em, weight 600, line-height 1.4 */
 .theme-doc-markdown h3 {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   font-weight: 600;
-  margin-top: 2em;
+  margin-top: 2.4em;
   margin-bottom: 0.6em;
   color: rgb(var(--gray-900));
   line-height: 1.4;
@@ -914,10 +935,11 @@ html[data-theme='dark'] .theme-doc-markdown h3 {
   color: rgb(var(--gray-100));
 }
 
+/* together.ai h4: 1.125em, weight 600, line-height 1.5 */
 .theme-doc-markdown h4 {
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 600;
-  margin-top: 1.75em;
+  margin-top: 2em;
   margin-bottom: 0.5em;
   color: rgb(var(--gray-800));
   line-height: 1.5;
@@ -951,13 +973,14 @@ html[data-theme='dark'] .theme-doc-markdown li::marker {
   color: rgb(var(--gray-500));
 }
 
-/* 链接样式 - together.ai style */
+/* 链接样式 - together.ai: weight 600, border-bottom 1px primary */
 .theme-doc-markdown a {
   color: var(--ifm-color-primary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   border-bottom: 1px solid var(--ifm-color-primary);
   transition: all 0.15s ease;
+  word-wrap: break-word;
 }
 
 .theme-doc-markdown a:hover {
@@ -973,7 +996,7 @@ html[data-theme='dark'] .theme-doc-markdown a:hover {
   opacity: 0.8;
 }
 
-/* 行内代码样式 */
+/* 行内代码样式 - together.ai: 0.875em, weight 500, no border */
 .theme-doc-markdown code {
   background-color: rgb(var(--gray-100));
   color: rgb(var(--gray-800));
@@ -981,13 +1004,13 @@ html[data-theme='dark'] .theme-doc-markdown a:hover {
   border-radius: 0.25rem;
   font-size: 0.875em;
   font-weight: 500;
-  border: 1px solid rgb(var(--gray-200));
+  font-variant-ligatures: none;
+  border: none;
 }
 
 html[data-theme='dark'] .theme-doc-markdown code {
   background-color: rgb(var(--gray-900));
   color: rgb(var(--gray-200));
-  border-color: rgb(var(--gray-800));
 }
 
 .theme-doc-markdown pre code {
@@ -999,7 +1022,7 @@ html[data-theme='dark'] .theme-doc-markdown code {
   border: none;
 }
 
-/* 代码块容器 */
+/* 代码块容器 - together.ai: rounded card with bg */
 .theme-doc-markdown pre {
   background-color: rgb(var(--gray-950));
   border-radius: 0.5rem;
@@ -1007,8 +1030,8 @@ html[data-theme='dark'] .theme-doc-markdown code {
   margin-bottom: 1.5rem;
   overflow-x: auto;
   border: 1px solid rgb(var(--gray-800));
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.714;
 }
 
 html[data-theme='dark'] .theme-doc-markdown pre {
@@ -1090,16 +1113,16 @@ html[data-theme='dark'] .theme-doc-markdown tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* 分割线样式 */
+/* 分割线样式 - together.ai: simple 1px, 3em margin */
 .theme-doc-markdown hr {
   border: none;
-  height: 1px;
-  background: rgb(var(--gray-100));
+  border-top: 1px solid rgb(var(--gray-100));
+  height: 0;
   margin: 3em 0;
 }
 
 html[data-theme='dark'] .theme-doc-markdown hr {
-  background: rgb(var(--gray-800));
+  border-top-color: rgb(var(--gray-800));
 }
 
 /* 图片样式 */
@@ -1400,10 +1423,11 @@ html[data-theme='dark'] .status.danger {
 /* ============================================
    文档搜索框样式
    ============================================ */
+/* together.ai: pill-shaped search, border-radius 12px */
 .navbar__search-input {
   background-color: rgb(var(--gray-50));
   border: 1px solid rgb(var(--gray-200));
-  border-radius: 0.5rem;
+  border-radius: 12px;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
   color: rgb(var(--gray-900));
   transition: all 0.15s ease;
