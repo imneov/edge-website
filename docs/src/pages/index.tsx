@@ -16,6 +16,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import HeroBackground from '@site/src/components/HeroBackground';
 import {
   Cloud,
   Network,
@@ -114,12 +115,28 @@ function StatItem({ stat, active }: { stat: typeof HERO_STATS[number]; active: b
   );
 }
 
+function useHeroMode(): 'particle-river' | 'aurora-wave' | 'circuit-pulse' {
+  const [mode, setMode] = useState<'particle-river' | 'aurora-wave' | 'circuit-pulse'>('particle-river');
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hero = params.get('hero');
+    if (hero === 'aurora-wave' || hero === 'circuit-pulse' || hero === 'particle-river') {
+      setMode(hero);
+    }
+  }, []);
+  return mode;
+}
+
 function HeroSection() {
   const { siteConfig } = useDocusaurusContext();
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation(0.1);
+  const heroMode = useHeroMode();
 
   return (
     <header className={styles.heroBanner}>
+      {/* Dynamic canvas background — "computing power flowing" */}
+      <HeroBackground mode={heroMode} />
+
       {/* Grid glow dots layer — edge computing node visual */}
       <div className={styles.heroBannerGrid} aria-hidden="true" />
 

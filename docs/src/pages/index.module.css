@@ -76,8 +76,9 @@
 }
 
 /* Gradient accent text — sparse use on section titles */
+/* CosHub-inspired: green → blue signature gradient */
 .gradientAccent {
-  background: linear-gradient(90deg, #3983F7 0%, #6BDDE0 100%);
+  background: linear-gradient(90deg, #22C55E 0%, #0066E0 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -88,8 +89,8 @@
 @media (prefers-reduced-motion: reduce) {
   .gradientAccent {
     background: none;
-    -webkit-text-fill-color: #3983F7;
-    color: #3983F7;
+    -webkit-text-fill-color: #0066E0;
+    color: #0066E0;
   }
 }
 
@@ -97,14 +98,14 @@
    Button System
    ============================================ */
 
-/* Primary CTA — dark background, white text, arrow */
+/* Primary CTA — CosHub-inspired: #0066E0 primary, white text */
 .heroCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.75rem;
   border-radius: 6px;
-  background: #0f172a;
+  background: #0066E0;
   color: #ffffff !important;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -116,18 +117,18 @@
 }
 
 .heroCta:hover {
-  background: #1e293b;
+  background: #0052CC;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 20px rgba(0, 102, 224, 0.4);
 }
 
 :global([data-theme='dark']) .heroCta {
-  background: #3983F7;
+  background: #0066E0;
 }
 
 :global([data-theme='dark']) .heroCta:hover {
-  background: #2563eb;
-  box-shadow: 0 6px 20px rgba(57, 131, 247, 0.35);
+  background: #0052CC;
+  box-shadow: 0 6px 20px rgba(0, 102, 224, 0.45);
 }
 
 /* Secondary — outline button */
@@ -225,27 +226,27 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Dark base */
-  background: #0b1220;
-  /* Geometric grid overlay: vertical + horizontal lines */
+  /* CosHub-style: pure dark base */
+  background: #09090E;
+  /* Geometric grid — subtle green-blue dual-tone lines */
   background-image:
     repeating-linear-gradient(
       0deg,
-      rgba(59, 131, 247, 0.055) 0px,
-      rgba(59, 131, 247, 0.055) 1px,
+      rgba(34, 197, 94, 0.04) 0px,
+      rgba(34, 197, 94, 0.04) 1px,
       transparent 1px,
       transparent 60px
     ),
     repeating-linear-gradient(
       90deg,
-      rgba(59, 131, 247, 0.055) 0px,
-      rgba(59, 131, 247, 0.055) 1px,
+      rgba(0, 102, 224, 0.05) 0px,
+      rgba(0, 102, 224, 0.05) 1px,
       transparent 1px,
       transparent 60px
     );
 }
 
-/* Ripple wave 1 — slower, larger */
+/* Ripple wave 1 — green tint (CosHub accent) */
 .heroBanner::before {
   content: '';
   position: absolute;
@@ -254,12 +255,12 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  border: 1px solid rgba(107, 221, 224, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.1);
   animation: rippleOut 6s ease-out infinite;
   pointer-events: none;
 }
 
-/* Ripple wave 2 — offset timing for continuous flow */
+/* Ripple wave 2 — blue tint (CosHub primary) */
 .heroBanner::after {
   content: '';
   position: absolute;
@@ -268,18 +269,18 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  border: 1px solid rgba(59, 131, 247, 0.1);
+  border: 1px solid rgba(0, 102, 224, 0.1);
   animation: rippleOut 6s ease-out 3s infinite;
   pointer-events: none;
 }
 
-/* Grid intersection glow dots — decorative layer via SVG data URI */
+/* Grid intersection glow dots — green-tinted for CosHub feel */
 .heroBanner .heroBannerGrid {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(
     circle,
-    rgba(107, 221, 224, 0.18) 1px,
+    rgba(34, 197, 94, 0.16) 1px,
     transparent 1px
   );
   background-size: 60px 60px;
@@ -308,7 +309,7 @@
 }
 
 .geoConnection {
-  stroke: rgba(6, 182, 212, 0.15);
+  stroke: rgba(0, 102, 224, 0.18);
   stroke-width: 1;
   stroke-dasharray: 6 4;
   animation: dashFlow 4s linear infinite;
@@ -318,13 +319,14 @@
   to { stroke-dashoffset: -40; }
 }
 
+/* CosHub-style: green nodes — data nodes represent compute resources */
 .geoNode {
-  fill: rgba(6, 182, 212, 0.6);
+  fill: rgba(34, 197, 94, 0.7);
 }
 
 .geoNodePulse {
   fill: none;
-  stroke: rgba(6, 182, 212, 0.35);
+  stroke: rgba(34, 197, 94, 0.3);
   stroke-width: 1;
   animation: nodePulse 3s ease-out infinite;
 }
@@ -343,13 +345,13 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  border: 1px solid rgba(59, 131, 247, 0.08);
+  border: 1px solid rgba(0, 102, 224, 0.07);
   pointer-events: none;
   animation: rippleExpand 7s ease-out infinite;
 }
 
 .heroRipple2 {
-  border-color: rgba(6, 182, 212, 0.06);
+  border-color: rgba(34, 197, 94, 0.05);
   animation-delay: 3.5s;
 }
 
@@ -388,9 +390,9 @@
   z-index: 1;
 }
 
-/* Product name gradient highlight — only the product name */
+/* Product name gradient — CosHub signature: green → blue */
 .heroProductName {
-  background: linear-gradient(90deg, #3983F7 0%, #6BDDE0 100%);
+  background: linear-gradient(90deg, #22C55E 0%, #0066E0 55%, #6BDDE0 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -401,8 +403,8 @@
 @media (prefers-reduced-motion: reduce) {
   .heroProductName {
     background: none;
-    -webkit-text-fill-color: #6BDDE0;
-    color: #6BDDE0;
+    -webkit-text-fill-color: #0066E0;
+    color: #0066E0;
   }
 }
 
@@ -457,8 +459,8 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: rgba(59, 131, 247, 0.12);
-  color: #6BDDE0;
+  background: rgba(0, 102, 224, 0.15);
+  color: #22C55E;
   margin-bottom: 0.625rem;
   flex-shrink: 0;
 }
@@ -1008,7 +1010,7 @@
 
 .finalCtaSection {
   padding: 7rem 0;
-  background: #0b1220;
+  background: #09090E;
   position: relative;
   overflow: hidden;
 }
@@ -1086,29 +1088,29 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
-/* Featured card — gradient top accent border (KSE-style premium treatment) */
+/* Featured card — CosHub signature green→blue gradient border */
 .deliveryCardFeatured {
   border-color: transparent;
   background:
     linear-gradient(#f8fafc, #f8fafc) padding-box,
-    linear-gradient(135deg, #3983F7, #6BDDE0) border-box;
-  box-shadow: 0 4px 24px rgba(57, 131, 247, 0.12);
+    linear-gradient(135deg, #22C55E, #0066E0) border-box;
+  box-shadow: 0 4px 24px rgba(0, 102, 224, 0.12);
   position: relative;
 }
 
 :global([data-theme='dark']) .deliveryCardFeatured {
   background:
     linear-gradient(#1e293b, #1e293b) padding-box,
-    linear-gradient(135deg, #3983F7, #6BDDE0) border-box;
-  box-shadow: 0 4px 32px rgba(57, 131, 247, 0.2);
+    linear-gradient(135deg, #22C55E, #0066E0) border-box;
+  box-shadow: 0 4px 32px rgba(0, 102, 224, 0.2);
 }
 
 .deliveryCardFeatured:hover {
-  box-shadow: 0 12px 36px rgba(57, 131, 247, 0.2);
+  box-shadow: 0 12px 36px rgba(0, 102, 224, 0.22);
 }
 
 :global([data-theme='dark']) .deliveryCardFeatured:hover {
-  box-shadow: 0 12px 36px rgba(57, 131, 247, 0.3);
+  box-shadow: 0 12px 36px rgba(34, 197, 94, 0.15), 0 12px 36px rgba(0, 102, 224, 0.2);
 }
 
 .deliveryCardIcon {
@@ -1138,14 +1140,14 @@
 .deliveryCardSubtitle {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #3983F7;
+  color: #0066E0;
   margin-bottom: 1rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
 :global([data-theme='dark']) .deliveryCardSubtitle {
-  color: #60a5fa;
+  color: #22C55E;
 }
 
 .deliveryCardDesc {

@@ -19,13 +19,13 @@ import {
 } from 'lucide-react';
 import styles from './styles.module.css';
 
-/* KSE-style rotating gradient words — cycles every 2.8s */
+/* KSE + CosHub 融合旋转词 — 绿蓝签名渐变为主，辅以商业化配色 */
 const ROTATING_WORDS = [
-  { text: '高效的', gradient: 'linear-gradient(90deg, #3983F7 0%, #6BDDE0 100%)' },
+  { text: '高效的', gradient: 'linear-gradient(90deg, #22C55E 0%, #0066E0 100%)' },
   { text: '安全的', gradient: 'linear-gradient(90deg, #7B26CF 0%, #E61F86 100%)' },
-  { text: '统一的', gradient: 'linear-gradient(154deg, #FFBB56 0%, #FF834E 100%)' },
-  { text: '开放的', gradient: 'linear-gradient(135deg, #E64EFF 0%, #8FFFF8 100%)' },
-  { text: '智能的', gradient: 'linear-gradient(154deg, rgba(43,189,182,1) 0%, rgba(150,222,218,1) 100%)' },
+  { text: '统一的', gradient: 'linear-gradient(135deg, #22C55E 0%, #0066E0 50%, #6BDDE0 100%)' },
+  { text: '开放的', gradient: 'linear-gradient(135deg, #0066E0 0%, #22C55E 100%)' },
+  { text: '智能的', gradient: 'linear-gradient(154deg, #22C55E 0%, #0066E0 100%)' },
 ];
 
 interface FeatureItem {

@@ -15,20 +15,21 @@
   align-items: center;
   padding: 5rem 0;
   width: 100%;
-  background: #0b1220;
-  /* Geometric grid overlay matches hero visual language */
+  /* CosHub-style: pure dark, continuous with hero */
+  background: #09090E;
+  /* Geometric grid — green-blue dual-tone (matches hero) */
   background-image:
     repeating-linear-gradient(
       0deg,
-      rgba(59, 131, 247, 0.035) 0px,
-      rgba(59, 131, 247, 0.035) 1px,
+      rgba(34, 197, 94, 0.03) 0px,
+      rgba(34, 197, 94, 0.03) 1px,
       transparent 1px,
       transparent 60px
     ),
     repeating-linear-gradient(
       90deg,
-      rgba(59, 131, 247, 0.035) 0px,
-      rgba(59, 131, 247, 0.035) 1px,
+      rgba(0, 102, 224, 0.035) 0px,
+      rgba(0, 102, 224, 0.035) 1px,
       transparent 1px,
       transparent 60px
     );
@@ -155,26 +156,26 @@
   background-clip: padding-box;
 }
 
-/* Gradient border glow — background-clip double-background trick */
+/* Gradient border glow — CosHub signature: green → blue */
 .card:hover {
   transform: translateY(-5px);
   border-color: transparent;
   background:
-    linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)) padding-box,
-    linear-gradient(135deg, #60a5fa, #22d3ee) border-box;
+    linear-gradient(rgba(9, 9, 14, 0.94), rgba(9, 9, 14, 0.94)) padding-box,
+    linear-gradient(135deg, #22c55e, #0066E0) border-box;
   box-shadow:
-    0 10px 36px rgba(59, 130, 246, 0.22),
-    0 0 32px rgba(34, 211, 238, 0.12);
+    0 10px 36px rgba(0, 102, 224, 0.2),
+    0 0 32px rgba(34, 197, 94, 0.1);
 }
 
 [data-theme='dark'] .card:hover {
   border-color: transparent;
   background:
-    linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)) padding-box,
-    linear-gradient(135deg, #60a5fa, #22d3ee) border-box;
+    linear-gradient(rgba(9, 9, 14, 0.94), rgba(9, 9, 14, 0.94)) padding-box,
+    linear-gradient(135deg, #22c55e, #0066E0) border-box;
   box-shadow:
-    0 10px 36px rgba(59, 130, 246, 0.22),
-    0 0 32px rgba(34, 211, 238, 0.12);
+    0 10px 36px rgba(0, 102, 224, 0.2),
+    0 0 32px rgba(34, 197, 94, 0.1);
 }
 
 /* Large card extra padding */
@@ -193,15 +194,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
+  /* CosHub: green → blue tint */
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(0, 102, 224, 0.15));
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.08);
   margin-bottom: 1.5rem;
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 
 [data-theme='dark'] .iconWrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(0, 102, 224, 0.15));
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.08);
 }
 
 .iconWrapperLarge {
@@ -213,11 +215,11 @@
 
 .card:hover .iconWrapper {
   transform: scale(1.1) rotate(3deg);
-  box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(34, 197, 94, 0.25);
 }
 
 [data-theme='dark'] .card:hover .iconWrapper {
-  box-shadow: 0 0 28px rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 28px rgba(34, 197, 94, 0.25);
 }
 
 /* ============================================
@@ -227,11 +229,11 @@
 .featureIcon {
   width: 32px;
   height: 32px;
-  color: #3b82f6;
+  color: #22c55e;
 }
 
 [data-theme='dark'] .featureIcon {
-  color: #60a5fa;
+  color: #22c55e;
 }
 
 .featureIconLarge {
