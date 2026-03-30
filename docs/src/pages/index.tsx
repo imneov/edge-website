@@ -115,12 +115,17 @@ function StatItem({ stat, active }: { stat: typeof HERO_STATS[number]; active: b
   );
 }
 
-function useHeroMode(): 'particle-river' | 'aurora-wave' | 'circuit-pulse' {
-  const [mode, setMode] = useState<'particle-river' | 'aurora-wave' | 'circuit-pulse'>('particle-river');
+function useHeroMode(): 'particle-river' | 'aurora-wave' | 'circuit-pulse' | 'world-network' {
+  const [mode, setMode] = useState<'particle-river' | 'aurora-wave' | 'circuit-pulse' | 'world-network'>('world-network');
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const hero = params.get('hero');
-    if (hero === 'aurora-wave' || hero === 'circuit-pulse' || hero === 'particle-river') {
+    if (
+      hero === 'aurora-wave' ||
+      hero === 'circuit-pulse' ||
+      hero === 'particle-river' ||
+      hero === 'world-network'
+    ) {
       setMode(hero);
     }
   }, []);
