@@ -12,6 +12,21 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'intro',
 
+    // ==================== 场景教程 ====================
+    {
+      type: 'category',
+      label: '场景教程',
+      collapsed: false,
+      items: [
+        'tutorials/README',
+        'tutorials/node-access',
+        'tutorials/app-deployment',
+        'tutorials/app-publish-upgrade',
+        'tutorials/monitoring',
+        'tutorials/tenant-edgex',
+      ],
+    },
+
     // ==================== 快速入门 ====================
     {
       type: 'category',
