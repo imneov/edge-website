@@ -1,7 +1,7 @@
 /**
  * Edge Platform 文档站点样式
  * 基于 Tailwind CSS v4 + shadcn/ui 设计系统
- * 文档内容页面风格参考 docs.together.ai (Mintlify)
+ * 文档内容页面风格参考 docs.kubesphere.com.cn
  */
 
 @layer theme, base, components, utilities;
@@ -50,20 +50,31 @@
 }
 
 /* ============================================
-   Warm Gray Color Palette (together.ai style)
+   KubeSphere Cool Blue-Gray Color Palette
    ============================================ */
 :root {
-  --gray-50: 250 245 242;
-  --gray-100: 245 240 238;
-  --gray-200: 230 224 222;
-  --gray-300: 213 208 206;
-  --gray-400: 166 160 158;
-  --gray-500: 119 114 112;
-  --gray-600: 87 82 80;
-  --gray-700: 70 64 62;
-  --gray-800: 45 39 37;
-  --gray-900: 30 25 22;
-  --gray-950: 17 12 10;
+  /* KubeSphere design tokens */
+  --ks-bg: 245 247 250;           /* page background rgb(245,247,250) */
+  --ks-text: 50 69 88;            /* body text rgb(50,69,88) */
+  --ks-heading: 9 18 26;          /* h1 color rgb(9,18,26) */
+  --ks-heading-2: 29 43 58;       /* h2 color rgb(29,43,58) */
+  --ks-border: 228 235 241;       /* borders rgb(228,235,241) */
+  --ks-muted: 147 158 169;        /* muted text rgb(147,158,169) */
+  --ks-table-th-bg: 231 243 254;  /* table th bg rgb(231,243,254) */
+  --ks-table-th-color: 18 134 241; /* table th text rgb(18,134,241) */
+
+  /* Gray scale - cool blue-gray */
+  --gray-50: 245 247 250;
+  --gray-100: 236 240 244;
+  --gray-200: 228 235 241;
+  --gray-300: 200 210 220;
+  --gray-400: 147 158 169;
+  --gray-500: 100 115 130;
+  --gray-600: 75 90 105;
+  --gray-700: 50 69 88;
+  --gray-800: 29 43 58;
+  --gray-900: 9 18 26;
+  --gray-950: 5 10 16;
 }
 
 /* ============================================
@@ -82,15 +93,15 @@
     scrollbar-width: thin;
   }
 
-  /* Typography: Inter for English, Noto Sans SC for Chinese */
+  /* Typography: PingFang SC for Chinese, Inter for English */
   body,
   :root {
-    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    font-family: 'PingFang SC', 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
       'Segoe UI', system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+    font-family: 'PingFang SC', 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
   }
 
   /* Light Theme */
@@ -118,19 +129,19 @@
 
   /* Dark Theme */
   html[data-theme='dark'] {
-    --background: oklch(0.1 0.005 30);
+    --background: oklch(0.1 0.005 240);
     --foreground: oklch(0.985 0 0);
-    --card: oklch(0.14 0.005 30);
+    --card: oklch(0.14 0.005 240);
     --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.14 0.005 30);
+    --popover: oklch(0.14 0.005 240);
     --popover-foreground: oklch(0.985 0 0);
     --primary: oklch(0.65 0.2 250);
     --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.2 0.005 30);
+    --secondary: oklch(0.2 0.005 240);
     --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.2 0.005 30);
-    --muted-foreground: oklch(0.65 0.01 30);
-    --accent: oklch(0.2 0.005 30);
+    --muted: oklch(0.2 0.005 240);
+    --muted-foreground: oklch(0.65 0.01 240);
+    --accent: oklch(0.2 0.005 240);
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
@@ -144,10 +155,10 @@
 }
 
 /* ============================================
-   Docusaurus 变量覆盖 (together.ai style)
+   Docusaurus 变量覆盖 (KubeSphere style)
    ============================================ */
 :root {
-  --prism-background-color: rgb(var(--gray-50));
+  --prism-background-color: rgb(var(--gray-900));
   --ifm-footer-background-color: #fff;
   --ifm-footer-link-color: rgb(var(--gray-700));
   --ifm-code-font-size: 87.5%;
@@ -158,28 +169,28 @@
   --ifm-color-primary-light: #60a5fa;
   --ifm-color-primary-lighter: #93c5fd;
   --ifm-color-primary-lightest: #bfdbfe;
-  --ifm-h1-font-size: 1.875rem;
-  --ifm-h2-font-size: 1.5rem;
-  --ifm-h3-font-size: 1.25rem;
-  --ifm-h4-font-size: 1.125rem;
-  --ifm-font-size-base: 16px;
-  --ifm-line-height-base: 1.75;
+  /* KubeSphere: 14px base font, line-height 1.714 (24/14) */
+  --ifm-font-size-base: 14px;
+  --ifm-line-height-base: 1.714;
+  --ifm-h1-font-size: 30px;
+  --ifm-h2-font-size: 24px;
+  --ifm-h3-font-size: 20px;
+  --ifm-h4-font-size: 16px;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
   --ifm-global-shadow-tl: none;
-  --ifm-font-family-base: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    system-ui, sans-serif;
+  --ifm-font-family-base: 'PingFang SC', 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', system-ui, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --ifm-heading-font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
-  --menu-link-active: rgba(59, 130, 246, 0.08);
-  --ifm-menu-link-padding-vertical: 0.375rem;
+  --ifm-heading-font-family: 'PingFang SC', 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  --ifm-menu-link-padding-vertical: 0.5rem;
   --ifm-menu-link-padding-horizontal: 0.75rem;
   --ifm-spacing-horizontal: 1.5rem;
-  --ifm-leading: 1.75;
-  --ifm-paragraph-margin-bottom: 1.25em;
-  --ifm-global-radius: 0.5rem;
-  --ifm-toc-border-color: rgb(var(--gray-100));
-  --ifm-hr-border-color: rgb(var(--gray-100));
+  --ifm-leading: 1.714;
+  --ifm-paragraph-margin-bottom: 12px;
+  --ifm-global-radius: 0.375rem;
+  --ifm-toc-border-color: rgb(var(--ks-border));
+  --ifm-hr-border-color: rgb(var(--ks-border));
   --ifm-color-emphasis-200: rgb(var(--gray-200));
   --ifm-color-emphasis-300: rgb(var(--gray-300));
   --ifm-color-emphasis-500: rgb(var(--gray-500));
@@ -187,19 +198,20 @@
   --ifm-color-emphasis-700: rgb(var(--gray-700));
   --ifm-color-emphasis-800: rgb(var(--gray-800));
   --ifm-color-emphasis-900: rgb(var(--gray-900));
-  --ifm-table-border-color: rgb(var(--gray-200));
-  --ifm-blockquote-border-color: rgb(var(--gray-200));
+  --ifm-table-border-color: rgb(var(--ks-border));
+  --ifm-blockquote-border-color: rgb(var(--ks-border));
+  /* KubeSphere page background */
+  --ifm-background-color: rgb(var(--ks-bg));
 }
 
 html[data-theme='dark'] {
   --prism-background-color: rgb(var(--gray-950));
-  --ifm-background-color: rgb(5, 6, 8);
+  --ifm-background-color: rgb(5, 8, 14);
   --ifm-background-surface-color: rgb(var(--gray-900));
-  --ifm-footer-background-color: rgb(5, 6, 8);
+  --ifm-footer-background-color: rgb(5, 8, 14);
   --ifm-footer-link-color: rgb(var(--gray-300));
   --ifm-color-primary: #60a5fa;
   --ifm-menu-color-background-active: rgba(255, 255, 255, 0.06);
-  --menu-link-active: rgba(96, 165, 250, 0.08);
   --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
   --ifm-toc-border-color: rgb(var(--gray-800));
   --ifm-hr-border-color: rgb(var(--gray-800));
@@ -213,28 +225,32 @@ html[data-theme='dark'] {
 @layer components {
   /* 网格背景效果 */
   .background-grid {
-    @apply relative z-0 bg-white;
-    @apply dark:bg-[rgb(5,6,8)];
+    @apply relative z-0;
+    background-color: rgb(var(--ks-bg));
 
     &::before {
       position: absolute;
       inset: 0;
       z-index: -1;
       content: '';
-      opacity: 0.5;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(230 224 222)' stroke-dasharray='5 3' transform='scale(1, -1)' %3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(228 235 241)' stroke-dasharray='5 3' transform='scale(1, -1)' %3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
       mask-image: linear-gradient(transparent, black, transparent);
     }
   }
 
+  html[data-theme='dark'] .background-grid {
+    background-color: rgb(5, 8, 14);
+  }
+
   html[data-theme='dark'] .background-grid::before {
     opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(245 240 238)' stroke-dasharray='5 3' transform='scale(1, -1)' %3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(228 235 241)' stroke-dasharray='5 3' transform='scale(1, -1)' %3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
   }
 
   .background-grid--fade-in {
-    @apply bg-transparent bg-linear-to-t from-white via-white;
-    @apply dark:bg-transparent dark:from-[rgb(5,6,8)] dark:via-[rgb(5,6,8)];
+    @apply bg-transparent bg-linear-to-t;
+    background-color: transparent;
 
     &::before {
       @apply bg-bottom-left;
@@ -243,8 +259,8 @@ html[data-theme='dark'] {
   }
 
   .background-grid--fade-out {
-    @apply bg-transparent bg-linear-to-b from-white via-white;
-    @apply dark:bg-transparent dark:from-[rgb(5,6,8)] dark:via-[rgb(5,6,8)];
+    @apply bg-transparent bg-linear-to-b;
+    background-color: transparent;
 
     &::before {
       mask-image: linear-gradient(black, black, transparent);
@@ -253,19 +269,57 @@ html[data-theme='dark'] {
 }
 
 /* ============================================
-   Navbar 样式 (clean, minimal)
+   KubeSphere: page background + white content card
    ============================================ */
-/* together.ai: transparent navbar, border-bottom 1px gray-200, ~56px height */
+/* Page-level background */
+body {
+  background-color: rgb(var(--ks-bg)) !important;
+}
+
+html[data-theme='dark'] body {
+  background-color: rgb(5, 8, 14) !important;
+}
+
+/* KubeSphere: content area is white card */
+article.theme-doc-markdown,
+div[class^='docItemContainer_'],
+[class*='docMainContainer'] article,
+main .col[class*='docItemCol'] {
+  background-color: #fff !important;
+}
+
+html[data-theme='dark'] article.theme-doc-markdown,
+html[data-theme='dark'] div[class^='docItemContainer_'],
+html[data-theme='dark'] [class*='docMainContainer'] article,
+html[data-theme='dark'] main .col[class*='docItemCol'] {
+  background-color: rgb(var(--gray-900)) !important;
+}
+
+/* Main doc wrapper white bg */
+main[class*='docMainContainer'] > .container > .row > .col,
+[class*='docItemWrapper'] {
+  background-color: #fff !important;
+  border-radius: 0;
+}
+
+html[data-theme='dark'] main[class*='docMainContainer'] > .container > .row > .col,
+html[data-theme='dark'] [class*='docItemWrapper'] {
+  background-color: rgb(var(--gray-900)) !important;
+}
+
+/* ============================================
+   Navbar 样式 (KubeSphere: 60px, clean)
+   ============================================ */
 .navbar {
   background: white;
   box-shadow: none;
-  border-bottom: 1px solid rgb(var(--gray-200));
+  border-bottom: 1px solid rgb(var(--ks-border));
   padding: 0 1.5rem;
-  height: 56px;
+  height: 60px;
 }
 
 html[data-theme='dark'] .navbar {
-  background: rgb(5, 6, 8);
+  background: rgb(5, 8, 14);
   border-bottom-color: rgb(var(--gray-800));
 }
 
@@ -276,13 +330,13 @@ html[data-theme='dark'] .navbar {
 }
 
 html[data-theme='dark'] .navbar__title {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
 .navbar__link {
-  color: rgb(var(--gray-600));
+  color: rgb(var(--gray-700));
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 14px;
   border-radius: 0.375rem;
   transition: color 0.15s ease;
   padding: 0.375rem 0.75rem;
@@ -307,7 +361,7 @@ html[data-theme='dark'] .navbar__link:hover {
 }
 
 html[data-theme='dark'] .navbar__link--active {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
 /* GitHub 链接图标 */
@@ -454,19 +508,19 @@ html[data-theme='dark'] .hero {
    ============================================ */
 .features-section {
   padding: 4rem 0;
-  background-color: rgb(var(--gray-50));
+  background-color: rgb(var(--ks-bg));
 }
 
 html[data-theme='dark'] .features-section {
-  background-color: rgb(5, 6, 8);
+  background-color: rgb(5, 8, 14);
 }
 
 .feature-card {
   background: white;
   padding: 2rem;
-  border-radius: 0.75rem;
+  border-radius: 0.375rem;
   box-shadow: none;
-  border: 1px solid rgb(var(--gray-200));
+  border: 1px solid rgb(var(--ks-border));
   transition: all 0.2s ease;
   height: 100%;
   text-align: center;
@@ -490,21 +544,21 @@ html[data-theme='dark'] .feature-card:hover {
 }
 
 .feature-card h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
   margin-bottom: 0.75rem;
   color: rgb(var(--gray-900));
 }
 
 html[data-theme='dark'] .feature-card h3 {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
 .feature-card p {
   color: rgb(var(--gray-500));
   line-height: 1.6;
   margin-bottom: 0;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 html[data-theme='dark'] .feature-card p {
@@ -523,14 +577,14 @@ html[data-theme='dark'] .featureSvg {
 }
 
 /* ============================================
-   Sidebar 样式 (together.ai clean style)
+   Sidebar 样式 (KubeSphere style)
    ============================================ */
 
-/* 侧边栏容器 - together.ai: 240px, transparent, no border */
+/* KubeSphere: 300px sidebar, transparent, no border-right */
 .theme-doc-sidebar-container {
   border-right: none !important;
   background-color: transparent !important;
-  --doc-sidebar-width: 240px !important;
+  --doc-sidebar-width: 300px !important;
 }
 
 html[data-theme='dark'] .theme-doc-sidebar-container {
@@ -540,12 +594,12 @@ html[data-theme='dark'] .theme-doc-sidebar-container {
 
 /* 侧边栏宽度覆盖 */
 :root {
-  --doc-sidebar-width: 240px !important;
+  --doc-sidebar-width: 300px !important;
 }
 
 /* 侧边栏菜单 */
 .menu {
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
 }
 
 .menu__list {
@@ -554,21 +608,21 @@ html[data-theme='dark'] .theme-doc-sidebar-container {
 }
 
 .menu__list-item {
-  margin-bottom: 1px;
+  margin-bottom: 0;
 }
 
-/* 菜单链接基础样式 - together.ai: 14px/20px, weight 400, padding 6 12 6 16, radius 12px */
+/* KubeSphere: 14px, weight 400, color rgb(50,69,88), minimal padding */
 .menu__link {
-  color: rgb(var(--gray-700));
+  color: rgb(var(--ks-text));
   font-weight: 400;
-  font-size: 0.875rem;
-  padding: 6px 12px 6px 16px;
-  border-radius: 12px;
-  transition: all 0.1s ease;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 0;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  line-height: 1.43;
+  line-height: 20px;
 }
 
 html[data-theme='dark'] .menu__link {
@@ -577,34 +631,37 @@ html[data-theme='dark'] .menu__link {
 
 /* 菜单链接悬停 */
 .menu__link:hover {
-  background-color: rgb(var(--gray-50));
-  color: rgb(var(--gray-900));
+  background-color: rgba(59, 130, 246, 0.04);
+  color: var(--ifm-color-primary);
   text-decoration: none;
 }
 
 html[data-theme='dark'] .menu__link:hover {
-  background-color: rgb(var(--gray-900));
-  color: rgb(var(--gray-100));
+  background-color: rgba(96, 165, 250, 0.06);
+  color: #60a5fa;
 }
 
-/* 菜单链接激活状态 - together.ai: primary color, rgba(primary, 0.1), radius 12px, weight 400 */
-/* Only apply to leaf page links, not category headers */
+/* KubeSphere active: primary color, weight 500, border-left 2px solid primary */
 .menu__link--active:not(.menu__link--sublist-caret):not(.menu__list-item-collapsible > .menu__link) {
-  background-color: rgba(59, 130, 246, 0.1) !important;
+  background-color: transparent !important;
   color: var(--ifm-color-primary) !important;
-  font-weight: 400;
+  font-weight: 500;
+  border-left: 2px solid var(--ifm-color-primary);
+  border-radius: 0;
   position: relative;
 }
 
 html[data-theme='dark'] .menu__link--active:not(.menu__link--sublist-caret):not(.menu__list-item-collapsible > .menu__link) {
-  background-color: rgba(96, 165, 250, 0.1) !important;
+  background-color: transparent !important;
   color: #60a5fa !important;
+  border-left-color: #60a5fa;
 }
 
 /* Category headers with active children should NOT change color */
 .menu__list-item-collapsible > .menu__link--active {
   background-color: transparent !important;
-  color: rgb(var(--gray-700)) !important;
+  color: rgb(var(--ks-text)) !important;
+  border-left: none;
 }
 
 html[data-theme='dark'] .menu__list-item-collapsible > .menu__link--active {
@@ -620,16 +677,17 @@ html[data-theme='dark'] .menu__list-item-collapsible > .menu__link--active {
   transform: rotate(-90deg);
 }
 
-/* 分类标题样式 - together.ai: same as regular links, 14px weight 600, no uppercase */
+/* KubeSphere: category headers same weight 400, no uppercase */
 .menu__list-item-collapsible > .menu__link {
-  font-weight: 600;
-  color: rgb(var(--gray-700));
-  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgb(var(--ks-text));
+  font-size: 14px;
   text-transform: none;
   letter-spacing: normal;
-  margin-top: 1rem;
-  margin-bottom: 0.125rem;
-  padding: 6px 12px 6px 16px;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  padding: 4px 8px;
+  border-radius: 0;
 }
 
 html[data-theme='dark'] .menu__list-item-collapsible > .menu__link {
@@ -640,15 +698,15 @@ html[data-theme='dark'] .menu__list-item-collapsible > .menu__link {
   background-color: transparent;
 }
 
-/* 子菜单缩进 - together.ai: simple indent, no border */
+/* KubeSphere: child items have border-left 2px solid rgb(228,235,241) on nested list */
 .menu__list .menu__list {
   padding-left: 0.75rem;
-  margin-left: 0;
-  border-left: none;
+  margin-left: 0.5rem;
+  border-left: 2px solid rgb(var(--ks-border)) !important;
 }
 
 html[data-theme='dark'] .menu__list .menu__list {
-  border-left: none;
+  border-left: 2px solid rgb(var(--gray-800)) !important;
 }
 
 /* 侧边栏滚动条 */
@@ -672,8 +730,8 @@ html[data-theme='dark'] aside.theme-doc-sidebar-container::-webkit-scrollbar-thu
 /* 侧边栏展开/收起按钮 */
 .collapseSidebarButton {
   background-color: transparent;
-  border: 1px solid rgb(var(--gray-200));
-  border-radius: 12px;
+  border: 1px solid rgb(var(--ks-border));
+  border-radius: 0.375rem;
   transition: all 0.15s ease;
 }
 
@@ -699,11 +757,11 @@ html[data-theme='dark'] .collapseSidebarButton:hover {
   background-color: white;
   color: rgb(var(--gray-700));
   padding: 3rem 0 2rem;
-  border-top: 1px solid rgb(var(--gray-100));
+  border-top: 1px solid rgb(var(--ks-border));
 }
 
 html[data-theme='dark'] .footer {
-  background-color: rgb(5, 6, 8);
+  background-color: rgb(5, 8, 14);
   border-top-color: rgb(var(--gray-800));
 }
 
@@ -740,7 +798,7 @@ html[data-theme='dark'] .footer__link-item:hover {
   text-align: center;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid rgb(var(--gray-100));
+  border-top: 1px solid rgb(var(--ks-border));
 }
 
 html[data-theme='dark'] .footer__copyright {
@@ -752,8 +810,8 @@ html[data-theme='dark'] .footer__copyright {
    Table of Contents 样式
    ============================================ */
 .table-of-contents__link {
-  color: rgb(var(--gray-500));
-  font-size: 0.8125rem;
+  color: rgb(var(--ks-muted));
+  font-size: 13px;
   transition: color 0.15s ease;
 }
 
@@ -767,17 +825,17 @@ html[data-theme='dark'] .table-of-contents__link {
 }
 
 .table-of-contents__link--active {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 div[class^='tableOfContents_']::before {
-  content: 'On this page';
-  font-size: 0.75rem;
-  font-weight: 600;
+  content: '目录';
+  font-size: 13px;
+  font-weight: 500;
   margin-left: 12px;
-  color: rgb(var(--gray-500));
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: rgb(var(--gray-900));
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 html[data-theme='dark'] div[class^='tableOfContents_']::before {
@@ -785,12 +843,11 @@ html[data-theme='dark'] div[class^='tableOfContents_']::before {
 }
 
 /* ============================================
-   Code Block 样式 (together.ai style)
+   Code Block 样式 (KubeSphere style)
    ============================================ */
-/* together.ai: 14px code, line-height 24px */
 .prism-code {
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  font-size: 13px;
   line-height: 1.714;
 }
 
@@ -800,16 +857,16 @@ code[class^='codeBlockLines_'] {
 }
 
 /* ============================================
-   Markdown 样式 - together.ai prose style
+   Markdown 样式 - KubeSphere prose style
    ============================================ */
 .markdown h1:first-child {
-  --ifm-h1-font-size: 1.875rem;
+  --ifm-h1-font-size: 30px;
 }
 
 div[class^='docItemContainer_'] article img {
   display: block;
   margin: auto;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
 }
 
 /* ============================================
@@ -867,102 +924,102 @@ a:hover {
 }
 
 /* ============================================
-   文档页面优化样式 (together.ai prose typography)
+   文档页面优化样式 (KubeSphere prose typography)
    ============================================ */
 
-/* 文档内容区域 - together.ai: padding 48px 64px, max-width none */
+/* KubeSphere: content card with padding 0 60px 80px */
 div[class^='docItemContainer_'] {
   max-width: none;
-  padding: 0 64px;
+  padding: 0 60px 80px;
 }
 
-/* 文档主内容区域 */
+/* 文档主内容区域 - KubeSphere: 14px, line-height 24px, color rgb(50,69,88) */
 .theme-doc-markdown {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: rgb(var(--gray-700));
+  font-size: 14px;
+  line-height: 1.714;
+  color: rgb(var(--ks-text));
 }
 
 html[data-theme='dark'] .theme-doc-markdown {
   color: rgb(var(--gray-300));
 }
 
-/* 文档标题样式 - together.ai: 30px, weight 500, line-height 36px, letter-spacing -0.5px */
+/* KubeSphere h1: 30px, weight 500, line-height 40px, color rgb(9,18,26) */
 .theme-doc-markdown h1 {
-  font-size: 1.875rem;
+  font-size: 30px;
   font-weight: 500;
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 16px;
   padding-bottom: 0;
   border-bottom: none;
-  color: rgb(var(--gray-950));
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+  color: rgb(var(--ks-heading));
+  letter-spacing: 0;
+  line-height: 40px;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h1 {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
-/* together.ai h2: 1.5em, weight 700, line-height 1.333, no border */
+/* KubeSphere h2: 24px, weight 500, line-height 32px, margin-top 32px, NO border */
 .theme-doc-markdown h2 {
-  font-size: 1.5em;
-  font-weight: 700;
-  margin-top: 2em;
-  margin-bottom: 0.667em;
+  font-size: 24px;
+  font-weight: 500;
+  margin-top: 32px;
+  margin-bottom: 16px;
   padding-bottom: 0;
   border-bottom: none;
-  color: rgb(var(--gray-900));
-  letter-spacing: -0.3px;
-  line-height: 1.333;
+  color: rgb(var(--ks-heading-2));
+  letter-spacing: 0;
+  line-height: 32px;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h2 {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
-/* together.ai h3: 1.25em, weight 600, line-height 1.4 */
+/* KubeSphere h3: 20px, weight 500, line-height 28px */
 .theme-doc-markdown h3 {
-  font-size: 1.25em;
-  font-weight: 600;
-  margin-top: 2.4em;
-  margin-bottom: 0.6em;
-  color: rgb(var(--gray-900));
-  line-height: 1.4;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: rgb(var(--ks-heading-2));
+  line-height: 28px;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h3 {
   color: rgb(var(--gray-100));
 }
 
-/* together.ai h4: 1.125em, weight 600, line-height 1.5 */
+/* KubeSphere h4: 16px, weight 500 */
 .theme-doc-markdown h4 {
-  font-size: 1.125em;
-  font-weight: 600;
-  margin-top: 2em;
-  margin-bottom: 0.5em;
-  color: rgb(var(--gray-800));
-  line-height: 1.5;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: rgb(var(--ks-heading-2));
+  line-height: 24px;
 }
 
 html[data-theme='dark'] .theme-doc-markdown h4 {
   color: rgb(var(--gray-200));
 }
 
-/* 段落样式 */
+/* KubeSphere: paragraph margin-bottom 12px */
 .theme-doc-markdown p {
-  margin-bottom: 1.25em;
+  margin-bottom: 12px;
 }
 
 /* 列表样式 */
 .theme-doc-markdown ul,
 .theme-doc-markdown ol {
-  margin-bottom: 1.25em;
-  padding-left: 1.625em;
+  margin-bottom: 12px;
+  padding-left: 1.5em;
 }
 
 .theme-doc-markdown li {
-  margin-bottom: 0.5em;
+  margin-bottom: 4px;
 }
 
 .theme-doc-markdown li::marker {
@@ -973,37 +1030,37 @@ html[data-theme='dark'] .theme-doc-markdown li::marker {
   color: rgb(var(--gray-500));
 }
 
-/* 链接样式 - together.ai: weight 600, border-bottom 1px primary */
+/* KubeSphere links: primary color, weight 400, no text-decoration, no border-bottom */
 .theme-doc-markdown a {
   color: var(--ifm-color-primary);
   text-decoration: none;
-  font-weight: 600;
-  border-bottom: 1px solid var(--ifm-color-primary);
-  transition: all 0.15s ease;
+  font-weight: 400;
+  border-bottom: none;
+  transition: color 0.15s ease;
   word-wrap: break-word;
 }
 
 .theme-doc-markdown a:hover {
-  opacity: 0.8;
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
 }
 
 html[data-theme='dark'] .theme-doc-markdown a {
   color: #60a5fa;
-  border-bottom-color: #60a5fa;
 }
 
 html[data-theme='dark'] .theme-doc-markdown a:hover {
-  opacity: 0.8;
+  color: #93c5fd;
 }
 
-/* 行内代码样式 - together.ai: 0.875em, weight 500, no border */
+/* 行内代码样式 */
 .theme-doc-markdown code {
   background-color: rgb(var(--gray-100));
   color: rgb(var(--gray-800));
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 400;
   font-variant-ligatures: none;
   border: none;
 }
@@ -1022,15 +1079,15 @@ html[data-theme='dark'] .theme-doc-markdown code {
   border: none;
 }
 
-/* 代码块容器 - together.ai: rounded card with bg */
+/* 代码块容器 */
 .theme-doc-markdown pre {
-  background-color: rgb(var(--gray-950));
-  border-radius: 0.5rem;
+  background-color: rgb(var(--gray-900));
+  border-radius: 0.375rem;
   padding: 1rem 1.25rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
   overflow-x: auto;
   border: 1px solid rgb(var(--gray-800));
-  font-size: 0.875rem;
+  font-size: 13px;
   line-height: 1.714;
 }
 
@@ -1039,15 +1096,15 @@ html[data-theme='dark'] .theme-doc-markdown pre {
   border-color: rgb(var(--gray-800));
 }
 
-/* 引用块样式 - together.ai clean blockquote */
+/* 引用块样式 */
 .theme-doc-markdown blockquote {
-  border-left: 3px solid rgb(var(--gray-200));
+  border-left: 3px solid rgb(var(--ks-border));
   background-color: transparent;
-  padding: 0 0 0 1.25rem;
-  margin: 1.5em 0;
+  padding: 0 0 0 1rem;
+  margin: 16px 0;
   border-radius: 0;
   color: rgb(var(--gray-600));
-  font-style: italic;
+  font-style: normal;
 }
 
 html[data-theme='dark'] .theme-doc-markdown blockquote {
@@ -1059,46 +1116,46 @@ html[data-theme='dark'] .theme-doc-markdown blockquote {
   margin-bottom: 0;
 }
 
-/* 表格样式 - together.ai clean tables */
+/* KubeSphere table: th bg rgb(231,243,254), th color rgb(18,134,241), weight 400 */
 .theme-doc-markdown table {
   width: 100%;
-  margin-bottom: 2em;
-  margin-top: 2em;
+  margin-bottom: 16px;
+  margin-top: 16px;
   border-collapse: collapse;
   border-radius: 0;
   overflow: auto;
   display: block;
   box-shadow: none;
-  font-size: 0.875rem;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .theme-doc-markdown thead {
-  background-color: transparent;
-  border-bottom: 1px solid rgb(var(--gray-200));
+  background-color: rgb(var(--ks-table-th-bg));
+  border-bottom: none;
 }
 
 html[data-theme='dark'] .theme-doc-markdown thead {
-  background-color: transparent;
-  border-bottom-color: rgb(var(--gray-800));
+  background-color: rgba(96, 165, 250, 0.08);
+  border-bottom: none;
 }
 
 .theme-doc-markdown th {
-  padding: 0 0.75rem 0.75rem;
+  padding: 10px 16px;
   text-align: left;
-  font-weight: 600;
-  color: rgb(var(--gray-900));
-  border-bottom: 1px solid rgb(var(--gray-200));
+  font-weight: 400;
+  color: rgb(var(--ks-table-th-color));
+  border-bottom: 1px solid rgb(var(--ks-border));
 }
 
 html[data-theme='dark'] .theme-doc-markdown th {
-  color: rgb(var(--gray-100));
+  color: #60a5fa;
   border-bottom-color: rgb(var(--gray-800));
 }
 
 .theme-doc-markdown td {
-  padding: 0.75rem;
-  border-bottom: 1px solid rgb(var(--gray-100));
+  padding: 10px 16px;
+  border-bottom: 1px solid rgb(var(--ks-border));
 }
 
 html[data-theme='dark'] .theme-doc-markdown td {
@@ -1106,19 +1163,19 @@ html[data-theme='dark'] .theme-doc-markdown td {
 }
 
 .theme-doc-markdown tbody tr:hover {
-  background-color: rgb(var(--gray-50));
+  background-color: rgba(59, 130, 246, 0.02);
 }
 
 html[data-theme='dark'] .theme-doc-markdown tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* 分割线样式 - together.ai: simple 1px, 3em margin */
+/* 分割线样式 */
 .theme-doc-markdown hr {
   border: none;
-  border-top: 1px solid rgb(var(--gray-100));
+  border-top: 1px solid rgb(var(--ks-border));
   height: 0;
-  margin: 3em 0;
+  margin: 24px 0;
 }
 
 html[data-theme='dark'] .theme-doc-markdown hr {
@@ -1128,28 +1185,28 @@ html[data-theme='dark'] .theme-doc-markdown hr {
 /* 图片样式 */
 .theme-doc-markdown img {
   max-width: 100%;
-  border-radius: 0.5rem;
-  margin: 2em 0;
+  border-radius: 0.375rem;
+  margin: 16px 0;
   box-shadow: none;
 }
 
 /* Strong 文本 */
 .theme-doc-markdown strong {
   color: rgb(var(--gray-900));
-  font-weight: 600;
+  font-weight: 500;
 }
 
 html[data-theme='dark'] .theme-doc-markdown strong {
-  color: rgb(var(--gray-50));
+  color: rgb(var(--gray-100));
 }
 
 /* ============================================
-   Admonition 提示框样式 (together.ai callout style)
+   Admonition 提示框样式 (KubeSphere callout style)
    ============================================ */
 .admonition {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  border-radius: 0.5rem;
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-radius: 0.375rem;
   border-left: 3px solid;
   border-top: none;
   border-right: none;
@@ -1160,13 +1217,13 @@ html[data-theme='dark'] .theme-doc-markdown strong {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .admonition-content {
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .admonition-content p:last-child {
@@ -1268,25 +1325,30 @@ html[data-theme='dark'] .admonition.admonition-danger .admonition-heading {
 }
 
 /* ============================================
-   面包屑导航样式
+   面包屑导航样式 (KubeSphere: 14px, muted links)
    ============================================ */
 .breadcrumbs {
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 }
 
 .breadcrumbs__item {
-  color: rgb(var(--gray-400));
-  font-size: 0.8125rem;
+  color: rgb(var(--ks-muted));
+  font-size: 14px !important;
 }
 
 .breadcrumbs__link {
-  color: rgb(var(--gray-400));
+  color: rgb(var(--ks-muted));
   transition: color 0.15s ease;
 }
 
 .breadcrumbs__link:hover {
   color: var(--ifm-color-primary);
   text-decoration: none;
+}
+
+/* Current breadcrumb: darker */
+.breadcrumbs__item--active .breadcrumbs__link {
+  color: rgb(var(--ks-text));
 }
 
 html[data-theme='dark'] .breadcrumbs__link {
@@ -1297,13 +1359,17 @@ html[data-theme='dark'] .breadcrumbs__link:hover {
   color: #60a5fa;
 }
 
+html[data-theme='dark'] .breadcrumbs__item--active .breadcrumbs__link {
+  color: rgb(var(--gray-200));
+}
+
 /* ============================================
    分页导航样式
    ============================================ */
 .pagination-nav {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgb(var(--gray-100));
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(var(--ks-border));
 }
 
 html[data-theme='dark'] .pagination-nav {
@@ -1311,9 +1377,9 @@ html[data-theme='dark'] .pagination-nav {
 }
 
 .pagination-nav__link {
-  border: 1px solid rgb(var(--gray-200));
-  border-radius: 0.5rem;
-  padding: 1rem 1.25rem;
+  border: 1px solid rgb(var(--ks-border));
+  border-radius: 0.375rem;
+  padding: 12px 16px;
   transition: all 0.15s ease;
 }
 
@@ -1332,10 +1398,10 @@ html[data-theme='dark'] .pagination-nav__link:hover {
 }
 
 .pagination-nav__sublabel {
-  color: rgb(var(--gray-400));
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: rgb(var(--ks-muted));
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 html[data-theme='dark'] .pagination-nav__sublabel {
@@ -1357,10 +1423,10 @@ html[data-theme='dark'] .pagination-nav__label {
 .badge {
   background-color: rgba(59, 130, 246, 0.08);
   color: var(--ifm-color-primary);
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 html[data-theme='dark'] .badge {
@@ -1374,10 +1440,10 @@ html[data-theme='dark'] .badge {
 .status {
   display: inline-flex;
   align-items: center;
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .status.info {
@@ -1423,19 +1489,18 @@ html[data-theme='dark'] .status.danger {
 /* ============================================
    文档搜索框样式
    ============================================ */
-/* together.ai: pill-shaped search, border-radius 12px */
 .navbar__search-input {
   background-color: rgb(var(--gray-50));
-  border: 1px solid rgb(var(--gray-200));
-  border-radius: 12px;
+  border: 1px solid rgb(var(--ks-border));
+  border-radius: 0.375rem;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
   color: rgb(var(--gray-900));
   transition: all 0.15s ease;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .navbar__search-input::placeholder {
-  color: rgb(var(--gray-400));
+  color: rgb(var(--ks-muted));
 }
 
 .navbar__search-input:focus {
@@ -1468,14 +1533,14 @@ div[class^='codeBlockTitle_'] {
   background-color: rgb(var(--gray-900));
   border-bottom: 1px solid rgb(var(--gray-800));
   color: rgb(var(--gray-400));
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px 16px;
+  border-radius: 0.375rem 0.375rem 0 0;
 }
 
 div[class^='codeBlockTitle_'] + div pre {
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 0.375rem 0.375rem;
 }
 
 /* ============================================
