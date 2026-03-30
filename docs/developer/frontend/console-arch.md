@@ -84,11 +84,11 @@ export default function ClientPage() {
 
 ### 路由组 (Route Groups)
 
-edge-console 使用路由组 `(boss)` 来组织管理员相关的路由,而不影响 URL 结构:
+edge-console 使用多个路由组来组织不同功能模块的路由，括号内名称不出现在 URL 中：
 
 ```
 app/
-├── (boss)/                    # 路由组 (括号表示不出现在 URL 中)
+├── (boss)/                    # 平台管理员路由组
 │   └── boss/
 │       ├── clusters/          # URL: /boss/clusters
 │       ├── workspaces/        # URL: /boss/workspaces
@@ -96,6 +96,24 @@ app/
 │       ├── images/            # URL: /boss/images
 │       └── telemetry/         # URL: /boss/telemetry
 │
+├── (express)/                 # 租户工作台路由组
+│   └── express/               # URL: /express (租户入口)
+│
+├── (metrics)/                 # 监控指标路由组
+│   └── metrics/               # URL: /metrics
+│
+├── (namespace)/               # 命名空间管理路由组
+│   └── namespace/
+│
+├── (nodegroup)/               # 节点组路由组
+│   └── nodegroup/
+│
+├── (workspace)/               # 工作区路由组
+│   └── workspace/
+│
+├── api/                       # Next.js API Routes
+├── dashboard/                 # URL: /dashboard
+├── notifications/             # URL: /notifications
 ├── marketplace/               # URL: /marketplace
 ├── login/                     # URL: /login
 └── page.tsx                   # URL: /

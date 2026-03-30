@@ -7,7 +7,7 @@ description: "查看集群活跃告警，了解告警级别和处理方式"
 # 告警管理
 
 > **导航路径**: 集群 > 选择集群 > 监控告警 > 告警
-> **访问地址**: `/boss/clusters/{集群ID}/monitoring`（点击「告警」标签页）
+> **访问地址**: `/boss/clusters/{集群ID}/monitoring-alerts/alert`
 > **所需权限**: 平台管理员或集群管理员
 
 ## 功能说明

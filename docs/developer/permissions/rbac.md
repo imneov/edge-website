@@ -121,19 +121,13 @@ rules:
 
 ### 转换机制
 
-Edge Platform 的 Controller 自动将 IAMRole 转换为 K8s Role/ClusterRole:
+Edge Platform 的 Controller 自动将 IAMRole 转换为 K8s ClusterRole。**无论 IAMRole 的 Scope 类型是什么（namespace、workspace、nodegroup、cluster、platform），Controller 统一创建 ClusterRole**，Scope 信息通过 Label 附加在 ClusterRole 上，由 UniversalAuthorizer 负责 Scope 级联检查。
 
 ```mermaid
 graph TB
-    A[IAMRole] --> B{Scope 类型?}
-    B -->|namespace| C[创建 Role<br/>在对应 Namespace]
-    B -->|workspace/cluster/platform| D[创建 ClusterRole<br/>全局作用域]
-
-    C --> E[IAMRoleSyncController]
-    D --> E
-
-    E --> F[K8s Role/ClusterRole]
-    F --> G[K8s RBAC 引擎]
+    A[IAMRole] --> B[IAMRoleSyncController]
+    B --> C[创建 ClusterRole<br/>附带 Scope 标签]
+    C --> D[K8s RBAC 引擎]
 ```
 
 ### 转换示例

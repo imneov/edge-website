@@ -3,13 +3,14 @@
  *
  * Structure:
  * 1. Hero Banner - animated gradient with stats and CTAs
- * 2. Architecture Overview - cloud-edge SVG diagram
- * 3. Core Capabilities - 6 feature cards (delegated to HomepageFeatures)
- * 4. Platform Highlights - numbered differentiators
- * 5. Technology Ecosystem - integration logo grid
- * 6. Quick Start Steps - 3-step onboarding
+ * 2. Wave Divider
+ * 3. Architecture Overview - cloud-edge SVG diagram
+ * 4. Core Capabilities - 6 feature cards (delegated to HomepageFeatures)
+ * 5. Platform Highlights - numbered differentiators with count-up
+ * 6. Technology Ecosystem - integration logo grid
+ * 7. Quick Start Steps - 3-step onboarding with staggered entry
  */
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -27,21 +28,95 @@ import {
   Download,
   MonitorCheck,
   Rocket,
+  Cpu,
+  HardDrive,
 } from 'lucide-react';
 
 import styles from './index.module.css';
 
 /* ============================================
+   Scroll Animation Hook
+   ============================================ */
+
+/** One-shot IntersectionObserver — fires once, then disconnects. */
+function useScrollAnimation(threshold = 0.12) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isVisible };
+}
+
+/* ============================================
+   Count-up Hook (requestAnimationFrame, no libs)
+   ============================================ */
+
+/**
+ * Counts from 0 to `target` over `duration` ms using ease-out cubic.
+ * Starts only when `isVisible` becomes true.
+ */
+function useCountUp(target: number, isVisible: boolean, duration = 1500) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    let rafId: number;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setCount(Math.round(eased * target));
+      if (progress < 1) rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [isVisible, target, duration]);
+
+  return count;
+}
+
+/* ============================================
+   Wave Divider
+   ============================================ */
+
+/** SVG wave separator placed between Hero and Architecture. */
+function WaveDivider() {
+  return (
+    <div className={styles.waveDivider} aria-hidden="true">
+      <svg viewBox="0 0 1440 56" preserveAspectRatio="none">
+        <path
+          d="M0,28 C360,56 720,0 1080,28 C1260,42 1380,14 1440,28 L1440,56 L0,56 Z"
+          className={styles.wavePath}
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* ============================================
    Section 1: Hero Banner
    ============================================ */
 
-/** Tech stack pill displayed in the hero section */
 interface TechPillProps {
   name: string;
   icon: string;
 }
 
-/** Renders a single technology badge with icon and label */
 function TechPill({ name, icon }: TechPillProps) {
   return (
     <div className={styles.techPill}>
@@ -51,7 +126,6 @@ function TechPill({ name, icon }: TechPillProps) {
   );
 }
 
-/** Hero banner with animated background, stats, and CTAs */
 function HeroSection() {
   const { siteConfig } = useDocusaurusContext();
 
@@ -63,51 +137,31 @@ function HeroSection() {
 
   return (
     <header className={clsx('hero', styles.heroBanner)}>
-      {/* Animated mesh background */}
-      <div className={styles.heroMesh} aria-hidden="true" />
+      <div className={styles.heroMesh} aria-hidden="true">
+        <div className={styles.meshBlob1} />
+        <div className={styles.meshBlob2} />
+        <div className={styles.meshBlob3} />
+      </div>
 
       <div className="container">
-        {/* Badge */}
         <div className={styles.heroBadge}>
           <span className={styles.heroBadgeText}>
-            面向云原生应用的智能边缘计算平台
+            企业级多租户边缘智能计算平台
           </span>
         </div>
 
-        {/* Title */}
-        <h1 className="hero__title">{siteConfig.title}</h1>
+        <h1 className={clsx('hero__title', styles.heroTitle)}>{siteConfig.title}</h1>
 
-        {/* Subtitle - strengthened value proposition */}
         <p className="hero__subtitle">
-          统一管理云端与边缘基础设施，实现应用从开发到边缘节点的全生命周期管理
+          统一 IAM 权限体系与多集群调度，实现从云端到边缘的全栈资源编排与 AI 应用规模化部署
         </p>
 
-        {/* Stats counters */}
-        <div className={styles.heroStats}>
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>1000+</span>
-            <span className={styles.heroStatLabel}>边缘节点</span>
-          </div>
-          <div className={styles.heroStatDivider} />
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>50+</span>
-            <span className={styles.heroStatLabel}>集群管理</span>
-          </div>
-          <div className={styles.heroStatDivider} />
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>99.9%</span>
-            <span className={styles.heroStatLabel}>高可用</span>
-          </div>
-        </div>
-
-        {/* Tech pills */}
         <div className={styles.techPills}>
           {techStack.map((tech) => (
             <TechPill key={tech.name} {...tech} />
           ))}
         </div>
 
-        {/* CTAs */}
         <div className={styles.buttons}>
           <Link className="button button--primary button--lg" to="/docs/intro">
             快速开始
@@ -128,225 +182,251 @@ function HeroSection() {
    Section 2: Architecture Overview
    ============================================ */
 
-/** Cloud-edge architecture SVG diagram */
+const COMPONENT_TOOLTIPS: Record<string, string> = {
+  apiserver: '统一 API 网关，7 层请求过滤链',
+  controller: '12+ K8s 控制器，IAM/RBAC 转换',
+  console: '管理控制台，多视图前端',
+  clusterA: '直连模式，KubeConfig 接入',
+  vcluster: '虚拟集群，自动安装边缘运行时',
+  clusterB: '代理模式，反向隧道接入',
+};
+
+type LayerKey = 'cloud' | 'cluster' | 'node';
+
+interface TooltipState {
+  key: string;
+  x: number;
+  y: number;
+}
+
 function ArchitectureSection() {
+  const [hoverLayer, setHoverLayer] = useState<LayerKey | null>(null);
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollAnimation(0.05);
+
+  function layerOpacity(layer: LayerKey): number {
+    if (!hoverLayer) return 1;
+    return hoverLayer === layer ? 1 : 0.35;
+  }
+
+  function layerScale(layer: LayerKey): string {
+    return hoverLayer === layer ? 'scale(1.015)' : 'scale(1)';
+  }
+
+  function onComponentEnter(key: string, e: React.MouseEvent<SVGElement>) {
+    const cnt = containerRef.current;
+    if (!cnt) return;
+    const r = cnt.getBoundingClientRect();
+    setTooltip({ key, x: e.clientX - r.left, y: e.clientY - r.top });
+  }
+
+  function onComponentTap(key: string, e: React.TouchEvent<SVGElement>) {
+    e.stopPropagation();
+    const cnt = containerRef.current;
+    if (!cnt) return;
+    const t = e.changedTouches[0];
+    const r = cnt.getBoundingClientRect();
+    setTooltip({ key, x: t.clientX - r.left, y: t.clientY - r.top });
+  }
+
+  const onComponentLeave = () => setTooltip(null);
+
+  const c2clPaths = [
+    'M330,125 L210,185',
+    'M480,125 L480,185',
+    'M630,125 L750,185',
+  ];
+  const cl2nPaths = [
+    'M150,273 L110,330',
+    'M270,273 L270,330',
+    'M480,273 L480,330',
+  ];
+
   return (
     <section className={styles.architectureSection}>
       <div className="container">
-        <div className={styles.sectionHeader}>
+        <div
+          ref={sectionRef}
+          className={clsx(styles.sectionHeader, styles.scrollAnimate, sectionVisible && styles.visible)}
+        >
           <h2 className={styles.sectionTitle}>平台架构</h2>
           <p className={styles.sectionSubtitle}>
-            云边协同的分布式计算架构，统一管理从云端到边缘节点的全链路
+            两层权限链（应用侧与资源侧）统一纳管，控制面与边缘运行时解耦
           </p>
         </div>
 
-        <div className={styles.architectureDiagram}>
+        <div
+          className={styles.architectureDiagram}
+          ref={containerRef}
+          style={{ position: 'relative' }}
+          onTouchStart={() => { setHoverLayer(null); setTooltip(null); }}
+        >
+          {tooltip && (
+            <div
+              className={styles.archTooltip}
+              style={{ left: tooltip.x, top: tooltip.y + 14 }}
+              aria-hidden="true"
+            >
+              <span className={styles.archTooltipArrow} />
+              {COMPONENT_TOOLTIPS[tooltip.key]}
+            </div>
+          )}
+
           <svg
-            viewBox="0 0 960 420"
+            viewBox="0 0 960 430"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={styles.architectureSvg}
             role="img"
-            aria-label="边缘平台云边协同架构图"
+            aria-label="边缘平台架构图：云端控制面 + 可选边缘运行时 + 边缘节点"
+            onMouseLeave={() => { setHoverLayer(null); setTooltip(null); }}
+            onTouchStart={(e) => { setHoverLayer(null); setTooltip(null); }}
           >
-            {/* ---- Cloud Layer ---- */}
-            <rect
-              x="280"
-              y="20"
-              width="400"
-              height="90"
-              rx="12"
-              className={styles.archCloudBox}
-            />
-            <Cloud
-              x="370"
-              y="36"
-              width="24"
-              height="24"
-              className={styles.archIcon}
-            />
-            <text x="480" y="55" className={styles.archTitle} textAnchor="middle">
-              云端管理面
-            </text>
-            <text x="480" y="80" className={styles.archSubtext} textAnchor="middle">
-              API Server / Controller / Console
-            </text>
-
-            {/* ---- Connection lines Cloud → Gateway ---- */}
-            <line
-              x1="380"
-              y1="110"
-              x2="240"
-              y2="180"
-              className={styles.archLine}
-            />
-            <line
-              x1="480"
-              y1="110"
-              x2="480"
-              y2="180"
-              className={styles.archLine}
-            />
-            <line
-              x1="580"
-              y1="110"
-              x2="720"
-              y2="180"
-              className={styles.archLine}
-            />
-
-            {/* ---- Edge Gateway Layer ---- */}
-            <rect
-              x="120"
-              y="180"
-              width="240"
-              height="80"
-              rx="10"
-              className={styles.archGatewayBox}
-            />
-            <Network
-              x="160"
-              y="200"
-              width="20"
-              height="20"
-              className={styles.archIcon}
-            />
-            <text x="240" y="215" className={styles.archTitle} textAnchor="middle">
-              边缘网关 A
-            </text>
-            <text x="240" y="240" className={styles.archSubtext} textAnchor="middle">
-              KubeEdge / OpenYurt
-            </text>
-
-            <rect
-              x="600"
-              y="180"
-              width="240"
-              height="80"
-              rx="10"
-              className={styles.archGatewayBox}
-            />
-            <Network
-              x="640"
-              y="200"
-              width="20"
-              height="20"
-              className={styles.archIcon}
-            />
-            <text x="720" y="215" className={styles.archTitle} textAnchor="middle">
-              边缘网关 B
-            </text>
-            <text x="720" y="240" className={styles.archSubtext} textAnchor="middle">
-              KubeEdge / OpenYurt
-            </text>
-
-            {/* Center gateway (vCluster) */}
-            <rect
-              x="370"
-              y="180"
-              width="220"
-              height="80"
-              rx="10"
-              className={styles.archGatewayBox}
-            />
-            <Server
-              x="405"
-              y="200"
-              width="20"
-              height="20"
-              className={styles.archIcon}
-            />
-            <text x="480" y="215" className={styles.archTitle} textAnchor="middle">
-              虚拟集群
-            </text>
-            <text x="480" y="240" className={styles.archSubtext} textAnchor="middle">
-              vCluster
-            </text>
-
-            {/* ---- Connection lines Gateway → Edge Nodes ---- */}
-            <line
-              x1="180"
-              y1="260"
-              x2="120"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="300"
-              y1="260"
-              x2="300"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="660"
-              y1="260"
-              x2="600"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="780"
-              y1="260"
-              x2="840"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="480"
-              y1="260"
-              x2="480"
-              y2="320"
-              className={styles.archLine}
-            />
-
-            {/* ---- Edge Nodes Layer ---- */}
-            {[60, 240, 420, 540, 780].map((nodeX, idx) => (
-              <g key={idx}>
-                <rect
-                  x={nodeX}
-                  y="320"
-                  width="140"
-                  height="60"
-                  rx="8"
-                  className={styles.archNodeBox}
+            {c2clPaths.map((path, i) => (
+              <circle key={`p-c2cl-${i}`} cx="0" cy="0" r="3" className={styles.archPulseDown}>
+                <animateMotion
+                  dur={`${2.5 + i * 0.5}s`}
+                  begin={`${i * 0.8}s`}
+                  repeatCount="indefinite"
+                  path={path}
                 />
-                <Smartphone
-                  x={nodeX + 12}
-                  y="336"
-                  width="16"
-                  height="16"
-                  className={styles.archIconSmall}
-                />
-                <text
-                  x={nodeX + 70}
-                  y="347"
-                  className={styles.archNodeTitle}
-                  textAnchor="middle"
-                >
-                  边缘节点 {idx + 1}
-                </text>
-                <text
-                  x={nodeX + 70}
-                  y="368"
-                  className={styles.archNodeSubtext}
-                  textAnchor="middle"
-                >
-                  终端设备
-                </text>
-              </g>
+              </circle>
             ))}
 
-            {/* ---- Layer labels (left side) ---- */}
-            <text x="20" y="65" className={styles.archLayerLabel}>
-              云端
-            </text>
-            <text x="20" y="220" className={styles.archLayerLabel}>
-              边缘
-            </text>
-            <text x="20" y="355" className={styles.archLayerLabel}>
-              设备
-            </text>
+            {cl2nPaths.map((path, i) => (
+              <circle key={`p-cl2n-${i}`} cx="0" cy="0" r="2.5" className={styles.archPulseDown}>
+                <animateMotion
+                  dur={`${2 + i * 0.4}s`}
+                  begin={`${i * 0.6 + 0.3}s`}
+                  repeatCount="indefinite"
+                  path={path}
+                />
+              </circle>
+            ))}
+
+            {c2clPaths.map((path, i) => (
+              <circle key={`p-up-${i}`} cx="0" cy="0" r="2" className={styles.archPulseUp}>
+                <animateMotion
+                  dur={`${3 + i * 0.6}s`}
+                  begin={`${i * 1.1 + 1.5}s`}
+                  repeatCount="indefinite"
+                  keyPoints="1;0"
+                  keyTimes="0;1"
+                  calcMode="linear"
+                  path={path}
+                />
+              </circle>
+            ))}
+
+            <line x1="330" y1="125" x2="210" y2="185" className={styles.archLine} />
+            <line x1="480" y1="125" x2="480" y2="185" className={styles.archLine} />
+            <line x1="630" y1="125" x2="750" y2="185" className={styles.archLine} />
+            <text x="248" y="162" className={styles.archConnLabel} textAnchor="middle">Direct</text>
+            <text x="714" y="162" className={styles.archConnLabel} textAnchor="middle">Proxy</text>
+            <line x1="150" y1="273" x2="110" y2="330" className={styles.archLine} />
+            <line x1="270" y1="273" x2="270" y2="330" className={styles.archLine} />
+            <line x1="660" y1="273" x2="630" y2="330" className={styles.archLine} />
+            <line x1="840" y1="273" x2="870" y2="330" className={styles.archLine} />
+            <line x1="480" y1="273" x2="480" y2="330" className={styles.archLine} />
+
+            <g
+              style={{
+                opacity: layerOpacity('cloud'),
+                transform: layerScale('cloud'),
+                transformBox: 'fill-box',
+                transformOrigin: 'center',
+                transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+              }}
+              onMouseEnter={() => setHoverLayer('cloud')}
+            >
+              <rect x="160" y="20" width="640" height="105" rx="12" className={styles.archCloudBox} />
+              <Cloud x="200" y="36" width="24" height="24" className={styles.archIcon} />
+              <text x="480" y="52" className={styles.archTitle} textAnchor="middle">云端控制面</text>
+              <line x1="453" y1="60" x2="453" y2="115" className={styles.archDivider} />
+              <line x1="667" y1="60" x2="667" y2="115" className={styles.archDivider} />
+              <Shield x="185" y="65" width="18" height="18" className={styles.archIconSmall} />
+              <text x="306" y="79" className={styles.archComponentTitle} textAnchor="middle">edge-apiserver</text>
+              <text x="306" y="98" className={styles.archSubtext} textAnchor="middle">7层请求过滤链</text>
+              <Settings x="470" y="65" width="18" height="18" className={styles.archIconSmall} />
+              <text x="560" y="79" className={styles.archComponentTitle} textAnchor="middle">edge-controller</text>
+              <text x="560" y="98" className={styles.archSubtext} textAnchor="middle">12+ K8s 控制器</text>
+              <MonitorCheck x="683" y="65" width="18" height="18" className={styles.archIconSmall} />
+              <text x="775" y="79" className={styles.archComponentTitle} textAnchor="middle">edge-console</text>
+              <text x="775" y="98" className={styles.archSubtext} textAnchor="middle">管理控制台</text>
+              <rect x="166" y="58" width="282" height="62" rx="6" className={styles.archComponentHitbox}
+                    onMouseEnter={(e) => onComponentEnter('apiserver', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('apiserver', e)} />
+              <rect x="453" y="58" width="209" height="62" rx="6" className={styles.archComponentHitbox}
+                    onMouseEnter={(e) => onComponentEnter('controller', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('controller', e)} />
+              <rect x="667" y="58" width="128" height="62" rx="6" className={styles.archComponentHitbox}
+                    onMouseEnter={(e) => onComponentEnter('console', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('console', e)} />
+            </g>
+
+            <g
+              style={{
+                opacity: layerOpacity('cluster'),
+                transform: layerScale('cluster'),
+                transformBox: 'fill-box',
+                transformOrigin: 'center',
+                transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+              }}
+              onMouseEnter={() => setHoverLayer('cluster')}
+            >
+              <rect x="80" y="185" width="260" height="88" rx="10" className={styles.archGatewayBox}
+                    onMouseEnter={(e) => onComponentEnter('clusterA', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('clusterA', e)} />
+              <Network x="105" y="202" width="20" height="20" className={styles.archIcon} />
+              <text x="210" y="218" className={styles.archTitle} textAnchor="middle">边缘集群 A</text>
+              <text x="210" y="238" className={styles.archSubtext} textAnchor="middle">可选运行时:</text>
+              <text x="210" y="258" className={styles.archSubtext} textAnchor="middle">OpenYurt / KubeEdge / K8s</text>
+
+              <rect x="360" y="185" width="240" height="88" rx="10" className={styles.archGatewayBox}
+                    onMouseEnter={(e) => onComponentEnter('vcluster', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('vcluster', e)} />
+              <Server x="385" y="202" width="20" height="20" className={styles.archIcon} />
+              <text x="480" y="218" className={styles.archTitle} textAnchor="middle">虚拟集群</text>
+              <text x="480" y="242" className={styles.archSubtext} textAnchor="middle">vCluster (按需创建)</text>
+              <text x="480" y="262" className={styles.archSubtext} textAnchor="middle">自动安装边缘运行时</text>
+
+              <rect x="620" y="185" width="260" height="88" rx="10" className={styles.archGatewayBox}
+                    onMouseEnter={(e) => onComponentEnter('clusterB', e)} onMouseLeave={onComponentLeave}
+                    onTouchStart={(e) => onComponentTap('clusterB', e)} />
+              <Network x="645" y="202" width="20" height="20" className={styles.archIcon} />
+              <text x="750" y="218" className={styles.archTitle} textAnchor="middle">边缘集群 B</text>
+              <text x="750" y="238" className={styles.archSubtext} textAnchor="middle">可选运行时:</text>
+              <text x="750" y="258" className={styles.archSubtext} textAnchor="middle">KubeEdge / OpenYurt / K8s</text>
+            </g>
+
+            <g
+              style={{
+                opacity: layerOpacity('node'),
+                transform: layerScale('node'),
+                transformBox: 'fill-box',
+                transformOrigin: 'center',
+                transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+              }}
+              onMouseEnter={() => setHoverLayer('node')}
+            >
+              {[50, 200, 410, 600, 800].map((nodeX, idx) => (
+                <g key={idx}>
+                  <rect x={nodeX} y="330" width="140" height="60" rx="8" className={styles.archNodeBox} />
+                  <Smartphone x={nodeX + 12} y="346" width="16" height="16" className={styles.archIconSmall} />
+                  <text x={nodeX + 70} y="357" className={styles.archNodeTitle} textAnchor="middle">
+                    边缘节点 {idx + 1}
+                  </text>
+                  <text x={nodeX + 70} y="378" className={styles.archNodeSubtext} textAnchor="middle">
+                    算力 / 设备
+                  </text>
+                </g>
+              ))}
+            </g>
+
+            <text x="12" y="73" className={styles.archLayerLabel}>云端</text>
+            <text x="12" y="232" className={styles.archLayerLabel}>边缘</text>
+            <text x="12" y="365" className={styles.archLayerLabel}>节点</text>
           </svg>
         </div>
       </div>
@@ -368,40 +448,69 @@ interface HighlightItem {
 const HIGHLIGHTS: HighlightItem[] = [
   {
     number: '01',
-    title: '云边协同',
+    title: '统一权限管理',
     description:
-      '统一管理云端和边缘资源，支持 KubeEdge、OpenYurt 等主流边缘框架，实现跨地域、跨网络的集群协同。',
-    Icon: Cloud,
+      'edge-apiserver 7 层请求过滤链实现统一认证与授权；单一 IAMRole/IAMRoleBinding 模型覆盖从 Platform 到 Namespace 的全层级权限，无需重复配置。',
+    Icon: Shield,
   },
   {
     number: '02',
-    title: '开箱即用',
+    title: '多集群调度',
     description:
-      '基于 Helm 一键部署，内置集群管理、应用分发、监控告警等开箱即用的核心能力，降低边缘计算落地门槛。',
-    Icon: Zap,
+      '支持 Direct（KubeConfig）和 Proxy（反向隧道）两种集群接入模式，edge-controller 内置 12+ 控制器处理跨集群资源调度与 RoleTemplate 聚合。',
+    Icon: Cloud,
   },
   {
     number: '03',
-    title: '安全可靠',
+    title: '边云协同',
     description:
-      '多租户工作空间隔离，细粒度 RBAC 权限控制，完整的审计日志，保障边缘业务安全合规运行。',
-    Icon: Shield,
+      '三种边缘运行时（OpenYurt、KubeEdge、vanilla K8s）均为可选，平台核心与具体运行时解耦；vCluster 按需自动创建并安装边缘运行时。',
+    Icon: Zap,
   },
   {
     number: '04',
     title: '开放标准',
     description:
-      '全面拥抱云原生生态，基于 Kubernetes 标准 API 构建，兼容主流 CI/CD 工具链和可观测性方案。',
+      '基于 Kubernetes 标准 API 构建，兼容主流可观测性方案（Prometheus）；集成 VAST 存储虚拟化与 HAMi GPU 虚拟化，加速 AI 应用边缘部署。',
     Icon: Settings,
   },
 ];
 
-/** Platform highlight numbered list */
+/** Single highlight item with count-up on the ordinal and scroll entry. */
+function AnimatedHighlightItem({ item, delay }: { item: HighlightItem; delay: number }) {
+  const { ref, isVisible } = useScrollAnimation();
+  const targetNum = parseInt(item.number, 10);
+  const count = useCountUp(targetNum, isVisible);
+  const displayNum = String(count).padStart(2, '0');
+
+  return (
+    <div
+      ref={ref}
+      className={clsx(styles.highlightItem, styles.scrollAnimate, isVisible && styles.visible)}
+      style={{ '--delay': `${delay}s` } as React.CSSProperties}
+    >
+      <div className={styles.highlightNumber}>{displayNum}</div>
+      <div className={styles.highlightContent}>
+        <div className={styles.highlightTitleRow}>
+          <item.Icon className={styles.highlightIcon} />
+          <h3 className={styles.highlightTitle}>{item.title}</h3>
+        </div>
+        <p className={styles.highlightDesc}>{item.description}</p>
+      </div>
+    </div>
+  );
+}
+
 function HighlightsSection() {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+
   return (
     <section className={styles.highlightsSection}>
       <div className="container">
-        <div className={styles.sectionHeader}>
+        <div
+          ref={headerRef}
+          className={clsx(styles.sectionHeader, styles.scrollAnimate, headerVisible && styles.visible)}
+        >
           <h2 className={styles.sectionTitle}>平台优势</h2>
           <p className={styles.sectionSubtitle}>
             面向企业级边缘场景，提供安全、高效、开放的全栈解决方案
@@ -409,17 +518,8 @@ function HighlightsSection() {
         </div>
 
         <div className={styles.highlightsList}>
-          {HIGHLIGHTS.map((item) => (
-            <div key={item.number} className={styles.highlightItem}>
-              <div className={styles.highlightNumber}>{item.number}</div>
-              <div className={styles.highlightContent}>
-                <div className={styles.highlightTitleRow}>
-                  <item.Icon className={styles.highlightIcon} />
-                  <h3 className={styles.highlightTitle}>{item.title}</h3>
-                </div>
-                <p className={styles.highlightDesc}>{item.description}</p>
-              </div>
-            </div>
+          {HIGHLIGHTS.map((item, idx) => (
+            <AnimatedHighlightItem key={item.number} item={item} delay={idx * 0.15} />
           ))}
         </div>
       </div>
@@ -444,23 +544,37 @@ const ECOSYSTEM: TechItem[] = [
   { name: 'KubeEdge', Icon: Network },
   { name: 'OpenYurt', Icon: Server },
   { name: 'Prometheus', Icon: MonitorCheck },
+  { name: 'HAMi', Icon: Cpu },
+  { name: 'VAST', Icon: HardDrive },
 ];
 
-/** Technology ecosystem logo grid */
 function EcosystemSection() {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: gridRef, isVisible: gridVisible } = useScrollAnimation();
+
   return (
     <section className={styles.ecosystemSection}>
       <div className="container">
-        <div className={styles.sectionHeader}>
+        <div
+          ref={headerRef}
+          className={clsx(styles.sectionHeader, styles.scrollAnimate, headerVisible && styles.visible)}
+        >
           <h2 className={styles.sectionTitle}>技术生态</h2>
           <p className={styles.sectionSubtitle}>
             基于云原生开源技术栈构建，与主流工具链无缝集成
           </p>
         </div>
 
-        <div className={styles.ecosystemGrid}>
-          {ECOSYSTEM.map((tech) => (
-            <div key={tech.name} className={styles.ecosystemItem}>
+        <div
+          ref={gridRef}
+          className={clsx(styles.ecosystemGrid, styles.scrollAnimate, gridVisible && styles.visible)}
+        >
+          {ECOSYSTEM.map((tech, idx) => (
+            <div
+              key={tech.name}
+              className={styles.ecosystemItem}
+              style={{ '--delay': `${idx * 0.07}s` } as React.CSSProperties}
+            >
               {tech.icon ? (
                 <img
                   src={tech.icon}
@@ -511,12 +625,34 @@ const STEPS: StepItem[] = [
   },
 ];
 
-/** Quick start onboarding steps */
+/** Single step card with staggered scroll entry. */
+function AnimatedStepCard({ item, delay }: { item: StepItem; delay: number }) {
+  const { ref, isVisible } = useScrollAnimation();
+
+  return (
+    <div
+      ref={ref}
+      className={clsx(styles.stepCard, styles.scrollAnimate, isVisible && styles.visible)}
+      style={{ '--delay': `${delay}s` } as React.CSSProperties}
+    >
+      <div className={styles.stepNumber}>{item.step}</div>
+      <item.Icon className={styles.stepIcon} />
+      <h3 className={styles.stepTitle}>{item.title}</h3>
+      <p className={styles.stepDesc}>{item.description}</p>
+    </div>
+  );
+}
+
 function QuickStartSection() {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+
   return (
     <section className={styles.quickStartSection}>
       <div className="container">
-        <div className={styles.sectionHeader}>
+        <div
+          ref={headerRef}
+          className={clsx(styles.sectionHeader, styles.scrollAnimate, headerVisible && styles.visible)}
+        >
           <h2 className={styles.sectionTitle}>快速上手</h2>
           <p className={styles.sectionSubtitle}>
             三步完成从部署到应用分发的完整流程
@@ -526,12 +662,7 @@ function QuickStartSection() {
         <div className={styles.stepsRow}>
           {STEPS.map((item, idx) => (
             <React.Fragment key={item.step}>
-              <div className={styles.stepCard}>
-                <div className={styles.stepNumber}>{item.step}</div>
-                <item.Icon className={styles.stepIcon} />
-                <h3 className={styles.stepTitle}>{item.title}</h3>
-                <p className={styles.stepDesc}>{item.description}</p>
-              </div>
+              <AnimatedStepCard item={item} delay={idx * 0.18} />
               {idx < STEPS.length - 1 && (
                 <ArrowRight className={styles.stepArrow} aria-hidden="true" />
               )}
@@ -556,7 +687,6 @@ function QuickStartSection() {
    Page Root
    ============================================ */
 
-/** Homepage root component */
 export default function Home(): React.ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
@@ -565,6 +695,7 @@ export default function Home(): React.ReactNode {
       description="面向云原生应用的智能边缘计算平台，提供边缘集群管理、应用分发、GitOps 工作流等核心能力"
     >
       <HeroSection />
+      <WaveDivider />
       <main>
         <ArchitectureSection />
         <div className="background-grid">

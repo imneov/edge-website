@@ -156,6 +156,8 @@ Proxy 模式下，边缘 Agent 使用 Token 主动连接云端的反向代理。
 
 对于需要完整 Kubernetes 控制面但不希望部署独立物理集群的场景，平台支持通过 VCluster（虚拟集群）快速创建轻量级边缘集群。
 
+> **注意**：VCluster 是在 Host K8s 内部创建的虚拟控制面，调度依赖宿主机节点，适用于多租户隔离或快速创建测试环境。它**不适用**于物理独立的边缘站点场景——独立边缘站点需要直接在边缘硬件上部署 K3s/K0s，再以 Member Cluster 形式接入平台。
+
 VCluster 的创建完全由 Controller 自动化管理，通过 Helm Chart 安装，支持 K3s/K0s/K8s 三种发行版（Distro）。
 
 > **源码实证**：Cluster Controller 在 Reconcile 时检查是否启用了 VCluster：
@@ -262,7 +264,7 @@ DeletionTimestamp 被设置
 |------|------|-------------|
 | 嵌入式边缘（ARM 网关、树莓派） | 资源极度受限（&lt;1GB 内存） | KubeEdge |
 | 标准服务器级边缘（工厂、门店） | 资源充足，需要与云端无缝协作 | OpenYurt |
-| 独立运行的边缘站点 | 需要完整 K8s 控制面，独立自治 | VCluster（K3s/K0s） |
+| 独立运行的边缘站点 | 需要完整 K8s 控制面，独立自治 | K3s/K0s（独立部署，作为 Member Cluster 接入平台） |
 
 平台通过可插拔的 ComponentInstaller 接口支持多种边缘运行时，新增运行时只需要实现这个接口并通过 `init()` 注册。
 

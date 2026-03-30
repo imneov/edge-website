@@ -26,11 +26,11 @@ Kubernetes 原生 RBAC 只有两个层级：
 
 ### Edge Platform 的 Scope 层级
 
-Edge Platform 扩展了 Scope 概念，提供 5 个层级：
+Edge Platform 扩展了 Scope 概念，提供 5 个业务层级和 1 个特殊类型：
 
 ```mermaid
 graph TD
-    A[Global Platform] --> B[Cluster]
+    A[Platform] --> B[Cluster]
     B --> C1[Workspace]
     B --> C2[NodeGroup]
     C1 --> D[Namespace]
@@ -42,13 +42,20 @@ graph TD
     style D fill:#fce4ec
 ```
 
-| Scope | 说明 | 使用场景 | K8s 映射 |
-|-------|------|---------|----------|
-| **global** | 全局平台级别 | 平台管理员 | ClusterRole |
+| Scope 类型 (`scope`) | 说明 | 使用场景 | K8s 映射 |
+|---------------------|------|---------|----------|
+| **platform** | 全局平台级别 | 平台管理员 | ClusterRole |
 | **cluster** | 集群级别 | 集群管理员 | ClusterRole |
 | **workspace** | 工作空间级别（应用视图） | 应用团队管理 | ClusterRole |
 | **nodegroup** | 节点组级别（资源视图） | 资源池管理 | ClusterRole |
-| **namespace** | 命名空间级别 | 开发人员 | Role |
+| **namespace** | 命名空间级别 | 开发人员 | ClusterRole |
+| **cross-cluster** | 跨集群请求（特殊类型） | 跨集群访问拦截 | — |
+
+> **术语说明**：Scope 有两个不同维度的值需要区分：
+> - **Scope 类型**（`iam.theriseunion.io/scope` 标签值）：如 `platform`、`cluster`、`workspace`
+> - **Scope 实例值**（`iam.theriseunion.io/scope-value` 标签值）：如 `global`（platform 层级的固定实例值）、`cluster-beijing`、`ai-project`
+>
+> 文档中 `global` 指的是 platform scope 的 scope-value（固定为 `"global"`），不要与 scope 类型名 `platform` 混用。
 
 ## Scope 标签设计
 
@@ -68,7 +75,7 @@ metadata:
 
 ### 标签应用示例
 
-**1. Global Scope 的 IAMRole**
+**1. Platform Scope 的 IAMRole**
 
 ```yaml
 apiVersion: iam.theriseunion.io/v1alpha1
@@ -76,8 +83,8 @@ kind: IAMRole
 metadata:
   name: platform-admin
   labels:
-    iam.theriseunion.io/scope: global
-    iam.theriseunion.io/scope-value: platform
+    iam.theriseunion.io/scope: platform       # scope 类型: platform
+    iam.theriseunion.io/scope-value: global   # platform 层级的实例值固定为 global
 spec:
   rules:
     - apiGroups: ["*"]
@@ -123,10 +130,10 @@ spec:
 
 ### 垂直继承链
 
-Namespace、Workspace、Cluster、Global 形成垂直的权限继承链：
+Namespace、Workspace、Cluster、Platform 形成垂直的权限继承链：
 
 ```
-global (platform)
+platform (scope-value: global)
   ↓
 cluster (cluster-beijing)
   ↓
@@ -138,7 +145,7 @@ namespace (ai-project-dev)
 **继承原则**: 上级 Scope 的权限自动下传到下级 Scope。
 
 **示例**:
-- 如果用户在 `global` 有权限，则可以访问所有 cluster、workspace、namespace
+- 如果用户在 `platform` 有权限，则可以访问所有 cluster、workspace、nodegroup、namespace
 - 如果用户在 `workspace-ai-project` 有权限，则可以访问该 workspace 下的所有 namespace
 - 如果用户在 `namespace-dev` 有权限，则只能访问该 namespace
 
@@ -225,8 +232,9 @@ spec:
 ```
 1. namespace scope    (最具体)
 2. workspace scope
-3. cluster scope
-4. global scope       (最抽象)
+3. nodegroup scope
+4. cluster scope
+5. platform scope     (最抽象)
 ```
 
 **核心原则**: 任何一层允许 = 整体允许（短路机制）
@@ -242,7 +250,7 @@ sequenceDiagram
     participant NS as Namespace Scope
     participant WS as Workspace Scope
     participant CS as Cluster Scope
-    participant GS as Global Scope
+    participant PS as Platform Scope
 
     User->>UA: Get Pod in ai-project-dev
     UA->>NS: Check namespace-ai-project-dev
@@ -252,21 +260,21 @@ sequenceDiagram
     WS-->>UA: Allow ✓
 
     UA-->>User: 200 OK
-    Note over UA: 短路返回，不再检查下级
+    Note over UA: 短路返回，不再检查上级
 ```
 
 ### 权限继承示例
 
-**场景 1: Global 管理员**
+**场景 1: Platform 管理员**
 
 ```yaml
 apiVersion: iam.theriseunion.io/v1alpha1
 kind: IAMRoleBinding
 metadata:
-  name: admin-global
+  name: admin-platform
   labels:
-    iam.theriseunion.io/scope: global
-    iam.theriseunion.io/scope-value: platform
+    iam.theriseunion.io/scope: platform       # scope 类型
+    iam.theriseunion.io/scope-value: global   # platform 层级固定值
 spec:
   subjects:
     - kind: User
@@ -414,15 +422,15 @@ spec:
 
 ### 映射规则
 
-| IAMRole Scope | K8s 资源 | 命名空间 | RoleBinding 类型 |
-|--------------|---------|---------|-----------------|
-| global | ClusterRole | - | ClusterRoleBinding |
-| cluster | ClusterRole | - | ClusterRoleBinding |
-| workspace | ClusterRole | - | ClusterRoleBinding* |
-| nodegroup | ClusterRole | - | ClusterRoleBinding* |
-| namespace | Role | 指定 NS | RoleBinding |
+所有 IAMRole Scope 类型统一映射为 ClusterRole + ClusterRoleBinding，Scope 限制通过 Label 和 UniversalAuthorizer 的级联检查实现，不依赖 K8s namespace-scoped 的 Role/RoleBinding：
 
-\* Workspace 和 NodeGroup 的 ClusterRoleBinding 需要通过额外机制限制作用范围。
+| IAMRole Scope | K8s 资源类型 | RoleBinding 类型 |
+|--------------|------------|-----------------|
+| platform | ClusterRole | ClusterRoleBinding |
+| cluster | ClusterRole | ClusterRoleBinding |
+| workspace | ClusterRole | ClusterRoleBinding |
+| nodegroup | ClusterRole | ClusterRoleBinding |
+| namespace | ClusterRole | ClusterRoleBinding |
 
 ### 同步示例
 
@@ -444,12 +452,14 @@ spec:
       verbs: ["get", "list", "create"]
 
 ---
-# K8s Role (Target)
+# K8s ClusterRole (Target) — 注意：namespace scope 也生成 ClusterRole，不是 Role
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  name: dev-role
-  namespace: ai-project-dev
+  name: rs:iam:namespace:ai-project-dev:dev-role
+  labels:
+    iam.theriseunion.io/scope: namespace
+    iam.theriseunion.io/scope-value: ai-project-dev
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
@@ -510,6 +520,14 @@ roleRef:
 ```
 
 在 UniversalAuthorizer 中，通过检查标签来确定权限是否适用于当前资源。
+
+### Cross-Cluster 特殊类型
+
+`cross-cluster` 是一个特殊的 Scope 类型，不用于常规权限授予，而是用于标识跨集群请求：
+
+- UniversalAuthorizer 检测到跨集群请求时，自动设置 Scope 类型为 `cross-cluster`
+- `cross-cluster` 请求默认被拒绝，不参与正常的级联查找流程
+- 这一机制是跨集群访问控制的边界守卫，防止意外的跨集群资源访问
 
 ## 实战示例
 
@@ -676,7 +694,7 @@ kubectl get workspace ai-project -o yaml | grep scope.theriseunion.io/cluster
 
 ### 1. 合理划分 Scope
 
-- **Global**: 只给平台管理员
+- **Platform**: 只给平台管理员（scope-value 固定为 `global`）
 - **Cluster**: 给集群管理员和 SRE
 - **Workspace**: 给应用团队负责人
 - **NodeGroup**: 给基础设施团队
@@ -712,8 +730,8 @@ kubectl get workspace ai-project -o yaml | grep scope.theriseunion.io/cluster
 不要在高层级 Scope 授予过多权限：
 
 ```yaml
-# 避免在 global 授予普通用户权限
-❌ global scope → developer role
+# 避免在 platform 授予普通用户权限
+❌ platform scope → developer role
 
 # 在合适的 Scope 授予权限
 ✅ workspace scope → developer role

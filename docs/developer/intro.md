@@ -96,7 +96,7 @@ title: 开发指南概述
 
 遇到问题？以下是获取帮助的途径：
 
-- **GitHub Issues** - [提交 Bug 或功能请求](https://github.com/imneov/edge-apiserver/issues)
+- **GitHub Issues** - [提交 Bug 或功能请求](https://github.com/theriseunion/edge-platform/issues)
 - **技术文档** - 查看 [API 参考文档](/docs/api-reference/overview)
 - **社区讨论** - 加入技术交流群
 

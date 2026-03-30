@@ -1,7 +1,14 @@
 /**
  * Core Capabilities section styles
- * 6 feature cards in 3x2 grid with glassmorphism + glow hover
+ *
+ * Grid: 12-column CSS Grid — large cards span 6, standard cards span 3.
+ * Hover: gradient border glow via background-clip double-background trick.
+ * Entry: scroll-triggered opacity + translateY animation.
  */
+
+/* ============================================
+   Section container
+   ============================================ */
 
 .features {
   display: flex;
@@ -10,7 +17,9 @@
   width: 100%;
 }
 
-/* ---- Section header ---- */
+/* ============================================
+   Section header
+   ============================================ */
 
 .sectionHeader {
   margin-bottom: 3rem;
@@ -41,13 +50,53 @@
   color: #94a3b8;
 }
 
-/* ---- Feature card column ---- */
+/* ============================================
+   Feature grid (CSS Grid, 12 columns)
+   ============================================ */
 
-.featureCol {
-  margin-bottom: 1.5rem;
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
 }
 
-/* ---- Card inner - glassmorphism in dark mode ---- */
+/* Large card: first 2 features, 6/12 columns */
+.featureColLarge {
+  grid-column: span 6;
+}
+
+/* Standard card: 3/12 columns */
+.featureCol {
+  grid-column: span 3;
+}
+
+/* ============================================
+   Scroll animation
+   ============================================ */
+
+.scrollAnimate {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+  transition-delay: var(--delay, 0s);
+}
+
+.scrollAnimate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollAnimate {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================================
+   Card
+   ============================================ */
 
 .card {
   cursor: pointer;
@@ -57,29 +106,51 @@
   align-items: center;
   text-align: center;
   padding: 2rem 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid transparent;
-  transition: all 0.25s ease-out;
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  background-clip: padding-box;
+  transition: transform 0.25s ease-out, box-shadow 0.3s ease-out,
+              background 0.3s ease-out, border-color 0.3s ease-out;
 }
 
 [data-theme='dark'] .card {
-  border-color: rgba(96, 165, 250, 0.08);
-  background: rgba(30, 41, 59, 0.4);
-  backdrop-filter: blur(4px);
+  border-color: rgba(96, 165, 250, 0.1);
+  background: rgba(30, 41, 59, 0.45);
+  backdrop-filter: blur(6px);
+  background-clip: padding-box;
 }
 
+/* Gradient border glow — background-clip double-background trick */
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
-  border-color: rgba(59, 130, 246, 0.2);
+  transform: translateY(-5px);
+  border-color: transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #3b82f6, #06b6d4) border-box;
+  box-shadow:
+    0 10px 28px rgba(59, 130, 246, 0.15),
+    0 0 24px rgba(6, 182, 212, 0.08);
 }
 
 [data-theme='dark'] .card:hover {
-  box-shadow: 0 12px 32px -8px rgba(59, 130, 246, 0.12);
-  border-color: rgba(96, 165, 250, 0.25);
+  border-color: transparent;
+  background:
+    linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)) padding-box,
+    linear-gradient(135deg, #60a5fa, #22d3ee) border-box;
+  box-shadow:
+    0 10px 36px rgba(59, 130, 246, 0.22),
+    0 0 32px rgba(34, 211, 238, 0.12);
 }
 
-/* ---- Icon wrapper - gradient + glow ---- */
+/* Large card extra padding */
+.cardLarge {
+  padding: 2.5rem 2rem;
+}
+
+/* ============================================
+   Icon wrapper
+   ============================================ */
 
 .iconWrapper {
   width: 64px;
@@ -94,20 +165,29 @@
 }
 
 [data-theme='dark'] .iconWrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(6, 182, 212, 0.12));
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.08);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
+}
+
+.iconWrapperLarge {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  margin-bottom: 1.75rem;
 }
 
 .card:hover .iconWrapper {
-  transform: scale(1.1);
-  box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.25);
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.3);
 }
 
 [data-theme='dark'] .card:hover .iconWrapper {
-  box-shadow: 0 0 24px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 28px rgba(59, 130, 246, 0.35);
 }
 
-/* ---- Icon ---- */
+/* ============================================
+   Icon
+   ============================================ */
 
 .featureIcon {
   width: 32px;
@@ -119,7 +199,14 @@
   color: #60a5fa;
 }
 
-/* ---- Title ---- */
+.featureIconLarge {
+  width: 40px;
+  height: 40px;
+}
+
+/* ============================================
+   Title
+   ============================================ */
 
 .featureTitle {
   font-size: 1.25rem;
@@ -132,11 +219,17 @@
   color: #f1f5f9;
 }
 
-/* ---- Description ---- */
+.cardLarge .featureTitle {
+  font-size: 1.4rem;
+}
+
+/* ============================================
+   Description
+   ============================================ */
 
 .featureDesc {
   color: #64748b;
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 0;
   font-size: 0.9rem;
 }
@@ -145,7 +238,13 @@
   color: #94a3b8;
 }
 
-/* ---- Responsive ---- */
+.cardLarge .featureDesc {
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
 
 @media screen and (max-width: 996px) {
   .features {
@@ -154,5 +253,21 @@
 
   .sectionHeader {
     margin-bottom: 2rem;
+  }
+
+  /* Large cards go full width, standard cards 2-per-row */
+  .featureColLarge {
+    grid-column: span 12;
+  }
+
+  .featureCol {
+    grid-column: span 6;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .featureColLarge,
+  .featureCol {
+    grid-column: span 12;
   }
 }

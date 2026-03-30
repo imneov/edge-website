@@ -50,7 +50,7 @@ const config: Config = {
           path: 'docs',
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
-          editUrl: 'https://github.com/imneov/edge-website/tree/main/',
+          editUrl: 'https://github.com/theriseunion/edge-website/tree/main/',
         },
         blog: false, // 禁用博客功能
         theme: {
@@ -104,7 +104,7 @@ const config: Config = {
           label: '使用文档',
         },
         {
-          to: '/whitepaper/README',
+          to: '/whitepaper',
           position: 'left',
           label: '技术白皮书',
         },
@@ -114,7 +114,7 @@ const config: Config = {
           label: '开发指南',
         },
         {
-          href: 'https://github.com/imneov/edge-website',
+          href: 'https://github.com/theriseunion/edge-website',
           position: 'right',
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
@@ -146,11 +146,11 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/imneov/edge-website',
+              href: 'https://github.com/theriseunion/edge-website',
             },
             {
               label: '问题反馈',
-              href: 'https://github.com/imneov/edge-website/issues',
+              href: 'https://github.com/theriseunion/edge-website/issues',
             },
           ],
         },
@@ -159,7 +159,7 @@ const config: Config = {
           items: [
             {
               label: '技术白皮书',
-              to: '/whitepaper/README',
+              to: '/whitepaper',
             },
             {
               label: '开发指南',
@@ -167,11 +167,11 @@ const config: Config = {
             },
             {
               label: 'Edge API Server',
-              href: 'https://github.com/imneov/edge-apiserver',
+              href: 'https://github.com/theriseunion/edge-platform',
             },
             {
               label: 'Edge Console',
-              href: 'https://github.com/imneov/edge-console',
+              href: 'https://github.com/theriseunion/edge-platform',
             },
           ],
         },

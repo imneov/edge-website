@@ -338,6 +338,8 @@ type SimpleCache struct {
 | **Refresh Token** | Token 续期 | 长时间会话保持 |
 | **Client Credentials** | 服务账号认证 | 服务间调用 |
 
+> **说明**：生产环境默认启用 HMAC 模式（`pkg/oapis/oauth/hmac_handler.go`），该模式仅实现 **Password Grant** 和 **Client Credentials** 两种授权模式，其余模式返回 `unsupported_grant_type`。Authorization Code 和 Refresh Token 需切换至 RSA 模式方可使用。
+
 > — `pkg/oapis/oauth/handler.go`
 
 ### JWT Token 结构
