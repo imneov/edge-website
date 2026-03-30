@@ -90,6 +90,14 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    announcementBar: {
+      id: 'release_v1',
+      content:
+        '🎉 边缘平台 v1.0 正式发布 — <a href="/whitepaper/README" style="color:inherit;text-decoration:underline;">查看技术白皮书</a>，了解统一 IAM 架构与多集群管理能力',
+      backgroundColor: '#0f172a',
+      textColor: '#94a3b8',
+      isCloseable: true,
+    },
     navbar: {
       title: '边缘平台',
       logo: {
@@ -189,6 +197,13 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
   } satisfies Preset.ThemeConfig,
+  stylesheets: [
+    {
+      // Google Fonts via loli.net CN mirror: Noto Sans SC (Chinese) + Inter (English)
+      href: 'https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap',
+      type: 'text/css',
+    },
+  ],
 };
 
 export default config;

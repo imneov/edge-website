@@ -1,8 +1,8 @@
 /**
- * Core Capabilities section styles
+ * Core Capabilities section styles — Commercial Enterprise Edition
  *
  * Grid: 12-column CSS Grid — large cards span 6, standard cards span 3.
- * Hover: gradient border glow via background-clip double-background trick.
+ * Hover: clean border + shadow (no gradient glow).
  * Entry: scroll-triggered opacity + translateY animation.
  */
 
@@ -13,8 +13,13 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 5rem 0;
+  padding: 6rem 0;
   width: 100%;
+  background-color: #ffffff;
+}
+
+[data-theme='dark'] .features {
+  background-color: #0f172a;
 }
 
 /* ============================================
@@ -29,9 +34,10 @@
 .sectionTitle {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #0f172a;
   margin-bottom: 0.75rem;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 [data-theme='dark'] .sectionTitle {
@@ -39,7 +45,7 @@
 }
 
 .sectionSubtitle {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   line-height: 1.7;
   color: #64748b;
   max-width: 600px;
@@ -48,6 +54,19 @@
 
 [data-theme='dark'] .sectionSubtitle {
   color: #94a3b8;
+}
+
+/* ============================================
+   Rotating gradient keyword
+   ============================================ */
+
+.rotatingKeyword {
+  display: inline-block;
+  transition: opacity 0.35s ease-out;
+}
+
+.rotatingKeywordFade {
+  opacity: 0;
 }
 
 /* ============================================
@@ -76,7 +95,7 @@
 
 .scrollAnimate {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(20px);
   transition: opacity 0.55s ease-out, transform 0.55s ease-out;
   transition-delay: var(--delay, 0s);
 }
@@ -95,7 +114,7 @@
 }
 
 /* ============================================
-   Card
+   Card — clean, no glassmorphism
    ============================================ */
 
 .card {
@@ -106,41 +125,26 @@
   align-items: center;
   text-align: center;
   padding: 2rem 1.5rem;
-  border-radius: 0.875rem;
+  border-radius: 8px;
   border: 1px solid #e2e8f0;
-  background: #ffffff;
-  background-clip: padding-box;
-  transition: transform 0.25s ease-out, box-shadow 0.3s ease-out,
-              background 0.3s ease-out, border-color 0.3s ease-out;
+  background: #f8fafc;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
 }
 
 [data-theme='dark'] .card {
-  border-color: rgba(96, 165, 250, 0.1);
-  background: rgba(30, 41, 59, 0.45);
-  backdrop-filter: blur(6px);
-  background-clip: padding-box;
+  border-color: #1e293b;
+  background: #1e293b;
 }
 
-/* Gradient border glow — background-clip double-background trick */
 .card:hover {
-  transform: translateY(-5px);
-  border-color: transparent;
-  background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(135deg, #3b82f6, #06b6d4) border-box;
-  box-shadow:
-    0 10px 28px rgba(59, 130, 246, 0.15),
-    0 0 24px rgba(6, 182, 212, 0.08);
+  transform: translateY(-3px);
+  border-color: #94a3b8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme='dark'] .card:hover {
-  border-color: transparent;
-  background:
-    linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)) padding-box,
-    linear-gradient(135deg, #60a5fa, #22d3ee) border-box;
-  box-shadow:
-    0 10px 36px rgba(59, 130, 246, 0.22),
-    0 0 32px rgba(34, 211, 238, 0.12);
+  border-color: #475569;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 /* Large card extra padding */
@@ -149,40 +153,34 @@
 }
 
 /* ============================================
-   Icon wrapper
+   Icon wrapper — clean background, no glow
    ============================================ */
 
 .iconWrapper {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 12px;
+  background: #eff6ff;
   margin-bottom: 1.5rem;
-  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+  transition: transform 0.2s ease-out;
 }
 
 [data-theme='dark'] .iconWrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
+  background: rgba(57, 131, 247, 0.12);
 }
 
 .iconWrapperLarge {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
   margin-bottom: 1.75rem;
 }
 
 .card:hover .iconWrapper {
-  transform: scale(1.1) rotate(3deg);
-  box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.3);
-}
-
-[data-theme='dark'] .card:hover .iconWrapper {
-  box-shadow: 0 0 28px rgba(59, 130, 246, 0.35);
+  transform: scale(1.06);
 }
 
 /* ============================================
@@ -190,9 +188,9 @@
    ============================================ */
 
 .featureIcon {
-  width: 32px;
-  height: 32px;
-  color: #3b82f6;
+  width: 30px;
+  height: 30px;
+  color: #3983F7;
 }
 
 [data-theme='dark'] .featureIcon {
@@ -200,8 +198,8 @@
 }
 
 .featureIconLarge {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 
 /* ============================================
@@ -209,10 +207,11 @@
    ============================================ */
 
 .featureTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #1e293b;
+  color: #0f172a;
+  line-height: 1.4;
 }
 
 [data-theme='dark'] .featureTitle {
@@ -220,7 +219,7 @@
 }
 
 .cardLarge .featureTitle {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
 }
 
 /* ============================================
@@ -229,7 +228,7 @@
 
 .featureDesc {
   color: #64748b;
-  line-height: 1.65;
+  line-height: 1.7;
   margin-bottom: 0;
   font-size: 0.9rem;
 }
@@ -239,7 +238,7 @@
 }
 
 .cardLarge .featureDesc {
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
 }
 
 /* ============================================
@@ -248,7 +247,7 @@
 
 @media screen and (max-width: 996px) {
   .features {
-    padding: 3rem 0;
+    padding: 4rem 0;
   }
 
   .sectionHeader {

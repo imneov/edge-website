@@ -64,6 +64,18 @@
     scrollbar-width: thin;
   }
 
+  /* Typography: Inter for English, Noto Sans SC for Chinese */
+  body,
+  :root {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+      'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+    font-weight: 700;
+  }
+
   /* Light Theme */
   :root {
     --radius: 0.65rem;

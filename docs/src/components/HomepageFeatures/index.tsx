@@ -3,6 +3,7 @@
  *
  * Layout: CSS Grid — first 2 features as large cards (6/12 columns),
  * remaining 4 as standard cards (3/12 columns each).
+ * Section header has a rotating gradient keyword (KSE kse_feature style).
  * Each card fades + slides up on scroll entry with staggered delay.
  */
 import React, { useRef, useState, useEffect } from 'react';
@@ -22,6 +23,19 @@ interface FeatureItem {
   Icon: React.ComponentType<{ className?: string }>;
   description: string;
 }
+
+interface RotatingKeyword {
+  word: string;
+  gradient: string;
+}
+
+const ROTATING_KEYWORDS: RotatingKeyword[] = [
+  { word: '统一的', gradient: 'linear-gradient(90deg, #3983F7, #6BDDE0)' },
+  { word: '轻量的', gradient: 'linear-gradient(90deg, #7B26CF, #E61F86)' },
+  { word: '开放的', gradient: 'linear-gradient(135deg, #E64EFF, #8FFFF8)' },
+  { word: '可靠的', gradient: 'linear-gradient(154deg, rgba(43,189,182,1), rgba(150,222,218,1))' },
+  { word: '全能的', gradient: 'linear-gradient(154deg, #FFBB56, #FF834E)' },
+];
 
 const FEATURES: FeatureItem[] = [
   {
@@ -117,11 +131,35 @@ function FeatureCard({
 }
 
 export default function HomepageFeatures(): React.ReactNode {
+  const [kwIdx, setKwIdx] = useState(0);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFading(true);
+      setTimeout(() => {
+        setKwIdx((i) => (i + 1) % ROTATING_KEYWORDS.length);
+        setFading(false);
+      }, 350);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, []);
+
+  const kw = ROTATING_KEYWORDS[kwIdx];
+
   return (
     <section className={clsx(styles.features, 'features-section')}>
       <div className="container">
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>核心能力</h2>
+          <h2 className={styles.sectionTitle}>
+            <span
+              className={clsx(styles.rotatingKeyword, fading && styles.rotatingKeywordFade)}
+              style={{ background: kw.gradient, WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' } as React.CSSProperties}
+            >
+              {kw.word}
+            </span>
+            {' '}边缘算力管理平台
+          </h2>
           <p className={styles.sectionSubtitle}>
             边缘平台提供从基础设施管理到应用交付的全栈能力，
             助力企业构建云边协同的分布式计算架构。
