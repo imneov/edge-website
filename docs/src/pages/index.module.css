@@ -173,13 +173,114 @@
    Section 1: Hero Banner
    ============================================ */
 
+/* ============================================
+   Hero Background Keyframes
+   ============================================ */
+
+/* Grid intersection pulse */
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* Center ripple wave — simulates compute scheduling broadcast */
+@keyframes rippleOut {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.25;
+  }
+  80% {
+    opacity: 0.06;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Hero Banner
+   ============================================ */
+
 .heroBanner {
   padding: 6rem 0 7rem;
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Dark solid background — no aurora, no mesh */
+  /* Dark base */
   background: #0b1220;
+  /* Geometric grid overlay: vertical + horizontal lines */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(59, 131, 247, 0.055) 0px,
+      rgba(59, 131, 247, 0.055) 1px,
+      transparent 1px,
+      transparent 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(59, 131, 247, 0.055) 0px,
+      rgba(59, 131, 247, 0.055) 1px,
+      transparent 1px,
+      transparent 60px
+    );
+}
+
+/* Ripple wave 1 — slower, larger */
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  border: 1px solid rgba(107, 221, 224, 0.12);
+  animation: rippleOut 6s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Ripple wave 2 — offset timing for continuous flow */
+.heroBanner::after {
+  content: '';
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  border: 1px solid rgba(59, 131, 247, 0.1);
+  animation: rippleOut 6s ease-out 3s infinite;
+  pointer-events: none;
+}
+
+/* Grid intersection glow dots — decorative layer via SVG data URI */
+.heroBanner .heroBannerGrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(107, 221, 224, 0.18) 1px,
+    transparent 1px
+  );
+  background-size: 60px 60px;
+  background-position: 0 0;
+  animation: gridPulse 4.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroBanner::before,
+  .heroBanner::after {
+    animation: none;
+    display: none;
+  }
+  .heroBanner .heroBannerGrid {
+    animation: none;
+    opacity: 0.5;
+  }
 }
 
 
@@ -254,6 +355,19 @@
 
 .heroStatItem:last-child {
   border-right: none;
+}
+
+.heroStatIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(59, 131, 247, 0.12);
+  color: #6BDDE0;
+  margin-bottom: 0.625rem;
+  flex-shrink: 0;
 }
 
 .heroStatValue {

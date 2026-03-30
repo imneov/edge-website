@@ -94,15 +94,19 @@ function useCountUp(target: number, active: boolean, duration = 900): number {
    ============================================ */
 
 const HERO_STATS = [
-  { label: '边缘运行时', num: 3, suffix: '+', note: 'OpenYurt / KubeEdge / K8s' },
-  { label: '权限层级', num: 5, suffix: ' 层', note: 'Platform → Namespace 全覆盖' },
-  { label: '集群接入模式', num: 2, suffix: ' 种', note: 'Direct & Proxy 双模式' },
+  { label: '边缘运行时', num: 3, suffix: '+', note: 'OpenYurt / KubeEdge / K8s', Icon: Server },
+  { label: '权限层级', num: 5, suffix: ' 层', note: 'Platform → Namespace 全覆盖', Icon: Shield },
+  { label: '集群接入模式', num: 2, suffix: ' 种', note: 'Direct & Proxy 双模式', Icon: Network },
 ];
 
 function StatItem({ stat, active }: { stat: typeof HERO_STATS[number]; active: boolean }) {
   const count = useCountUp(stat.num, active);
+  const { Icon } = stat;
   return (
     <div className={styles.heroStatItem}>
+      <span className={styles.heroStatIcon}>
+        <Icon width={20} height={20} />
+      </span>
       <span className={styles.heroStatValue}>{count}{stat.suffix}</span>
       <span className={styles.heroStatLabel}>{stat.label}</span>
       <span className={styles.heroStatNote}>{stat.note}</span>
@@ -116,6 +120,8 @@ function HeroSection() {
 
   return (
     <header className={styles.heroBanner}>
+      {/* Grid glow dots layer — edge computing node visual */}
+      <div className={styles.heroBannerGrid} aria-hidden="true" />
       <div className="container">
         <h1 className={styles.heroTitle}>
           下一代边缘智能算力平台
