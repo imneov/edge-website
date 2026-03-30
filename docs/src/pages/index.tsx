@@ -27,6 +27,8 @@ import {
   Download,
   MonitorCheck,
   Rocket,
+  Cpu,
+  HardDrive,
 } from 'lucide-react';
 
 import styles from './index.module.css';
@@ -64,41 +66,27 @@ function HeroSection() {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       {/* Animated mesh background */}
-      <div className={styles.heroMesh} aria-hidden="true" />
+      <div className={styles.heroMesh} aria-hidden="true">
+        <div className={styles.meshBlob1} />
+        <div className={styles.meshBlob2} />
+        <div className={styles.meshBlob3} />
+      </div>
 
       <div className="container">
         {/* Badge */}
         <div className={styles.heroBadge}>
           <span className={styles.heroBadgeText}>
-            面向云原生应用的智能边缘计算平台
+            企业级多租户边缘智能计算平台
           </span>
         </div>
 
         {/* Title */}
-        <h1 className="hero__title">{siteConfig.title}</h1>
+        <h1 className={clsx('hero__title', styles.heroTitle)}>{siteConfig.title}</h1>
 
-        {/* Subtitle - strengthened value proposition */}
+        {/* Subtitle */}
         <p className="hero__subtitle">
-          统一管理云端与边缘基础设施，实现应用从开发到边缘节点的全生命周期管理
+          统一 IAM 权限体系与多集群调度，实现从云端到边缘的全栈资源编排与 AI 应用规模化部署
         </p>
-
-        {/* Stats counters */}
-        <div className={styles.heroStats}>
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>1000+</span>
-            <span className={styles.heroStatLabel}>边缘节点</span>
-          </div>
-          <div className={styles.heroStatDivider} />
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>50+</span>
-            <span className={styles.heroStatLabel}>集群管理</span>
-          </div>
-          <div className={styles.heroStatDivider} />
-          <div className={styles.heroStatItem}>
-            <span className={styles.heroStatValue}>99.9%</span>
-            <span className={styles.heroStatLabel}>高可用</span>
-          </div>
-        </div>
 
         {/* Tech pills */}
         <div className={styles.techPills}>
@@ -136,176 +124,206 @@ function ArchitectureSection() {
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>平台架构</h2>
           <p className={styles.sectionSubtitle}>
-            云边协同的分布式计算架构，统一管理从云端到边缘节点的全链路
+            两层权限链（应用侧与资源侧）统一纳管，控制面与边缘运行时解耦
           </p>
         </div>
 
         <div className={styles.architectureDiagram}>
           <svg
-            viewBox="0 0 960 420"
+            viewBox="0 0 960 430"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={styles.architectureSvg}
             role="img"
-            aria-label="边缘平台云边协同架构图"
+            aria-label="边缘平台架构图：云端控制面 + 可选边缘运行时 + 边缘节点"
           >
-            {/* ---- Cloud Layer ---- */}
+            {/* ---- Cloud Control Plane ---- */}
             <rect
-              x="280"
+              x="160"
               y="20"
-              width="400"
-              height="90"
+              width="640"
+              height="105"
               rx="12"
               className={styles.archCloudBox}
             />
             <Cloud
-              x="370"
+              x="200"
               y="36"
               width="24"
               height="24"
               className={styles.archIcon}
             />
-            <text x="480" y="55" className={styles.archTitle} textAnchor="middle">
-              云端管理面
+            <text x="480" y="52" className={styles.archTitle} textAnchor="middle">
+              云端控制面
             </text>
-            <text x="480" y="80" className={styles.archSubtext} textAnchor="middle">
-              API Server / Controller / Console
+            {/* Dividers inside cloud box */}
+            <line x1="453" y1="60" x2="453" y2="115" className={styles.archDivider} />
+            <line x1="667" y1="60" x2="667" y2="115" className={styles.archDivider} />
+            {/* Component 1: edge-apiserver */}
+            <Shield
+              x="185"
+              y="65"
+              width="18"
+              height="18"
+              className={styles.archIconSmall}
+            />
+            <text x="306" y="79" className={styles.archComponentTitle} textAnchor="middle">
+              edge-apiserver
+            </text>
+            <text x="306" y="98" className={styles.archSubtext} textAnchor="middle">
+              7层请求过滤链
+            </text>
+            {/* Component 2: edge-controller */}
+            <Settings
+              x="470"
+              y="65"
+              width="18"
+              height="18"
+              className={styles.archIconSmall}
+            />
+            <text x="560" y="79" className={styles.archComponentTitle} textAnchor="middle">
+              edge-controller
+            </text>
+            <text x="560" y="98" className={styles.archSubtext} textAnchor="middle">
+              12+ K8s 控制器
+            </text>
+            {/* Component 3: edge-console */}
+            <MonitorCheck
+              x="683"
+              y="65"
+              width="18"
+              height="18"
+              className={styles.archIconSmall}
+            />
+            <text x="775" y="79" className={styles.archComponentTitle} textAnchor="middle">
+              edge-console
+            </text>
+            <text x="775" y="98" className={styles.archSubtext} textAnchor="middle">
+              管理控制台
             </text>
 
-            {/* ---- Connection lines Cloud → Gateway ---- */}
+            {/* ---- Connection lines Cloud → Cluster Layer ---- */}
             <line
-              x1="380"
-              y1="110"
-              x2="240"
-              y2="180"
+              x1="330"
+              y1="125"
+              x2="210"
+              y2="185"
               className={styles.archLine}
             />
             <line
               x1="480"
-              y1="110"
+              y1="125"
               x2="480"
-              y2="180"
+              y2="185"
               className={styles.archLine}
             />
             <line
-              x1="580"
-              y1="110"
-              x2="720"
-              y2="180"
+              x1="630"
+              y1="125"
+              x2="750"
+              y2="185"
               className={styles.archLine}
             />
+            {/* Connection mode labels */}
+            <text x="248" y="162" className={styles.archConnLabel} textAnchor="middle">
+              Direct
+            </text>
+            <text x="714" y="162" className={styles.archConnLabel} textAnchor="middle">
+              Proxy
+            </text>
 
-            {/* ---- Edge Gateway Layer ---- */}
+            {/* ---- Edge Cluster Layer ---- */}
+            {/* Cluster A - Direct mode */}
             <rect
-              x="120"
-              y="180"
-              width="240"
-              height="80"
+              x="80"
+              y="185"
+              width="260"
+              height="88"
               rx="10"
               className={styles.archGatewayBox}
             />
             <Network
-              x="160"
-              y="200"
+              x="105"
+              y="202"
               width="20"
               height="20"
               className={styles.archIcon}
             />
-            <text x="240" y="215" className={styles.archTitle} textAnchor="middle">
-              边缘网关 A
+            <text x="210" y="218" className={styles.archTitle} textAnchor="middle">
+              边缘集群 A
             </text>
-            <text x="240" y="240" className={styles.archSubtext} textAnchor="middle">
-              KubeEdge / OpenYurt
+            <text x="210" y="238" className={styles.archSubtext} textAnchor="middle">
+              可选运行时:
+            </text>
+            <text x="210" y="258" className={styles.archSubtext} textAnchor="middle">
+              OpenYurt / KubeEdge / K8s
             </text>
 
+            {/* Center - vCluster (optional) */}
             <rect
-              x="600"
-              y="180"
+              x="360"
+              y="185"
               width="240"
-              height="80"
-              rx="10"
-              className={styles.archGatewayBox}
-            />
-            <Network
-              x="640"
-              y="200"
-              width="20"
-              height="20"
-              className={styles.archIcon}
-            />
-            <text x="720" y="215" className={styles.archTitle} textAnchor="middle">
-              边缘网关 B
-            </text>
-            <text x="720" y="240" className={styles.archSubtext} textAnchor="middle">
-              KubeEdge / OpenYurt
-            </text>
-
-            {/* Center gateway (vCluster) */}
-            <rect
-              x="370"
-              y="180"
-              width="220"
-              height="80"
+              height="88"
               rx="10"
               className={styles.archGatewayBox}
             />
             <Server
-              x="405"
-              y="200"
+              x="385"
+              y="202"
               width="20"
               height="20"
               className={styles.archIcon}
             />
-            <text x="480" y="215" className={styles.archTitle} textAnchor="middle">
+            <text x="480" y="218" className={styles.archTitle} textAnchor="middle">
               虚拟集群
             </text>
-            <text x="480" y="240" className={styles.archSubtext} textAnchor="middle">
-              vCluster
+            <text x="480" y="242" className={styles.archSubtext} textAnchor="middle">
+              vCluster (按需创建)
+            </text>
+            <text x="480" y="262" className={styles.archSubtext} textAnchor="middle">
+              自动安装边缘运行时
             </text>
 
-            {/* ---- Connection lines Gateway → Edge Nodes ---- */}
-            <line
-              x1="180"
-              y1="260"
-              x2="120"
-              y2="320"
-              className={styles.archLine}
+            {/* Cluster B - Proxy mode */}
+            <rect
+              x="620"
+              y="185"
+              width="260"
+              height="88"
+              rx="10"
+              className={styles.archGatewayBox}
             />
-            <line
-              x1="300"
-              y1="260"
-              x2="300"
-              y2="320"
-              className={styles.archLine}
+            <Network
+              x="645"
+              y="202"
+              width="20"
+              height="20"
+              className={styles.archIcon}
             />
-            <line
-              x1="660"
-              y1="260"
-              x2="600"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="780"
-              y1="260"
-              x2="840"
-              y2="320"
-              className={styles.archLine}
-            />
-            <line
-              x1="480"
-              y1="260"
-              x2="480"
-              y2="320"
-              className={styles.archLine}
-            />
+            <text x="750" y="218" className={styles.archTitle} textAnchor="middle">
+              边缘集群 B
+            </text>
+            <text x="750" y="238" className={styles.archSubtext} textAnchor="middle">
+              可选运行时:
+            </text>
+            <text x="750" y="258" className={styles.archSubtext} textAnchor="middle">
+              KubeEdge / OpenYurt / K8s
+            </text>
+
+            {/* ---- Connection lines Cluster → Edge Nodes ---- */}
+            <line x1="150" y1="273" x2="110" y2="330" className={styles.archLine} />
+            <line x1="270" y1="273" x2="270" y2="330" className={styles.archLine} />
+            <line x1="660" y1="273" x2="630" y2="330" className={styles.archLine} />
+            <line x1="840" y1="273" x2="870" y2="330" className={styles.archLine} />
+            <line x1="480" y1="273" x2="480" y2="330" className={styles.archLine} />
 
             {/* ---- Edge Nodes Layer ---- */}
-            {[60, 240, 420, 540, 780].map((nodeX, idx) => (
+            {[50, 200, 410, 600, 800].map((nodeX, idx) => (
               <g key={idx}>
                 <rect
                   x={nodeX}
-                  y="320"
+                  y="330"
                   width="140"
                   height="60"
                   rx="8"
@@ -313,14 +331,14 @@ function ArchitectureSection() {
                 />
                 <Smartphone
                   x={nodeX + 12}
-                  y="336"
+                  y="346"
                   width="16"
                   height="16"
                   className={styles.archIconSmall}
                 />
                 <text
                   x={nodeX + 70}
-                  y="347"
+                  y="357"
                   className={styles.archNodeTitle}
                   textAnchor="middle"
                 >
@@ -328,24 +346,24 @@ function ArchitectureSection() {
                 </text>
                 <text
                   x={nodeX + 70}
-                  y="368"
+                  y="378"
                   className={styles.archNodeSubtext}
                   textAnchor="middle"
                 >
-                  终端设备
+                  算力 / 设备
                 </text>
               </g>
             ))}
 
             {/* ---- Layer labels (left side) ---- */}
-            <text x="20" y="65" className={styles.archLayerLabel}>
+            <text x="12" y="73" className={styles.archLayerLabel}>
               云端
             </text>
-            <text x="20" y="220" className={styles.archLayerLabel}>
+            <text x="12" y="232" className={styles.archLayerLabel}>
               边缘
             </text>
-            <text x="20" y="355" className={styles.archLayerLabel}>
-              设备
+            <text x="12" y="365" className={styles.archLayerLabel}>
+              节点
             </text>
           </svg>
         </div>
@@ -368,30 +386,30 @@ interface HighlightItem {
 const HIGHLIGHTS: HighlightItem[] = [
   {
     number: '01',
-    title: '云边协同',
+    title: '统一权限管理',
     description:
-      '统一管理云端和边缘资源，支持 KubeEdge、OpenYurt 等主流边缘框架，实现跨地域、跨网络的集群协同。',
-    Icon: Cloud,
+      'edge-apiserver 7 层请求过滤链实现统一认证与授权；单一 IAMRole/IAMRoleBinding 模型覆盖从 Platform 到 Namespace 的全层级权限，无需重复配置。',
+    Icon: Shield,
   },
   {
     number: '02',
-    title: '开箱即用',
+    title: '多集群调度',
     description:
-      '基于 Helm 一键部署，内置集群管理、应用分发、监控告警等开箱即用的核心能力，降低边缘计算落地门槛。',
-    Icon: Zap,
+      '支持 Direct（KubeConfig）和 Proxy（反向隧道）两种集群接入模式，edge-controller 内置 12+ 控制器处理跨集群资源调度与 RoleTemplate 聚合。',
+    Icon: Cloud,
   },
   {
     number: '03',
-    title: '安全可靠',
+    title: '边云协同',
     description:
-      '多租户工作空间隔离，细粒度 RBAC 权限控制，完整的审计日志，保障边缘业务安全合规运行。',
-    Icon: Shield,
+      '三种边缘运行时（OpenYurt、KubeEdge、vanilla K8s）均为可选，平台核心与具体运行时解耦；vCluster 按需自动创建并安装边缘运行时。',
+    Icon: Zap,
   },
   {
     number: '04',
     title: '开放标准',
     description:
-      '全面拥抱云原生生态，基于 Kubernetes 标准 API 构建，兼容主流 CI/CD 工具链和可观测性方案。',
+      '基于 Kubernetes 标准 API 构建，兼容主流可观测性方案（Prometheus）；集成 VAST 存储虚拟化与 HAMi GPU 虚拟化，加速 AI 应用边缘部署。',
     Icon: Settings,
   },
 ];
@@ -444,6 +462,8 @@ const ECOSYSTEM: TechItem[] = [
   { name: 'KubeEdge', Icon: Network },
   { name: 'OpenYurt', Icon: Server },
   { name: 'Prometheus', Icon: MonitorCheck },
+  { name: 'HAMi', Icon: Cpu },
+  { name: 'VAST', Icon: HardDrive },
 ];
 
 /** Technology ecosystem logo grid */

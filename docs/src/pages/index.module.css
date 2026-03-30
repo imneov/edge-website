@@ -57,7 +57,7 @@
   overflow: hidden;
 }
 
-/* Aurora blob background - two animated gradient blobs */
+/* Animated mesh gradient background - 3 independent color blobs */
 .heroMesh {
   position: absolute;
   inset: 0;
@@ -65,42 +65,106 @@
   overflow: hidden;
 }
 
-.heroMesh::before,
+/* Dot grid overlay */
 .heroMesh::after {
   content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
-  animation: auroraFloat 12s ease-in-out infinite alternate;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
 }
 
-.heroMesh::before {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
-  top: -150px;
-  right: -100px;
+/* Blob 1 — cyan, drifts from top-right */
+.meshBlob1 {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.55), transparent 65%);
+  top: -20%;
+  right: -10%;
+  filter: blur(48px);
+  animation: blobMove1 16s ease-in-out infinite alternate;
 }
 
-.heroMesh::after {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
-  bottom: -200px;
-  left: -150px;
-  animation-delay: -6s;
+/* Blob 2 — violet, drifts from bottom-left */
+.meshBlob2 {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.45), transparent 65%);
+  bottom: -25%;
+  left: -15%;
+  filter: blur(56px);
+  animation: blobMove2 20s ease-in-out infinite alternate;
 }
 
-@keyframes auroraFloat {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(40px, -30px) scale(1.15); }
+/* Blob 3 — blue, floats near center */
+.meshBlob3 {
+  position: absolute;
+  width: 55%;
+  height: 55%;
+  background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.35), transparent 60%);
+  top: 25%;
+  left: 25%;
+  filter: blur(64px);
+  animation: blobMove3 11s ease-in-out infinite alternate;
+  animation-delay: -4s;
+}
+
+@keyframes blobMove1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-8%, 14%) scale(1.08); }
+  100% { transform: translate(-16%, 6%) scale(0.96); }
+}
+
+@keyframes blobMove2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(10%, -9%) scale(1.12); }
+  100% { transform: translate(6%, -17%) scale(1.04); }
+}
+
+@keyframes blobMove3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(18%, -14%) scale(1.18); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroMesh::before,
-  .heroMesh::after {
+  .meshBlob1,
+  .meshBlob2,
+  .meshBlob3 {
     animation: none;
+  }
+}
+
+/* Hero title — flowing gradient text */
+.heroTitle {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #7dd3fc 28%,
+    #c4b5fd 65%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientTextFlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes gradientTextFlow {
+  0%   { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroTitle {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: white;
+    color: white;
   }
 }
 
@@ -121,44 +185,6 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
-}
-
-/* Stats counters */
-.heroStats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.heroStatItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.heroStatValue {
-  font-size: 2rem;
-  font-weight: 800;
-  color: white;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.heroStatLabel {
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
-}
-
-.heroStatDivider {
-  width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 /* Tech pills - glass capsules */
@@ -194,6 +220,11 @@
   height: 20px;
   margin-right: 0.5rem;
   filter: brightness(0) invert(1);
+  transition: transform 0.3s ease-out;
+}
+
+.techPill:hover .techPillIcon {
+  transform: rotate(12deg) scale(1.15);
 }
 
 .techPillLabel {
@@ -398,6 +429,36 @@
 
 :global([data-theme='dark']) .archLayerLabel {
   fill: #475569;
+}
+
+.archComponentTitle {
+  font-size: 12px;
+  font-weight: 600;
+  fill: #334155;
+}
+
+:global([data-theme='dark']) .archComponentTitle {
+  fill: #cbd5e1;
+}
+
+.archDivider {
+  stroke: #cbd5e1;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+:global([data-theme='dark']) .archDivider {
+  stroke: #334155;
+}
+
+.archConnLabel {
+  font-size: 10px;
+  fill: #94a3b8;
+  font-style: italic;
+}
+
+:global([data-theme='dark']) .archConnLabel {
+  fill: #64748b;
 }
 
 /* ============================================
@@ -741,14 +802,6 @@
     padding: 3rem 0 4rem;
   }
 
-  .heroStats {
-    gap: 1rem;
-  }
-
-  .heroStatValue {
-    font-size: 1.5rem;
-  }
-
   .highlightsList {
     grid-template-columns: 1fr;
   }
@@ -767,16 +820,5 @@
   .buttons {
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .heroStats {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .heroStatDivider {
-    width: 40px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
   }
 }
