@@ -1,9 +1,11 @@
 /**
- * Core Capabilities Section
+ * Core Capabilities Section — KSE Commercial Style
  *
  * Layout: CSS Grid — first 2 features as large cards (6/12 columns),
  * remaining 4 as standard cards (3/12 columns each).
  * Each card fades + slides up on scroll entry with staggered delay.
+ *
+ * Section header uses KSE-style rotating gradient keyword carousel.
  */
 import React, { useRef, useState, useEffect } from 'react';
 import clsx from 'clsx';
@@ -16,6 +18,15 @@ import {
   Layers,
 } from 'lucide-react';
 import styles from './styles.module.css';
+
+/* KSE-style rotating gradient words — cycles every 2.8s */
+const ROTATING_WORDS = [
+  { text: '高效的', gradient: 'linear-gradient(90deg, #3983F7 0%, #6BDDE0 100%)' },
+  { text: '安全的', gradient: 'linear-gradient(90deg, #7B26CF 0%, #E61F86 100%)' },
+  { text: '统一的', gradient: 'linear-gradient(154deg, #FFBB56 0%, #FF834E 100%)' },
+  { text: '开放的', gradient: 'linear-gradient(135deg, #E64EFF 0%, #8FFFF8 100%)' },
+  { text: '智能的', gradient: 'linear-gradient(154deg, rgba(43,189,182,1) 0%, rgba(150,222,218,1) 100%)' },
+];
 
 interface FeatureItem {
   title: string;
@@ -117,14 +128,44 @@ function FeatureCard({
 }
 
 export default function HomepageFeatures(): React.ReactNode {
+  const [wordIdx, setWordIdx] = useState(0);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFading(true);
+      setTimeout(() => {
+        setWordIdx((i) => (i + 1) % ROTATING_WORDS.length);
+        setFading(false);
+      }, 350);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentWord = ROTATING_WORDS[wordIdx];
+
   return (
     <section className={clsx(styles.features, 'features-section')}>
       <div className="container">
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>核心能力</h2>
+          <h2 className={styles.sectionTitle}>
+            构建{' '}
+            <span
+              className={clsx(styles.rotatingWord, fading && styles.rotatingWordFade)}
+              style={{
+                background: currentWord.gradient,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {currentWord.text}
+            </span>
+            {' '}边缘智能算力平台
+          </h2>
           <p className={styles.sectionSubtitle}>
-            边缘平台提供从基础设施管理到应用交付的全栈能力，
-            助力企业构建云边协同的分布式计算架构。
+            面向多行业自治场景，提供从基础设施管理到 AI 应用交付的全栈能力，
+            助力企业构建云边协同的分布式算力体系。
           </p>
         </div>
 

@@ -532,7 +532,10 @@ function ValuePropsSection() {
           ref={headerRef}
           className={clsx(styles.sectionHeader, styles.scrollAnimate, headerVisible && styles.visible)}
         >
-          <h2 className={styles.sectionTitle}>全面赋能企业边缘计算</h2>
+          <h2 className={styles.sectionTitle}>
+            全面赋能{' '}
+            <span className={styles.gradientAccent}>企业边缘计算</span>
+          </h2>
           <p className={styles.sectionSubtitle}>
             面向企业级边缘场景，提供安全、高效、开放的全栈解决方案
           </p>
@@ -567,6 +570,7 @@ interface DeliveryTier {
   features: DeliveryFeature[];
   cta: string;
   ctaHref: string;
+  featured?: boolean;
 }
 
 const DELIVERY_TIERS: DeliveryTier[] = [
@@ -592,6 +596,7 @@ const DELIVERY_TIERS: DeliveryTier[] = [
     subtitle: '自主可控',
     desc: '完整部署在企业自有数据中心或私有云，数据不出域，满足等保合规与行业监管要求，支持离线运行。',
     contact: '联系销售',
+    featured: true,
     features: [
       { title: '完整平台能力', desc: '包含所有 SaaS 版功能' },
       { title: '私有环境隔离', desc: '数据主权，合规保障' },
@@ -630,7 +635,9 @@ function DeliverySection() {
           ref={headerRef}
           className={clsx(styles.sectionHeader, styles.scrollAnimate, headerVisible && styles.visible)}
         >
-          <h2 className={styles.sectionTitle}>交付方式</h2>
+          <h2 className={styles.sectionTitle}>
+            灵活<span className={styles.gradientAccent}>交付方式</span>
+          </h2>
           <p className={styles.sectionSubtitle}>
             三种灵活的交付模式，覆盖从快速验证到生产级私有化部署的全场景需求
           </p>
@@ -652,7 +659,7 @@ function DeliveryCard({ tier, delay }: { tier: DeliveryTier; delay: number }) {
   return (
     <div
       ref={ref}
-      className={clsx(styles.deliveryCard, styles.scrollAnimate, isVisible && styles.visible)}
+      className={clsx(styles.deliveryCard, tier.featured && styles.deliveryCardFeatured, styles.scrollAnimate, isVisible && styles.visible)}
       style={{ '--delay': `${delay}s` } as React.CSSProperties}
     >
       <tier.Icon className={styles.deliveryCardIcon} />

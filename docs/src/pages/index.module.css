@@ -75,6 +75,24 @@
   color: #94a3b8;
 }
 
+/* Gradient accent text — sparse use on section titles */
+.gradientAccent {
+  background: linear-gradient(90deg, #3983F7 0%, #6BDDE0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  display: inline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradientAccent {
+    background: none;
+    -webkit-text-fill-color: #3983F7;
+    color: #3983F7;
+  }
+}
+
 /* ============================================
    Button System
    ============================================ */
@@ -828,11 +846,15 @@
 
 .valuePropsSection {
   padding: 6rem 0;
-  background-color: #f8fafc;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(57, 131, 247, 0.08);
+  border-bottom: 1px solid rgba(57, 131, 247, 0.08);
 }
 
 :global([data-theme='dark']) .valuePropsSection {
   background-color: #0a0f1a;
+  border-top-color: rgba(57, 131, 247, 0.12);
+  border-bottom-color: rgba(57, 131, 247, 0.12);
 }
 
 .valueList {
@@ -1062,6 +1084,31 @@
 :global([data-theme='dark']) .deliveryCard:hover {
   border-color: #475569;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Featured card — gradient top accent border (KSE-style premium treatment) */
+.deliveryCardFeatured {
+  border-color: transparent;
+  background:
+    linear-gradient(#f8fafc, #f8fafc) padding-box,
+    linear-gradient(135deg, #3983F7, #6BDDE0) border-box;
+  box-shadow: 0 4px 24px rgba(57, 131, 247, 0.12);
+  position: relative;
+}
+
+:global([data-theme='dark']) .deliveryCardFeatured {
+  background:
+    linear-gradient(#1e293b, #1e293b) padding-box,
+    linear-gradient(135deg, #3983F7, #6BDDE0) border-box;
+  box-shadow: 0 4px 32px rgba(57, 131, 247, 0.2);
+}
+
+.deliveryCardFeatured:hover {
+  box-shadow: 0 12px 36px rgba(57, 131, 247, 0.2);
+}
+
+:global([data-theme='dark']) .deliveryCardFeatured:hover {
+  box-shadow: 0 12px 36px rgba(57, 131, 247, 0.3);
 }
 
 .deliveryCardIcon {

@@ -7,7 +7,7 @@
  */
 
 /* ============================================
-   Section container
+   Section container — dark bg for KSE commercial rhythm
    ============================================ */
 
 .features {
@@ -15,6 +15,23 @@
   align-items: center;
   padding: 5rem 0;
   width: 100%;
+  background: #0b1220;
+  /* Geometric grid overlay matches hero visual language */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(59, 131, 247, 0.035) 0px,
+      rgba(59, 131, 247, 0.035) 1px,
+      transparent 1px,
+      transparent 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(59, 131, 247, 0.035) 0px,
+      rgba(59, 131, 247, 0.035) 1px,
+      transparent 1px,
+      transparent 60px
+    );
 }
 
 /* ============================================
@@ -27,11 +44,12 @@
 }
 
 .sectionTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  color: #f1f5f9;
   margin-bottom: 0.75rem;
   letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 [data-theme='dark'] .sectionTitle {
@@ -39,15 +57,29 @@
 }
 
 .sectionSubtitle {
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: #64748b;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: rgba(148, 163, 184, 0.9);
   max-width: 600px;
   margin: 0 auto;
 }
 
 [data-theme='dark'] .sectionSubtitle {
-  color: #94a3b8;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+/* ============================================
+   Rotating gradient word (KSE-style headline)
+   ============================================ */
+
+.rotatingWord {
+  display: inline-block;
+  min-width: 3.5em;
+  transition: opacity 0.35s ease-out;
+}
+
+.rotatingWordFade {
+  opacity: 0;
 }
 
 /* ============================================
@@ -107,17 +139,19 @@
   text-align: center;
   padding: 2rem 1.5rem;
   border-radius: 0.875rem;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  /* Always dark card to match section background */
+  border: 1px solid rgba(96, 165, 250, 0.12);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
   background-clip: padding-box;
   transition: transform 0.25s ease-out, box-shadow 0.3s ease-out,
               background 0.3s ease-out, border-color 0.3s ease-out;
 }
 
 [data-theme='dark'] .card {
-  border-color: rgba(96, 165, 250, 0.1);
-  background: rgba(30, 41, 59, 0.45);
-  backdrop-filter: blur(6px);
+  border-color: rgba(96, 165, 250, 0.12);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
   background-clip: padding-box;
 }
 
@@ -126,11 +160,11 @@
   transform: translateY(-5px);
   border-color: transparent;
   background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(135deg, #3b82f6, #06b6d4) border-box;
+    linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)) padding-box,
+    linear-gradient(135deg, #60a5fa, #22d3ee) border-box;
   box-shadow:
-    0 10px 28px rgba(59, 130, 246, 0.15),
-    0 0 24px rgba(6, 182, 212, 0.08);
+    0 10px 36px rgba(59, 130, 246, 0.22),
+    0 0 32px rgba(34, 211, 238, 0.12);
 }
 
 [data-theme='dark'] .card:hover {
@@ -159,7 +193,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.1);
   margin-bottom: 1.5rem;
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
@@ -212,7 +247,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #1e293b;
+  color: #f1f5f9;
 }
 
 [data-theme='dark'] .featureTitle {
@@ -228,14 +263,14 @@
    ============================================ */
 
 .featureDesc {
-  color: #64748b;
+  color: rgba(148, 163, 184, 0.9);
   line-height: 1.65;
   margin-bottom: 0;
   font-size: 0.9rem;
 }
 
 [data-theme='dark'] .featureDesc {
-  color: #94a3b8;
+  color: rgba(148, 163, 184, 0.9);
 }
 
 .cardLarge .featureDesc {
