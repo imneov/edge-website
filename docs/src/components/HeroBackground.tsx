@@ -498,10 +498,116 @@ interface WorldParticle {
   color: [number, number, number];
 }
 
+interface SpeedBeam {
+  startY: number;         // Y at screen edge (logical px)
+  side: -1 | 1;           // -1 = from left, 1 = from right
+  speed: number;          // fraction of full beam traversed per ms
+  phase: number;          // animation phase offset 0..1
+  trailLen: number;       // trail length as fraction 0..1
+  maxWidth: number;       // half-width at edge (logical px)
+  color: [number, number, number];
+  alpha: number;          // peak alpha at beam head
+}
+
 interface WorldNetworkState {
   mapCanvas: HTMLCanvasElement;
   nodes: WorldNode[];
   particles: WorldParticle[];
+  beams: SpeedBeam[];
+}
+
+function initBeams(w: number, h: number): SpeedBeam[] {
+  const beams: SpeedBeam[] = [];
+  const count = 22;
+  for (let i = 0; i < count; i++) {
+    const side: -1 | 1 = i % 2 === 0 ? -1 : 1;
+    const t = i / count;
+    const startY = h * (0.08 + t * 0.84);
+    const isCyan = Math.random() > 0.3;
+    const color: [number, number, number] = isCyan
+      ? [0, 210, 255]
+      : [40, 130, 255];
+    beams.push({
+      startY,
+      side,
+      speed: 0.0003 + Math.random() * 0.00045,
+      phase: Math.random(),
+      trailLen: 0.12 + Math.random() * 0.18,
+      maxWidth: 1.5 + Math.random() * 4.5,
+      color,
+      alpha: 0.4 + Math.random() * 0.45,
+    });
+  }
+  return beams;
+}
+
+function drawSpeedBeams(
+  ctx: CanvasRenderingContext2D,
+  beams: SpeedBeam[],
+  w: number,
+  h: number,
+  t: number,
+) {
+  const vpX = w * 0.5;
+  const vpY = h * 0.47;
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter'; // additive blending — overlaps glow brighter
+
+  for (const beam of beams) {
+    const progress = ((t * beam.speed + beam.phase) % 1 + 1) % 1;
+
+    const edgeX = beam.side === -1 ? -12 : w + 12;
+    const edgeY = beam.startY;
+
+    const headP = progress;
+    const tailP = Math.max(0, headP - beam.trailLen);
+
+    const hx = edgeX + (vpX - edgeX) * headP;
+    const hy = edgeY + (vpY - edgeY) * headP;
+    const tx = edgeX + (vpX - edgeX) * tailP;
+    const ty = edgeY + (vpY - edgeY) * tailP;
+
+    const dx = hx - tx;
+    const dy = hy - ty;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len < 1) continue;
+
+    const nx = -dy / len;
+    const ny = dx / len;
+
+    // Width tapers from edge to vanishing point
+    const headW = Math.max(0.3, beam.maxWidth * (1 - headP * 0.88));
+    const tailW = Math.max(0.1, beam.maxWidth * (1 - tailP * 0.88));
+
+    const [r, g, b] = beam.color;
+    const grad = ctx.createLinearGradient(tx, ty, hx, hy);
+    grad.addColorStop(0, `rgba(${r},${g},${b},0)`);
+    grad.addColorStop(0.55, `rgba(${r},${g},${b},${beam.alpha * 0.22})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},${beam.alpha})`);
+
+    ctx.beginPath();
+    ctx.moveTo(hx + nx * headW, hy + ny * headW);
+    ctx.lineTo(hx - nx * headW, hy - ny * headW);
+    ctx.lineTo(tx - nx * tailW, ty - ny * tailW);
+    ctx.lineTo(tx + nx * tailW, ty + ny * tailW);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Bright head glow
+    const glowR = headW * 5 + 4;
+    const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, glowR);
+    glow.addColorStop(0, `rgba(${r},${g},${b},${beam.alpha * 0.65})`);
+    glow.addColorStop(0.4, `rgba(${r},${g},${b},${beam.alpha * 0.12})`);
+    glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(hx, hy, glowR, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
 }
 
 function latLonToXY(lon: number, lat: number, w: number, h: number): [number, number] {
@@ -515,7 +621,7 @@ function buildMapCanvas(w: number, h: number, r: number): HTMLCanvasElement {
   off.width = pw;
   off.height = ph;
   const ctx2 = off.getContext('2d')!;
-  ctx2.fillStyle = 'rgba(34, 197, 94, 0.28)';
+  ctx2.fillStyle = 'rgba(40, 170, 230, 0.30)';
 
   let prev: [number, number] | null = null;
   for (const [lon, lat] of WORLD_OUTLINE) {
@@ -564,7 +670,8 @@ function initWorldNetwork(w: number, h: number, r: number): WorldNetworkState {
       color: isGreen ? [34, 197, 94] : [0, 102, 224],
     });
   }
-  return { mapCanvas, nodes, particles };
+  const beams = initBeams(w, h);
+  return { mapCanvas, nodes, particles, beams };
 }
 
 function drawWorldNetwork(
@@ -575,37 +682,39 @@ function drawWorldNetwork(
   r: number,
   t: number,
 ) {
-  // Draw static dot-matrix map (physical pixel space)
+  // ── Layer 1: dot-matrix world map at low opacity (geographic base)
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 0.45;
   ctx.drawImage(state.mapCanvas, 0, 0);
   ctx.restore();
 
-  const { nodes, particles } = state;
+  const { nodes, particles, beams } = state;
 
-  // Faint arc paths for active connections
+  // ── Layer 2: perspective-converging speed beams (PRIMARY visual)
+  drawSpeedBeams(ctx, beams, w, h, t);
+
+  // ── Layer 3: faint arc paths between city nodes (secondary network)
   for (const p of particles) {
     const from = nodes[p.fromIdx];
     const to = nodes[p.toIdx];
-    const [pr, pg, pb] = p.color;
     const midX = (from.x + to.x) / 2;
     const midY = (from.y + to.y) / 2;
     const dist = Math.hypot(to.x - from.x, to.y - from.y);
     const cpY = midY - dist * 0.28;
     ctx.beginPath();
-    ctx.strokeStyle = `rgba(${pr},${pg},${pb},0.07)`;
-    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = 'rgba(0, 180, 240, 0.05)';
+    ctx.lineWidth = 0.7;
     ctx.moveTo(from.x, from.y);
     ctx.quadraticCurveTo(midX, cpY, to.x, to.y);
     ctx.stroke();
   }
 
-  // Flowing particles along arcs
+  // ── Layer 4: flowing particles along arcs
   for (const p of particles) {
     const progress = ((t * p.speed + p.offset) % 1 + 1) % 1;
     const from = nodes[p.fromIdx];
     const to = nodes[p.toIdx];
-    const [pr, pg, pb] = p.color;
 
     const midX = (from.x + to.x) / 2;
     const midY = (from.y + to.y) / 2;
@@ -618,48 +727,46 @@ function drawWorldNetwork(
 
     const fadeEdge = Math.min(progress * 8, 1) * Math.min((1 - progress) * 8, 1);
 
-    const grd = ctx.createRadialGradient(px, py, 0, px, py, 14);
-    grd.addColorStop(0, `rgba(${pr},${pg},${pb},${0.5 * fadeEdge})`);
-    grd.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
+    const grd = ctx.createRadialGradient(px, py, 0, px, py, 10);
+    grd.addColorStop(0, `rgba(0,200,240,${0.45 * fadeEdge})`);
+    grd.addColorStop(1, 'rgba(0,200,240,0)');
     ctx.fillStyle = grd;
     ctx.beginPath();
-    ctx.arc(px, py, 14, 0, Math.PI * 2);
+    ctx.arc(px, py, 10, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
-    ctx.fillStyle = `rgba(${pr},${pg},${pb},${0.9 * fadeEdge})`;
-    ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,220,255,${0.85 * fadeEdge})`;
+    ctx.arc(px, py, 1.8, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Edge nodes with pulsing rings
+  // ── Layer 5: edge city nodes — white core + cyan ring
   for (const node of nodes) {
     const pulseFactor = Math.sin(t * 0.0008 + node.phase) * 0.5 + 0.5;
-    const [nr, ng, nb] = node.isGreen ? [34, 197, 94] : [0, 140, 255];
 
-    const ringR = 7 + pulseFactor * 10;
-    const ringA = (1 - pulseFactor) * 0.35;
+    const ringR = 6 + pulseFactor * 9;
+    const ringA = (1 - pulseFactor) * 0.4;
     ctx.beginPath();
-    ctx.strokeStyle = `rgba(${nr},${ng},${nb},${ringA})`;
+    ctx.strokeStyle = `rgba(0,200,240,${ringA})`;
     ctx.lineWidth = 1;
     ctx.arc(node.x, node.y, ringR, 0, Math.PI * 2);
     ctx.stroke();
 
-    const haloGrd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 8);
-    haloGrd.addColorStop(0, `rgba(${nr},${ng},${nb},0.6)`);
-    haloGrd.addColorStop(1, `rgba(${nr},${ng},${nb},0)`);
+    const haloGrd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 7);
+    haloGrd.addColorStop(0, 'rgba(0,210,255,0.55)');
+    haloGrd.addColorStop(1, 'rgba(0,210,255,0)');
     ctx.fillStyle = haloGrd;
     ctx.beginPath();
-    ctx.arc(node.x, node.y, 8, 0, Math.PI * 2);
+    ctx.arc(node.x, node.y, 7, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.arc(node.x, node.y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.arc(node.x, node.y, 1.8, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Suppress unused-variable warning for r
   void r;
 }
 
