@@ -50,7 +50,7 @@ metadata:
 
 | 标签 | 说明 | 示例值 |
 |------|------|--------|
-| `iam.theriseunion.io/scope` | Scope 类型 | platform, cluster, workspace, namespace, nodegroup, node |
+| `iam.theriseunion.io/scope` | Scope 类型 | platform, cluster, workspace, nodegroup, namespace |
 | `iam.theriseunion.io/scope-value` | Scope 实例标识 | dev-team, prod-cluster, app-ns |
 | `iam.theriseunion.io/managed` | 标识由 IAM 系统管理 | "true" |
 
@@ -308,19 +308,14 @@ spec:
 
 ### IAMRoleBinding 到 K8s Binding 的转换
 
-Controller 自动将 IAMRoleBinding 转换为 K8s ClusterRoleBinding:
+Controller 自动将 IAMRoleBinding 转换为 K8s ClusterRoleBinding。**无论 IAMRoleBinding 的 Scope 类型是什么（namespace、workspace、nodegroup、cluster、platform），Controller 统一创建 ClusterRoleBinding**，Scope 信息通过 Label 附加，由 UniversalAuthorizer 负责 Scope 级联检查：
 
 ```mermaid
 graph TB
     A[IAMRoleBinding<br/>alice-dev-team] --> B[IAMRoleBindingController]
-    B --> C{Scope 类型}
-    C -->|namespace| D[创建 RoleBinding<br/>在对应 Namespace]
-    C -->|其他| E[创建 ClusterRoleBinding<br/>全局作用域]
-
-    D --> F[添加标签<br/>iam.theriseunion.io/managed=true]
-    E --> F
-
-    F --> G[K8s RoleBinding/ClusterRoleBinding]
+    B --> C[创建 ClusterRoleBinding<br/>附带 Scope 标签]
+    C --> D[添加标签<br/>iam.theriseunion.io/managed=true]
+    D --> E[K8s ClusterRoleBinding]
 ```
 
 ### 转换实现

@@ -21,14 +21,12 @@ graph TD
     B -.自动继承.-> C1[workspace 权限]
     B -.自动继承.-> C2[nodegroup 权限]
     C1 -.自动继承.-> D[namespace 权限]
-    C2 -.自动继承.-> E[node 权限]
 
     style A fill:#C8E6C9
     style B fill:#A5D6A7
     style C1 fill:#81C784
     style C2 fill:#81C784
     style D fill:#66BB6A
-    style E fill:#66BB6A
 ```
 
 **关键规则**:
@@ -95,7 +93,7 @@ sequenceDiagram
 
     User->>Auth: 访问 /api/v1/namespaces/backend/pods
     Auth->>Scope: 构建 Scope 链
-    Scope-->>Auth: [namespace:backend, workspace:dev-team, cluster:prod, platform:global]
+    Scope-->>Auth: [namespace:backend, workspace:dev-team, nodegroup:..., cluster:prod, platform:global]
 
     Auth->>RBAC: 检查 namespace:backend
     RBAC-->>Auth: Deny (无绑定)
@@ -368,8 +366,9 @@ for i, scope := range scopeChain {
 |------------|----------|----------|
 | namespace 直接命中 | 1 | 3-5ms |
 | workspace 命中 | 2 | 8-10ms |
-| cluster 命中 | 3 | 15-20ms |
-| platform 命中 | 4 | 25-30ms |
+| nodegroup 命中 | 3 | 10-15ms |
+| cluster 命中 | 4 | 15-20ms |
+| platform 命中 | 5 | 25-30ms |
 
 ### 缓存策略
 

@@ -77,6 +77,51 @@ export function CreateNamespaceDialog({
 }
 ```
 
+## edge-design 设计系统
+
+edge-console 的组件和样式系统来自独立的 **edge-design** monorepo，通过 `file:` 本地路径引用接入 edge-console。
+
+### Monorepo 结构
+
+```
+edge-design/
+├── packages/
+│   ├── tokens/          # 设计 Token（@edge/tokens）
+│   │   └── src/         # 颜色、字体、间距等设计变量
+│   ├── ui/              # 基础 UI 组件（@edge/ui）
+│   │   └── src/         # 基于 Radix UI 封装的无样式基础组件
+│   ├── components/      # 业务组件（@edge/components）
+│   │   └── src/         # 带样式的可复用业务组件
+│   └── hooks/           # 共享 Hooks
+│       └── src/
+└── package.json         # monorepo 根配置（pnpm workspaces）
+```
+
+### 引用方式
+
+edge-console 通过本地路径引用 edge-design 的包：
+
+```json
+// edge-console/package.json
+{
+  "dependencies": {
+    "@edge/tokens": "file:../edge-design/packages/tokens",
+    "@edge/ui": "file:../edge-design/packages/ui",
+    "@edge/components": "file:../edge-design/packages/components"
+  }
+}
+```
+
+修改 edge-design 组件后，无需发布 npm，直接在 edge-console 中生效（需重启 dev server）。
+
+### 开发原则
+
+- 平台通用 UI 组件放在 **edge-design**，避免在 edge-console 中重复定义
+- edge-console 的 `src/components/ui/` 目录存放 shadcn/ui 组件（通过 `pnpm dlx shadcn-ui@latest add` 生成）
+- 两者不冲突：edge-design 提供设计系统层，shadcn/ui 提供基础 HTML 组件层
+
+---
+
 ## shadcn/ui 组件库
 
 ### 组件安装和使用

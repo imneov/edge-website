@@ -241,15 +241,15 @@ chmod +x edge-ota-agent-linux-amd64
 mv edge-ota-agent-linux-amd64 /usr/local/bin/edge-agent
 
 # 配置 Agent
-cat > /etc/edge-agent/config.yaml << EOF
-server:
-  mqtt_broker: "mqtts://nats.edge-platform.io:8883"
-  tls_enabled: true
-node:
-  id: "edge-node-001"
-  labels:
-    region: "east"
-    type: "gpu"
+cat > /etc/ota-agent/config.yaml << EOF
+device:
+  name: "edge-node-001"
+mqtt:
+  host: "nats.edge-platform.io"
+  port: 8883
+  ca_file: "/etc/ota-agent/certs/ca.crt"
+logging:
+  level: "info"
 EOF
 
 # 启动服务
