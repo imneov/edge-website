@@ -295,6 +295,11 @@ html[data-theme='dark'] main .col[class*='docItemCol'] {
   background-color: rgb(var(--gray-900)) !important;
 }
 
+/* Widen doc container to fill available space on wide screens */
+main[class*='docMainContainer'] > .container {
+  max-width: 100%;
+}
+
 /* Main doc wrapper white bg */
 main[class*='docMainContainer'] > .container > .row > .col,
 [class*='docItemWrapper'] {
