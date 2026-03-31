@@ -308,11 +308,13 @@ html[data-theme='dark'] main[class*='docMainContainer'] {
   background-color: rgb(var(--gray-900)) !important;
 }
 
-main[class*='docMainContainer'] > .container,
-html main[class*='docMainContainer'] > .container {
-  max-width: none !important;
-  padding-left: 1rem;
-  padding-right: 1rem;
+/* Use @layer base for !important priority in Tailwind v4 cascade */
+@layer base {
+  main[class*='docMainContainer'] > .container {
+    max-width: none !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* Main doc wrapper white bg */
