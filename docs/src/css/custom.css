@@ -308,7 +308,9 @@ html[data-theme='dark'] main[class*='docMainContainer'] {
   background-color: rgb(var(--gray-900)) !important;
 }
 
-main[class*='docMainContainer'] > .container {
+main[class*='docMainContainer'] > .container,
+html main[class*='docMainContainer'] > .container {
+  max-width: none !important;
   padding-left: 1rem;
   padding-right: 1rem;
 }
