@@ -306,6 +306,7 @@ html[data-theme='dark'] main[class*='docMainContainer'] {
 
 main[class*='docMainContainer'] > .container {
   --ifm-container-width: 100%;
+  --ifm-container-width-xl: 100%;
   max-width: calc(100% - 2rem) !important;
 }
 
