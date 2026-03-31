@@ -53,6 +53,10 @@
    KubeSphere Cool Blue-Gray Color Palette
    ============================================ */
 :root {
+  /* Override Docusaurus container width for wide screens */
+  --ifm-container-width: 100%;
+  --ifm-container-width-xl: 100%;
+
   /* KubeSphere design tokens */
   --ks-bg: 245 247 250;           /* page background rgb(245,247,250) */
   --ks-text: 50 69 88;            /* body text rgb(50,69,88) */
@@ -305,9 +309,8 @@ html[data-theme='dark'] main[class*='docMainContainer'] {
 }
 
 main[class*='docMainContainer'] > .container {
-  --ifm-container-width: 100%;
-  --ifm-container-width-xl: 100%;
-  max-width: calc(100% - 2rem) !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Main doc wrapper white bg */
