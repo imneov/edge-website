@@ -296,8 +296,17 @@ html[data-theme='dark'] main .col[class*='docItemCol'] {
 }
 
 /* Widen doc container to fill available space on wide screens */
+main[class*='docMainContainer'] {
+  background-color: #fff !important;
+}
+
+html[data-theme='dark'] main[class*='docMainContainer'] {
+  background-color: rgb(var(--gray-900)) !important;
+}
+
 main[class*='docMainContainer'] > .container {
-  max-width: 100%;
+  --ifm-container-width: 100%;
+  max-width: calc(100% - 2rem) !important;
 }
 
 /* Main doc wrapper white bg */
