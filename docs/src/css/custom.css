@@ -931,10 +931,10 @@ a:hover {
    文档页面优化样式 (KubeSphere prose typography)
    ============================================ */
 
-/* KubeSphere: content card with padding */
+/* Content area padding: reduced from 60px to 24px to eliminate whitespace gaps */
 div[class^='docItemContainer_'] {
   max-width: none;
-  padding: 24px 60px 80px;
+  padding: 24px 24px 80px;
 }
 
 /* 文档主内容区域 - KubeSphere: 14px, line-height 24px, color rgb(50,69,88) */
