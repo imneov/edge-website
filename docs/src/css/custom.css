@@ -828,6 +828,10 @@ html[data-theme='dark'] .table-of-contents__link {
   font-weight: 500;
 }
 
+div[class^='tableOfContents_'] {
+  padding-top: 24px;
+}
+
 div[class^='tableOfContents_']::before {
   content: '目录';
   font-size: 13px;
@@ -927,10 +931,10 @@ a:hover {
    文档页面优化样式 (KubeSphere prose typography)
    ============================================ */
 
-/* KubeSphere: content card with padding 0 60px 80px */
+/* KubeSphere: content card with padding */
 div[class^='docItemContainer_'] {
   max-width: none;
-  padding: 0 60px 80px;
+  padding: 24px 60px 80px;
 }
 
 /* 文档主内容区域 - KubeSphere: 14px, line-height 24px, color rgb(50,69,88) */
