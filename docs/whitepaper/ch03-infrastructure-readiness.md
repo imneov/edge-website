@@ -283,7 +283,7 @@ type ComponentInstaller interface {
 
     // PostInstall 安装后的处理，例如验证安装结果、设置状态等
     PostInstall(ctx context.Context, cluster *scopev1alpha1.Cluster,
-        config *ComponentConfig) (*ComponentCondition, error)
+        config *ComponentConfig) (*ComponentCondition, error)当前这个项目使用的是什么样的开发模式？
 }
 ```
 
