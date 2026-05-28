@@ -1,9 +1,16 @@
 name: Build
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '30 19 * * *'  # Daily build at 7:30 PM UTC (3:30 AM Beijing Time)
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   REGISTRY: quanzhenglong.com
@@ -14,7 +21,6 @@ jobs:
   build:
     name: Build and Push
     runs-on: self-hosted
-    if: github.event.pull_request.merged == true || github.event_name != 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +63,7 @@ jobs:
             latest=false
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./docs
           file: ./docs/Dockerfile.prod
@@ -79,14 +85,18 @@ jobs:
           echo "${{ secrets.NEW_TESTING_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.NEW_TESTING_HOST }} >> ~/.ssh/known_hosts
-          
+
       - name: Update deployment image (new-testing)
         if: ${{ startsWith(github.ref, 'refs/heads/main') && github.event_name != 'schedule' }}
         run: |
-          ssh -t -o StrictHostKeyChecking=no root@${{ secrets.NEW_TESTING_HOST }} << 'EOF'
+          ssh -t root@${{ secrets.NEW_TESTING_HOST }} << 'EOF'
             set -e
             echo "====== 开始更新镜像 ======"
             kubectl -n edge-system set image deployment/website website=${{ steps.release-image.outputs.tags }}
             kubectl -n edge-system rollout status deployment/website
             echo "====== 镜像更新完成 ======"
           EOF
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/id_rsa
